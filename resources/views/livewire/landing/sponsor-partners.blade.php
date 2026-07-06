@@ -1,0 +1,80 @@
+@php
+    $logoUrl = fn (?string $path, string $fallback = '') => $path
+        ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
+        : $fallback;
+@endphp
+
+<div class="relative overflow-x-hidden">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-[32rem] bg-haze"></div>
+
+    @include('livewire.landing.partials.header')
+
+    <main>
+        <section class="relative z-10 pb-12 pt-32">
+            <div class="mx-auto max-w-6xl px-5 lg:px-8">
+                <div class="text-center">
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                        Sponsor & Partner
+                    </p>
+                    <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
+                        Collaboration Opportunities
+                    </h1>
+                    <p class="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-white/72">
+                        {{ $landingSetting?->sponsor_text ?? 'Purnama Bersantai membuka slot sponsor dan partner untuk brand activation, booth experience, serta campaign kolaboratif.' }}
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="relative z-10 pb-24">
+            <div class="mx-auto max-w-7xl px-5 lg:px-8">
+                @if ($sponsorPartners->isNotEmpty())
+                    <div class="flex flex-wrap justify-center gap-y-6">
+                        @foreach ($sponsorPartners as $partner)
+                            <div class="w-1/2 px-2 sm:w-1/3 lg:w-1/4 xl:w-1/5">
+                                <a
+                                    href="{{ $partner->url ?: route('landing.contact') }}"
+                                    class="flex h-28 items-center justify-center rounded-[1.5rem] border border-white/10 bg-white/5 p-3 shadow-[0_18px_48px_rgba(0,0,0,0.25)] transition hover:-translate-y-1 hover:bg-white/[0.07]"
+                                    aria-label="{{ $partner->name }}"
+                                    @if (! $partner->url || str_starts_with($partner->url, '/') || str_starts_with($partner->url, url('/'))) wire:navigate @endif
+                                >
+                                    @if ($partner->logo_path)
+                                        <img
+                                            src="{{ $logoUrl($partner->logo_path) }}"
+                                            alt="{{ $partner->name }}"
+                                            class="max-h-12 w-auto max-w-full object-contain"
+                                        />
+                                    @else
+                                        <span class="text-center text-sm font-semibold uppercase tracking-[0.18em] text-white/70">
+                                            {{ $partner->name }}
+                                        </span>
+                                    @endif
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="mx-auto max-w-4xl rounded-[1.75rem] border border-white/10 bg-white/5 px-6 py-12 text-center shadow-[0_18px_48px_rgba(0,0,0,0.24)]">
+                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                            Open Collaboration
+                        </p>
+                        <h2 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
+                            Become Our Partner
+                        </h2>
+                        <p class="mx-auto mt-3 max-w-2xl text-lg leading-relaxed text-white/70">
+                            Saat ini daftar sponsor dan partner belum ditampilkan. Hubungi tim kami untuk membuka kolaborasi baru.
+                        </p>
+                    </div>
+                @endif
+
+                <div class="mt-10 text-center">
+                    <a href="{{ route('landing.contact') }}" class="inline-flex rounded-2xl bg-ember px-6 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-red-500" wire:navigate>
+                        Partner With Us
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    @include('livewire.landing.partials.footer')
+</div>

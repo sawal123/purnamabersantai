@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Livewire\Landing\Concerns;
+
+use App\Models\ContactChannel;
+use App\Models\GalleryMoment;
+use App\Models\LandingHeroImage;
+use App\Models\LandingSetting;
+use App\Models\LineupArtist;
+use App\Models\MerchandiseProduct;
+use App\Models\SponsorPartner;
+use App\Models\Ticket;
+
+trait LoadsLandingContent
+{
+    protected function landingContent(): array
+    {
+        $setting = LandingSetting::query()
+            ->where('is_active', true)
+            ->latest('id')
+            ->first();
+
+        return [
+            'landingSetting' => $setting,
+            'heroImages' => $setting
+                ? $setting->heroImages()->where('is_active', true)->get()
+                : LandingHeroImage::query()->where('is_active', true)->ordered()->get(),
+            'lineupArtists' => LineupArtist::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->get(),
+            'tickets' => Ticket::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->get(),
+            'merchandiseProducts' => MerchandiseProduct::query()
+                ->with([
+                    'images' => fn ($query) => $query->where('is_active', true),
+                    'features' => fn ($query) => $query->where('is_active', true),
+                ])
+                ->where('is_active', true)
+                ->ordered()
+                ->get(),
+            'galleryMoments' => GalleryMoment::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->get(),
+            'sponsorPartners' => SponsorPartner::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->get(),
+            'contactChannels' => ContactChannel::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->get(),
+        ];
+    }
+}
