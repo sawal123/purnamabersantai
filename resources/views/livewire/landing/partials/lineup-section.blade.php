@@ -4,6 +4,8 @@
         : $fallback;
 @endphp
 
+@include('livewire.landing.partials.lineup-marquee')
+
 <section id="lineup" class="relative z-10 pb-20 {{ ($compactTop ?? false) ? 'pt-8' : 'pt-32' }}">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="reveal text-center">

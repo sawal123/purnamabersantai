@@ -10,6 +10,7 @@
         ->values();
     $heroImageUrls = $heroImageUrls->isNotEmpty() ? $heroImageUrls : collect([$fallbackHeroA, $fallbackHeroB]);
     $heroBrand = $imageUrl($landingSetting?->hero_brand_path, asset('landing/assets/3-cropped.png'));
+    $countdownTarget = $countdownSetting?->target_at;
 @endphp
 
 <section id="home" class="relative isolate min-h-screen overflow-hidden">
@@ -39,6 +40,22 @@
                 alt="{{ $landingSetting?->site_name ?? 'Purnama Bersantai' }} logo"
                 class="hero-brand mx-auto mt-0 drop-shadow-[0_10px_60px_rgba(255,255,255,0.15)]"
             />
+
+            @if ($countdownTarget)
+                <div
+                    class="hero-countdown"
+                    data-countdown
+                    data-countdown-target="{{ $countdownTarget->format('Y-m-d\TH:i:s') }}"
+                    aria-label="Countdown menuju {{ $countdownSetting->title }}"
+                >
+                    @foreach ([['days', 'Hari'], ['hours', 'Jam'], ['minutes', 'Menit'], ['seconds', 'Detik']] as [$unit, $label])
+                        <div class="hero-countdown-item">
+                            <span class="hero-countdown-value" data-countdown-unit="{{ $unit }}">00</span>
+                            <span class="hero-countdown-label">{{ $label }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
         <p class="hero-title reveal is-visible mt-4 font-display uppercase tracking-[0.08em] text-white sm:mt-5 lg:mt-6" style="--delay: 180ms">
             {{ $landingSetting?->hero_tagline ?? 'Where Music Meets the Moonlight' }}
@@ -47,10 +64,10 @@
             {{ $landingSetting?->hero_description ?? 'A vibrant night of sing-alongs, merch drops, and unforgettable memories under one stage.' }}
         </p>
         <div class="hero-actions reveal is-visible mt-5 flex flex-col items-center justify-center gap-4 sm:flex-row" style="--delay: 340ms">
-            <a href="{{ route('landing.tickets') }}" class="rounded-2xl bg-ember font-display uppercase tracking-[0.08em] text-white shadow-lg shadow-red-950/50 transition hover:-translate-y-1 hover:bg-red-500" wire:navigate>
+            <a href="{{ route('landing.tickets') }}" class="rounded-2xl bg-ember font-display uppercase tracking-[0.08em] text-white shadow-lg shadow-[#2f2e2e]/50 transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e]" wire:navigate>
                 Buy Ticket
             </a>
-            <a href="{{ route('landing.merch') }}" class="rounded-2xl bg-cobalt font-display uppercase tracking-[0.08em] text-white shadow-lg shadow-blue-950/50 transition hover:-translate-y-1 hover:bg-blue-500" wire:navigate>
+            <a href="{{ route('landing.merch') }}" class="rounded-2xl bg-cobalt font-display uppercase tracking-[0.08em] text-white shadow-lg shadow-[#2f2e2e]/50 transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e]" wire:navigate>
                 Buy Merch
             </a>
         </div>

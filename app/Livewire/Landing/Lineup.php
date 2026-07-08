@@ -18,18 +18,18 @@ class Lineup extends Component
     #[Url(as: 'q', except: '')]
     public string $search = '';
 
-    public int $visibleCount = 15;
+    public int $visibleCount = 8;
 
-    protected int $perLoad = 15;
+    protected int $initialVisibleCount = 8;
 
     public function updatedSearch(): void
     {
-        $this->visibleCount = $this->perLoad;
+        $this->visibleCount = $this->initialVisibleCount;
     }
 
     public function loadMore(): void
     {
-        $this->visibleCount += $this->perLoad;
+        $this->visibleCount = PHP_INT_MAX;
     }
 
     public function render()

@@ -13,7 +13,7 @@
 
         <button
             type="button"
-            class="inline-flex items-center justify-center rounded-2xl bg-ember px-7 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-red-500"
+            class="inline-flex items-center justify-center rounded-2xl bg-[#2f2e2e] px-7 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-[#242323]"
             x-on:click="open = true"
         >
             Share Your Moment
@@ -47,7 +47,7 @@
                 </button>
 
                 <div class="p-6 sm:p-8">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                         Share Your Moment
                     </p>
                     <h3 class="mt-3 font-display text-4xl uppercase tracking-[0.08em] text-white sm:text-5xl">
@@ -63,12 +63,12 @@
                                 <span class="mb-2 block text-sm font-semibold uppercase tracking-[0.18em] text-white/70">Moment Title</span>
                                 <input
                                     type="text"
-                                    class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-amber-300/60 focus:bg-white/8"
+                                    class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-[#fff700]/60 focus:bg-white/8"
                                     placeholder="Acoustic Sunset"
                                     wire:model="shareMomentTitle"
                                 />
                                 @error('shareMomentTitle')
-                                    <span class="mt-2 block text-sm text-red-300">{{ $message }}</span>
+                                    <span class="mt-2 block text-sm text-[#fff700]">{{ $message }}</span>
                                 @enderror
                             </label>
 
@@ -76,12 +76,12 @@
                                 <span class="mb-2 block text-sm font-semibold uppercase tracking-[0.18em] text-white/70">Username</span>
                                 <input
                                     type="text"
-                                    class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-amber-300/60 focus:bg-white/8"
+                                    class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-[#fff700]/60 focus:bg-white/8"
                                     placeholder="@namakamu"
                                     wire:model="shareMomentUsername"
                                 />
                                 @error('shareMomentUsername')
-                                    <span class="mt-2 block text-sm text-red-300">{{ $message }}</span>
+                                    <span class="mt-2 block text-sm text-[#fff700]">{{ $message }}</span>
                                 @enderror
                             </label>
 
@@ -89,12 +89,12 @@
                                 <span class="mb-2 block text-sm font-semibold uppercase tracking-[0.18em] text-white/70">Alt Text</span>
                                 <input
                                     type="text"
-                                    class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-amber-300/60 focus:bg-white/8"
+                                    class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-[#fff700]/60 focus:bg-white/8"
                                     placeholder="Teman-teman menikmati musik saat sunset"
                                     wire:model="shareMomentAltText"
                                 />
                                 @error('shareMomentAltText')
-                                    <span class="mt-2 block text-sm text-red-300">{{ $message }}</span>
+                                    <span class="mt-2 block text-sm text-[#fff700]">{{ $message }}</span>
                                 @enderror
                             </label>
 
@@ -104,7 +104,7 @@
                                     @if ($this->shareMomentPreviewUrl())
                                         <button
                                             type="button"
-                                            class="text-xs font-semibold uppercase tracking-[0.16em] text-amber-200/80 transition hover:text-white"
+                                            class="text-xs font-semibold uppercase tracking-[0.16em] text-[#fff700]/80 transition hover:text-white"
                                             wire:click="removeShareMomentImage"
                                         >
                                             Remove
@@ -122,7 +122,7 @@
                                     </div>
                                 @endif
 
-                                <label class="group flex cursor-pointer flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-white/20 bg-white/5 px-4 py-8 text-center transition hover:border-amber-300/60 hover:bg-white/8">
+                                <label class="group flex cursor-pointer flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-white/20 bg-white/5 px-4 py-8 text-center transition hover:border-[#fff700]/60 hover:bg-white/8">
                                     <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/6 text-white/80">
                                         <svg viewBox="0 0 24 24" fill="none" class="h-7 w-7" aria-hidden="true">
                                             <path d="M12 16V4M12 4L7 9M12 4L17 9M5 18.5C5 17.12 6.12 16 7.5 16H16.5C17.88 16 19 17.12 19 18.5C19 19.88 17.88 21 16.5 21H7.5C6.12 21 5 19.88 5 18.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -145,7 +145,7 @@
                                 </div>
 
                                 @error('shareMomentImage')
-                                    <span class="mt-2 block text-sm text-red-300">{{ $message }}</span>
+                                    <span class="mt-2 block text-sm text-[#fff700]">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
@@ -164,7 +164,7 @@
                                 </button>
                                 <button
                                     type="submit"
-                                    class="rounded-2xl bg-ember px-6 py-3 font-display text-xl leading-none uppercase tracking-[0.06em] text-white whitespace-nowrap transition hover:-translate-y-1 hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+                                    class="rounded-2xl bg-ember px-6 py-3 font-display text-xl leading-none uppercase tracking-[0.06em] text-white whitespace-nowrap transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e] disabled:cursor-not-allowed disabled:opacity-60"
                                     wire:loading.attr="disabled"
                                     wire:target="shareMomentImage,submitShareMoment"
                                 >

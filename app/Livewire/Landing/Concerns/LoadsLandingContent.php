@@ -3,6 +3,7 @@
 namespace App\Livewire\Landing\Concerns;
 
 use App\Models\ContactChannel;
+use App\Models\CountdownSetting;
 use App\Models\GalleryMoment;
 use App\Models\LandingHeroImage;
 use App\Models\LandingSetting;
@@ -22,6 +23,11 @@ trait LoadsLandingContent
 
         return [
             'landingSetting' => $setting,
+            'countdownSetting' => CountdownSetting::query()
+                ->active()
+                ->whereNotNull('target_at')
+                ->latest('id')
+                ->first(),
             'heroImages' => $setting
                 ? $setting->heroImages()->where('is_active', true)->get()
                 : LandingHeroImage::query()->where('is_active', true)->ordered()->get(),

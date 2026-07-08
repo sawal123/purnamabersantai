@@ -4,7 +4,12 @@
         : $fallback;
 @endphp
 
-<div class="relative overflow-x-hidden">
+<div
+    class="relative overflow-x-hidden"
+    x-data="{ selectedArtist: null }"
+    x-effect="document.body.classList.toggle('modal-open', selectedArtist !== null)"
+    x-on:keydown.escape.window="selectedArtist = null"
+>
     <div class="pointer-events-none absolute inset-x-0 top-0 h-[32rem] bg-haze"></div>
 
     @include('livewire.landing.partials.header')
@@ -71,17 +76,28 @@
                     </div>
 
                     @if ($lineupArtists->isNotEmpty())
-                        <div class="lineup-grid flex flex-wrap justify-center gap-y-5">
+                        <div class="lineup-grid lineup-page-grid flex flex-wrap justify-center gap-y-5">
                             @foreach ($lineupArtists as $artist)
+                                @php
+                                    $artistImage = $imageUrl($artist->image_path, asset('landing/assets/Rectangle 17.png'));
+                                    $artistAlt = $artist->alt_text ?: $artist->name;
+                                @endphp
                                 <div class="w-1/2 px-2.5 lg:w-1/4">
-                                    <article
+                                    <button
+                                        type="button"
                                         wire:key="lineup-artist-{{ $artist->id }}"
-                                        class="lineup-card relative isolate aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-glow transition duration-300"
+                                        class="lineup-card lineup-page-card relative isolate aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-[1.75rem] transition duration-300"
+                                        aria-label="Open full image for {{ $artist->name }}"
+                                        x-on:click="selectedArtist = {
+                                            src: @js($artistImage),
+                                            alt: @js($artistAlt),
+                                            name: @js($artist->name)
+                                        }"
                                     >
                                         <div class="lineup-media">
                                             <img
-                                                src="{{ $imageUrl($artist->image_path, asset('landing/assets/Rectangle 17.png')) }}"
-                                                alt="{{ $artist->alt_text ?: $artist->name }}"
+                                                src="{{ $artistImage }}"
+                                                alt="{{ $artistAlt }}"
                                                 class="{{ $artist->image_class ?: 'object-cover' }}"
                                             />
                                         </div>
@@ -90,7 +106,7 @@
                                                 {{ $artist->name }}
                                             </p>
                                         </div>
-                                    </article>
+                                    </button>
                                 </div>
                             @endforeach
                         </div>
@@ -99,7 +115,7 @@
                             <div class="mt-10 flex justify-center">
                                 <button
                                     type="button"
-                                    class="inline-flex min-w-[12rem] items-center justify-center gap-3 rounded-2xl border border-white/12 bg-white/6 px-6 py-3 font-display text-2xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                                    class="inline-flex min-w-[12rem] items-center justify-center gap-3 rounded-2xl border border-white/12 bg-[#2f2e2e] px-6 py-3 font-display text-2xl uppercase tracking-[0.08em] text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)] transition hover:-translate-y-1 hover:bg-[#242323] disabled:cursor-not-allowed disabled:opacity-60"
                                     wire:click="loadMore"
                                     wire:loading.attr="disabled"
                                     wire:target="loadMore"
@@ -114,7 +130,7 @@
                         @endif
                     @else
                         <div class="rounded-[2rem] border border-white/10 bg-white/5 px-6 py-14 text-center shadow-[0_18px_48px_rgba(0,0,0,0.22)]">
-                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                                 No Result
                             </p>
                             <h2 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white sm:text-5xl">
@@ -129,26 +145,57 @@
             </div>
         </section>
 
-        <section class="relative z-10 pb-24">
-            <div class="mx-auto max-w-5xl px-5 text-center lg:px-8">
-                <div class="rounded-[1.75rem] border border-white/10 bg-white/5 px-6 py-8 shadow-[0_18px_48px_rgba(0,0,0,0.25)]">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
-                        Next Stop
-                    </p>
-                    <h2 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
-                        Continue to Tickets
-                    </h2>
-                    <p class="mx-auto mt-3 max-w-2xl text-lg leading-relaxed text-white/70">
-                        Setelah pengunjung melihat performer, arahkan mereka ke halaman ticketing untuk konversi yang lebih jelas.
-                    </p>
-                    <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-                        <a href="{{ route('landing.tickets') }}" class="rounded-2xl bg-ember px-7 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-red-500" wire:navigate>Buy Ticket</a>
-                        <a href="{{ route('landing.gallery') }}" class="rounded-2xl border-2 border-ember px-7 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-white/10" wire:navigate>View Gallery</a>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
+
+    <div
+        x-cloak
+        x-show="selectedArtist"
+        x-transition.opacity.duration.200ms
+        class="fixed inset-0 z-[80] grid place-items-center p-4"
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="lineup-detail-title"
+    >
+        <button
+            type="button"
+            class="absolute inset-0 cursor-zoom-out bg-black/75 backdrop-blur-md"
+            aria-label="Close lineup image"
+            x-on:click="selectedArtist = null"
+        ></button>
+
+        <div
+            x-show="selectedArtist"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-6 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition ease-in duration-180"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 translate-y-6 scale-95"
+            class="relative z-10 flex max-h-[92dvh] w-fit max-w-[94vw] flex-col overflow-hidden rounded-[1.5rem] border border-white/12 bg-[#2f2e2e]"
+        >
+            <button
+                type="button"
+                class="absolute right-4 top-4 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#2f2e2e]/80 text-3xl leading-none text-white backdrop-blur transition hover:bg-[#fff700] hover:text-[#2f2e2e]"
+                aria-label="Close lineup image"
+                x-on:click="selectedArtist = null"
+            >
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            <div class="grid min-h-0 bg-black/20">
+                <img
+                    x-bind:src="selectedArtist?.src"
+                    x-bind:alt="selectedArtist?.alt"
+                    class="block max-h-[82dvh] max-w-[94vw] object-contain"
+                />
+            </div>
+
+            <div class="border-t border-white/10 px-5 py-3 text-center">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">Lineup Artist</p>
+                <h2 id="lineup-detail-title" class="mt-1 font-display text-3xl uppercase tracking-[0.08em] text-white sm:text-4xl" x-text="selectedArtist?.name"></h2>
+            </div>
+        </div>
+    </div>
 
     @include('livewire.landing.partials.footer')
 </div>

@@ -94,6 +94,7 @@ class ResourcePage extends Component
                 'item_key' => 'upload-'.$uploadKey,
                 'id' => null,
                 'path' => null,
+                'title' => '',
                 'alt' => '',
                 'upload_key' => $uploadKey,
             ]);
@@ -297,6 +298,11 @@ class ResourcePage extends Component
         return ($column['type'] ?? 'text') === 'image';
     }
 
+    public function isContactIconColumn(array $column): bool
+    {
+        return ($column['type'] ?? 'text') === 'contact_icon';
+    }
+
     public function imageUrl(Model $record, array $column): ?string
     {
         $value = data_get($record, $column['key']);
@@ -375,6 +381,7 @@ class ResourcePage extends Component
                     return [
                         'item_key' => $item['item_key'] ?? ('upload-'.$uploadKey),
                         'url' => $uploads[$uploadKey]->temporaryUrl(),
+                        'title' => $item['title'] ?? '',
                         'alt' => $item['alt'] ?? '',
                         'is_new' => true,
                     ];
@@ -389,6 +396,7 @@ class ResourcePage extends Component
                     'url' => str_starts_with($path, 'http') || str_starts_with($path, '/')
                         ? $path
                         : asset($path),
+                    'title' => $item['title'] ?? '',
                     'alt' => $item['alt'] ?? '',
                     'is_new' => false,
                 ];
@@ -517,7 +525,7 @@ class ResourcePage extends Component
                 continue;
             }
 
-            if ($type === 'date') {
+            if (in_array($type, ['date', 'datetime'], true)) {
                 $form[$field['name']] = $default ?? '';
 
                 continue;
@@ -568,6 +576,12 @@ class ResourcePage extends Component
                 continue;
             }
 
+            if ($type === 'datetime') {
+                $this->form[$name] = $value?->format('Y-m-d\TH:i') ?? '';
+
+                continue;
+            }
+
             if ($type === 'image') {
                 $this->form[$name] = $value ?? '';
 
@@ -578,6 +592,7 @@ class ResourcePage extends Component
                 $relation = $field['relation'] ?? null;
                 $pathField = $field['item_path_field'] ?? 'image_path';
                 $altField = $field['item_alt_field'] ?? 'alt_text';
+                $titleField = $field['item_title_field'] ?? null;
 
                 $this->form[$name] = $relation && $record->relationLoaded($relation)
                     ? $record->getRelation($relation)
@@ -585,6 +600,7 @@ class ResourcePage extends Component
                             'item_key' => 'existing-'.$image->getKey(),
                             'id' => $image->getKey(),
                             'path' => (string) $image->getAttribute($pathField),
+                            'title' => $titleField ? (string) ($image->getAttribute($titleField) ?? '') : '',
                             'alt' => (string) ($image->getAttribute($altField) ?? ''),
                             'upload_key' => null,
                         ])
@@ -635,7 +651,7 @@ class ResourcePage extends Component
                 continue;
             }
 
-            if ($type === 'date') {
+            if (in_array($type, ['date', 'datetime'], true)) {
                 $payload[$name] = blank($value) ? null : $value;
 
                 continue;
@@ -712,7 +728,7 @@ class ResourcePage extends Component
                 $ruleSet[] = $type === 'text' ? 'max:255' : 'max:5000';
             }
 
-            if ($type === 'date') {
+            if (in_array($type, ['date', 'datetime'], true)) {
                 $ruleSet[] = 'date';
             }
 
@@ -792,6 +808,14 @@ class ResourcePage extends Component
                     'mimes:jpg,jpeg,png,webp',
                     'max:4096',
                 ];
+
+                if (isset($field['item_title_field'])) {
+                    $rules["form.{$name}.*.title"] = [
+                        ($field['item_title_required'] ?? false) ? 'required' : 'nullable',
+                        'string',
+                        'max:255',
+                    ];
+                }
             }
 
             if ($type === 'image') {
@@ -827,6 +851,10 @@ class ResourcePage extends Component
 
             if (($field['type'] ?? 'text') === 'image_gallery') {
                 $attributes["imageUploads.{$field['name']}.*"] = $field['label'];
+
+                if (isset($field['item_title_field'])) {
+                    $attributes["form.{$field['name']}.*.title"] = ($field['item_title_label'] ?? 'Image Name');
+                }
             }
 
             if (($field['type'] ?? 'text') === 'image') {
@@ -943,6 +971,7 @@ class ResourcePage extends Component
             $uploads = $this->keyedImageGalleryUploads($field['name']);
             $pathField = $field['item_path_field'] ?? 'image_path';
             $altField = $field['item_alt_field'] ?? 'alt_text';
+            $titleField = $field['item_title_field'] ?? null;
             $classField = $field['item_class_field'] ?? 'image_class';
             $sortField = $field['item_sort_field'] ?? 'sort_order';
             $activeField = $field['item_active_field'] ?? 'is_active';
@@ -963,10 +992,16 @@ class ResourcePage extends Component
 
                 if ($existingId && $existingImages->has($existingId)) {
                     $image = $existingImages->get($existingId);
-                    $image->forceFill([
+                    $updates = [
                         $sortField => $sortOrder,
                         $activeField => true,
-                    ])->save();
+                    ];
+
+                    if ($titleField) {
+                        $updates[$titleField] = $item['title'] ?? '';
+                    }
+
+                    $image->forceFill($updates)->save();
 
                     $firstStoredPath ??= (string) $image->getAttribute($pathField);
                     $sortOrder++;
@@ -981,13 +1016,22 @@ class ResourcePage extends Component
                 $storedPath = '/storage/'.$path;
                 $firstStoredPath ??= $storedPath;
 
-                $record->{$relationName}()->create([
+                $imagePayload = [
                     $pathField => $storedPath,
-                    $altField => $record->getAttribute('name') ?? $record->getKey(),
-                    $classField => $defaultClass,
+                    $altField => $item['title'] ?? ($record->getAttribute('name') ?? $record->getKey()),
                     $sortField => $sortOrder,
                     $activeField => true,
-                ]);
+                ];
+
+                if ($classField) {
+                    $imagePayload[$classField] = $defaultClass;
+                }
+
+                if ($titleField) {
+                    $imagePayload[$titleField] = $item['title'] ?? '';
+                }
+
+                $record->{$relationName}()->create($imagePayload);
 
                 $sortOrder++;
             }

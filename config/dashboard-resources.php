@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\ContactChannel;
+use App\Models\CountdownSetting;
 use App\Models\FrequentlyAskedQuestion;
 use App\Models\GalleryMoment;
 use App\Models\History;
@@ -10,6 +11,8 @@ use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
 use App\Models\MerchandiseProductFeature;
 use App\Models\MerchandiseProductImage;
+use App\Models\RundownMap;
+use App\Models\RundownMapImage;
 use App\Models\SeoSetting;
 use App\Models\SponsorPartner;
 use App\Models\Ticket;
@@ -99,6 +102,76 @@ return [
             ['name' => 'footer_description', 'label' => 'Footer Description', 'type' => 'textarea', 'full_width' => true],
             ['name' => 'sponsor_text', 'label' => 'Sponsor Text', 'type' => 'textarea', 'full_width' => true],
             ['name' => 'event_info', 'label' => 'Event Info JSON', 'type' => 'json', 'full_width' => true],
+            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
+        ],
+    ],
+    'countdown-setting' => [
+        'label' => 'Countdown',
+        'navigation_label' => 'Countdown',
+        'navigation_group' => 'Landing Content',
+        'navigation_icon' => 'clock',
+        'model' => CountdownSetting::class,
+        'page_title' => 'Countdown',
+        'description' => 'Kelola target waktu countdown yang tampil di bawah logo hero landing page.',
+        'single_record' => true,
+        'searchable' => ['title', 'description'],
+        'with' => [],
+        'default_sort' => [
+            ['column' => 'id', 'direction' => 'desc'],
+        ],
+        'table_columns' => [
+            ['key' => 'title', 'label' => 'Title'],
+            ['key' => 'target_at', 'label' => 'Target', 'type' => 'datetime'],
+            ['key' => 'description', 'label' => 'Description', 'truncate' => 60],
+            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
+        ],
+        'form_fields' => [
+            ['name' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true, 'default' => 'PURNAMA BERSANTAI 2026'],
+            ['name' => 'target_at', 'label' => 'Target Date & Time', 'type' => 'datetime', 'required' => true],
+            ['name' => 'description', 'label' => 'Description', 'type' => 'textarea', 'full_width' => true],
+            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
+        ],
+    ],
+    'rundown-map' => [
+        'label' => 'Rundown & Map',
+        'navigation_label' => 'Rundown & Map',
+        'navigation_group' => 'Landing Content',
+        'navigation_icon' => 'map',
+        'model' => RundownMap::class,
+        'page_title' => 'Rundown & Map',
+        'description' => 'Kelola halaman rundown dan map per tahun, termasuk banyak gambar rundown dengan nama masing-masing dan satu Google Map.',
+        'searchable' => ['tahun', 'google_map'],
+        'with' => ['images'],
+        'default_sort' => [
+            ['column' => 'tahun', 'direction' => 'desc'],
+            ['column' => 'id', 'direction' => 'desc'],
+        ],
+        'table_columns' => [
+            ['key' => 'tahun', 'label' => 'Tahun'],
+            ['key' => 'images', 'label' => 'Images', 'type' => 'count', 'suffix' => 'image'],
+            ['key' => 'google_map', 'label' => 'Google Map', 'truncate' => 60],
+            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
+        ],
+        'form_fields' => [
+            ['name' => 'tahun', 'label' => 'Tahun', 'type' => 'number', 'required' => true, 'default' => 2026],
+            [
+                'name' => 'images',
+                'label' => 'Rundown Images',
+                'type' => 'image_gallery',
+                'full_width' => true,
+                'relation' => 'images',
+                'item_model' => RundownMapImage::class,
+                'item_title_field' => 'name',
+                'item_title_label' => 'Nama Pasangan Image',
+                'item_title_placeholder' => 'Contoh: Rundown Day 1, Venue Map',
+                'item_title_required' => true,
+                'item_alt_field' => 'name',
+                'item_path_field' => 'image_path',
+                'item_class_field' => null,
+                'item_sort_field' => 'sort_order',
+                'item_active_field' => 'is_active',
+            ],
+            ['name' => 'google_map', 'label' => 'Google Map URL / Embed', 'type' => 'textarea', 'full_width' => true],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
     ],
@@ -437,13 +510,14 @@ return [
         'model' => ContactChannel::class,
         'page_title' => 'Contact Channels',
         'description' => 'Kelola kanal kontak yang ditampilkan di halaman contact atau footer.',
-        'searchable' => ['label', 'type', 'value', 'description'],
+        'searchable' => ['label', 'icon', 'type', 'value', 'description'],
         'with' => [],
         'default_sort' => [
             ['column' => 'sort_order', 'direction' => 'asc'],
             ['column' => 'id', 'direction' => 'asc'],
         ],
         'table_columns' => [
+            ['key' => 'icon', 'label' => 'Icon', 'type' => 'contact_icon'],
             ['key' => 'label', 'label' => 'Label'],
             ['key' => 'type', 'label' => 'Type', 'type' => 'badge'],
             ['key' => 'value', 'label' => 'Value', 'truncate' => 35],
@@ -452,6 +526,14 @@ return [
         ],
         'form_fields' => [
             ['name' => 'label', 'label' => 'Label', 'type' => 'text', 'required' => true],
+            ['name' => 'icon', 'label' => 'Icon', 'type' => 'select', 'default' => 'email', 'options' => [
+                ['value' => 'whatsapp', 'label' => 'WhatsApp / Phone'],
+                ['value' => 'email', 'label' => 'Email'],
+                ['value' => 'instagram', 'label' => 'Instagram'],
+                ['value' => 'tiktok', 'label' => 'TikTok'],
+                ['value' => 'website', 'label' => 'Website'],
+                ['value' => 'chat-bubble', 'label' => 'Chat Bubble'],
+            ]],
             ['name' => 'type', 'label' => 'Type', 'type' => 'select', 'required' => true, 'default' => 'email', 'options' => [
                 ['value' => 'email', 'label' => 'Email'],
                 ['value' => 'phone', 'label' => 'Phone'],

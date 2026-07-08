@@ -8,6 +8,7 @@
     ];
     $moreNavItems = [
         ['label' => 'Playlist', 'href' => route('landing.playlist'), 'active' => request()->routeIs('landing.playlist')],
+        ['label' => 'Rundown & Map', 'href' => route('landing.rundown-map'), 'active' => request()->routeIs('landing.rundown-map')],
         ['label' => 'About Us', 'href' => route('landing.about'), 'active' => request()->routeIs('landing.about')],
         ['label' => 'Contact Us', 'href' => route('landing.contact'), 'active' => request()->routeIs('landing.contact')],
         ['label' => 'FAQ', 'href' => route('landing.faq'), 'active' => request()->routeIs('landing.faq')],
@@ -43,7 +44,7 @@
                     @foreach ($navItems as $item)
                         <a
                             href="{{ $item['href'] }}"
-                            class="transition hover:text-amber-300 {{ $item['active'] ? 'text-amber-300' : 'text-white/85' }}"
+                            class="transition hover:text-[#fff700] {{ $item['active'] ? 'text-[#fff700]' : 'text-white/85' }}"
                             wire:navigate
                         >
                             {{ $item['label'] }}
@@ -60,8 +61,8 @@
                     >
                         <button
                             type="button"
-                            class="desktop-more-trigger {{ $isMoreActive ? 'text-amber-300' : 'text-white/85' }}"
-                            :class="{ 'text-amber-300': open }"
+                            class="desktop-more-trigger {{ $isMoreActive ? 'text-[#fff700]' : 'text-white/85' }}"
+                            :class="{ 'text-[#fff700]': open }"
                             :aria-expanded="open.toString()"
                             aria-haspopup="true"
                         >
@@ -97,7 +98,7 @@
                             @foreach ($moreNavItems as $item)
                                 <a
                                     href="{{ $item['href'] }}"
-                                    class="desktop-more-link {{ $item['active'] ? 'text-amber-300' : 'text-white/85' }}"
+                                    class="desktop-more-link {{ $item['active'] ? 'text-[#fff700]' : 'text-white/85' }}"
                                     wire:navigate
                                 >
                                     {{ $item['label'] }}
@@ -106,16 +107,6 @@
                         </div>
                     </div>
                 </nav>
-
-                <div class="hidden lg:block">
-                    <a
-                        href="{{ route('landing.tickets') }}"
-                        class="rounded-xl bg-ember px-4 py-2 font-display text-xl tracking-[0.12em] text-white shadow-lg shadow-red-950/40 transition hover:-translate-y-1 hover:bg-red-500"
-                        wire:navigate
-                    >
-                        Buy Ticket
-                    </a>
-                </div>
 
                 <button
                     id="mobile-menu-button"
@@ -142,15 +133,6 @@
                             </a>
                         @endforeach
                     </nav>
-                    <div class="pt-5">
-                        <a
-                            href="{{ route('landing.tickets') }}"
-                            class="inline-flex w-full items-center justify-center rounded-xl bg-ember px-4 py-3 font-display text-2xl tracking-[0.12em] text-white shadow-lg shadow-red-950/40 transition hover:bg-red-500"
-                            wire:navigate
-                        >
-                            Buy Ticket
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>

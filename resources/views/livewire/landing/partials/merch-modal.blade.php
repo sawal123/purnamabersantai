@@ -70,7 +70,7 @@
             <div class="merch-modal-copy text-white">
                 <p
                     id="merch-modal-kicker"
-                    class="text-sm font-semibold uppercase tracking-[0.28em] text-amber-200/80"
+                    class="text-sm font-semibold uppercase tracking-[0.28em] text-[#fff700]/80"
                 >
                     Exclusive Drop
                 </p>
@@ -82,7 +82,7 @@
                 </h3>
                 <p
                     id="merch-modal-price"
-                    class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-amber-300"
+                    class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-[#fff700]"
                 >
                     Rp0
                 </p>
@@ -99,7 +99,7 @@
                 <a
                     id="merch-modal-order"
                     href="{{ route('landing.contact') }}"
-                    class="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-ember px-6 py-4 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-red-500 sm:w-auto sm:min-w-[12rem]"
+                    class="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-ember px-6 py-4 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e] sm:w-auto sm:min-w-[12rem]"
                     wire:navigate
                 >
                     Order

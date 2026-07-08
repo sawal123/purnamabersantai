@@ -7,26 +7,23 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
-    'label',
-    'icon',
-    'type',
-    'value',
-    'url',
+    'title',
+    'target_at',
     'description',
-    'sort_order',
     'is_active',
 ])]
-class ContactChannel extends Model
+class CountdownSetting extends Model
 {
     protected function casts(): array
     {
         return [
+            'target_at' => 'datetime',
             'is_active' => 'boolean',
         ];
     }
 
-    public function scopeOrdered(Builder $query): Builder
+    public function scopeActive(Builder $query): Builder
     {
-        return $query->orderBy('sort_order')->orderBy('id');
+        return $query->where('is_active', true);
     }
 }

@@ -46,6 +46,56 @@ const bindEvent = (target, eventName, handler, options) => {
   registerCleanup(() => target.removeEventListener(eventName, handler, options));
 };
 
+const initCountdowns = () => {
+  document.querySelectorAll("[data-countdown]").forEach((countdown) => {
+    const targetValue = countdown.dataset.countdownTarget;
+    const targetTime = targetValue ? new Date(targetValue).getTime() : NaN;
+
+    if (Number.isNaN(targetTime)) {
+      return;
+    }
+
+    const units = {
+      days: countdown.querySelector('[data-countdown-unit="days"]'),
+      hours: countdown.querySelector('[data-countdown-unit="hours"]'),
+      minutes: countdown.querySelector('[data-countdown-unit="minutes"]'),
+      seconds: countdown.querySelector('[data-countdown-unit="seconds"]'),
+    };
+
+    const formatNumber = (value) => String(value).padStart(2, "0");
+
+    const render = () => {
+      const distance = Math.max(0, targetTime - Date.now());
+      const totalSeconds = Math.floor(distance / 1000);
+
+      const values = {
+        days: Math.floor(totalSeconds / 86400),
+        hours: Math.floor((totalSeconds % 86400) / 3600),
+        minutes: Math.floor((totalSeconds % 3600) / 60),
+        seconds: totalSeconds % 60,
+      };
+
+      Object.entries(values).forEach(([unit, value]) => {
+        if (units[unit]) {
+          units[unit].textContent = formatNumber(value);
+        }
+      });
+
+      return distance > 0;
+    };
+
+    render();
+
+    const intervalId = window.setInterval(() => {
+      if (!render()) {
+        window.clearInterval(intervalId);
+      }
+    }, 1000);
+
+    registerCleanup(() => window.clearInterval(intervalId));
+  });
+};
+
 const createSectionSwiper = (
   selector,
   paginationSelector,
@@ -129,13 +179,33 @@ const initHeader = () => {
   const mobileNavLinks = mobileNavPanel
     ? mobileNavPanel.querySelectorAll("a")
     : [];
+  let scrollStopTimer = null;
 
-  const syncHeaderScrollState = () => {
+  const syncHeaderScrollState = (isScrolling = false) => {
     if (!siteHeader) {
       return;
     }
 
-    siteHeader.classList.toggle("is-scrolled", window.scrollY > 24);
+    const isPastTop = window.scrollY > 24;
+    const isMobileOpen = siteHeader.classList.contains("is-mobile-open");
+
+    siteHeader.classList.toggle("is-scrolled", isPastTop);
+    siteHeader.classList.toggle(
+      "is-scroll-hidden",
+      isPastTop && isScrolling && !isMobileOpen,
+    );
+  };
+
+  const handleWindowScroll = () => {
+    syncHeaderScrollState(true);
+
+    if (scrollStopTimer) {
+      window.clearTimeout(scrollStopTimer);
+    }
+
+    scrollStopTimer = window.setTimeout(() => {
+      syncHeaderScrollState(false);
+    }, 180);
   };
 
   const closeMobileMenu = () => {
@@ -148,6 +218,7 @@ const initHeader = () => {
     mobileNavPanel.classList.remove("is-open");
     siteHeader?.classList.remove("is-mobile-open");
     document.body.classList.remove("mobile-nav-open");
+    syncHeaderScrollState(false);
   };
 
   const toggleMobileMenu = () => {
@@ -164,10 +235,16 @@ const initHeader = () => {
     mobileNavPanel.classList.toggle("is-open", !isOpen);
     siteHeader?.classList.toggle("is-mobile-open", !isOpen);
     document.body.classList.toggle("mobile-nav-open", !isOpen);
+    syncHeaderScrollState(false);
   };
 
   syncHeaderScrollState();
-  bindEvent(window, "scroll", syncHeaderScrollState, { passive: true });
+  bindEvent(window, "scroll", handleWindowScroll, { passive: true });
+  registerCleanup(() => {
+    if (scrollStopTimer) {
+      window.clearTimeout(scrollStopTimer);
+    }
+  });
 
   if (mobileMenuButton) {
     bindEvent(mobileMenuButton, "click", toggleMobileMenu);
@@ -724,6 +801,7 @@ const initLandingPage = () => {
 
   initTicketModal();
   initMerchModal(assetBase, contactUrl);
+  initCountdowns();
   initHeroRotation(assetBase);
   initHeroParallax();
 };

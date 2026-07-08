@@ -33,8 +33,8 @@
                             class="absolute inset-0 h-full w-full object-cover"
                         />
                         <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,1,2,0.92)_0%,rgba(20,1,2,0.58)_45%,rgba(20,1,2,0.12)_100%)]"></div>
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#151515] to-transparent p-6 sm:p-8 lg:p-10">
-                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/85">
+                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#2f2e2e] to-transparent p-6 sm:p-8 lg:p-10">
+                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/85">
                                 {{ $history['year'] }} Archive
                             </p>
                             <h1 class="mt-4 max-w-4xl font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
@@ -46,15 +46,15 @@
 
                             <dl class="mt-7 grid max-w-4xl gap-3 sm:grid-cols-3">
                                 <div class="rounded-2xl border border-white/10 bg-black/30 p-4">
-                                    <dt class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300/75">Location</dt>
+                                    <dt class="text-xs font-semibold uppercase tracking-[0.22em] text-[#fff700]/75">Location</dt>
                                     <dd class="mt-2 text-base font-semibold text-white">{{ $history['location'] }}</dd>
                                 </div>
                                 <div class="rounded-2xl border border-white/10 bg-black/30 p-4">
-                                    <dt class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300/75">Event Date</dt>
+                                    <dt class="text-xs font-semibold uppercase tracking-[0.22em] text-[#fff700]/75">Event Date</dt>
                                     <dd class="mt-2 text-base font-semibold text-white">{{ $history['date_label'] ?? 'Coming Soon' }}</dd>
                                 </div>
                                 <div class="rounded-2xl border border-white/10 bg-black/30 p-4">
-                                    <dt class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300/75">Capacity</dt>
+                                    <dt class="text-xs font-semibold uppercase tracking-[0.22em] text-[#fff700]/75">Capacity</dt>
                                     <dd class="mt-2 text-base font-semibold text-white">{{ $history['capacity_label'] ?? '-' }}</dd>
                                 </div>
                             </dl>
@@ -68,7 +68,7 @@
             <div class="mx-auto grid max-w-6xl gap-8 px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-8">
                 <div class="space-y-8">
                     <article class="reveal rounded-[1.7rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(0,0,0,0.22)] sm:p-8">
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                             Story
                         </p>
                         <div class="mt-5 space-y-4 text-base leading-relaxed text-white/72">
@@ -96,7 +96,7 @@
 
                     @if (count($galleryImages) > 0)
                         <section class="reveal">
-                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                                 Festival Gallery
                             </p>
                             <h2 class="mt-3 font-display text-4xl uppercase tracking-[0.08em] text-white">
@@ -120,7 +120,7 @@
 
                 <aside class="reveal h-fit space-y-5 lg:sticky lg:top-28">
                     <section class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5 shadow-[0_18px_48px_rgba(0,0,0,0.22)]">
-                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-amber-300/80">
+                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff700]/80">
                             Detail Acara
                         </p>
                         <dl class="mt-5 space-y-4">
@@ -141,7 +141,7 @@
 
                     @if (count($relatedHistory ?? []) > 0)
                         <section class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5 shadow-[0_18px_48px_rgba(0,0,0,0.22)]">
-                            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-amber-300/80">
+                            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff700]/80">
                                 History Lainnya
                             </p>
 
@@ -154,7 +154,7 @@
                                             class="h-20 w-full rounded-xl object-cover"
                                         />
                                         <div class="min-w-0">
-                                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/80">{{ $item['year'] }}</p>
+                                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#fff700]/80">{{ $item['year'] }}</p>
                                             <p class="mt-1 line-clamp-2 font-display text-2xl uppercase tracking-[0.06em] text-white">{{ $item['title'] }}</p>
                                             <p class="mt-1 truncate text-xs font-semibold uppercase tracking-[0.16em] text-white/48">{{ $item['location'] }}</p>
                                         </div>

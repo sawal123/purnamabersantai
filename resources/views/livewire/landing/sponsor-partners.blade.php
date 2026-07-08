@@ -13,7 +13,7 @@
         <section class="relative z-10 pb-12 pt-32">
             <div class="mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                         Sponsor & Partner
                     </p>
                     <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
@@ -32,11 +32,9 @@
                     <div class="flex flex-wrap justify-center gap-y-6">
                         @foreach ($sponsorPartners as $partner)
                             <div class="w-1/2 px-2 sm:w-1/3 lg:w-1/4 xl:w-1/5">
-                                <a
-                                    href="{{ $partner->url ?: route('landing.contact') }}"
-                                    class="flex h-28 items-center justify-center rounded-[1.5rem] border border-white/10 bg-white/5 p-3 shadow-[0_18px_48px_rgba(0,0,0,0.25)] transition hover:-translate-y-1 hover:bg-white/[0.07]"
+                                <div
+                                    class="flex h-28 items-center justify-center rounded-[1.5rem] border border-white bg-white p-3 transition duration-300 hover:-translate-y-1 hover:border-[#fff700] hover:bg-[#fff700]"
                                     aria-label="{{ $partner->name }}"
-                                    @if (! $partner->url || str_starts_with($partner->url, '/') || str_starts_with($partner->url, url('/'))) wire:navigate @endif
                                 >
                                     @if ($partner->logo_path)
                                         <img
@@ -45,17 +43,17 @@
                                             class="max-h-12 w-auto max-w-full object-contain"
                                         />
                                     @else
-                                        <span class="text-center text-sm font-semibold uppercase tracking-[0.18em] text-white/70">
+                                        <span class="text-center text-sm font-semibold uppercase tracking-[0.18em] text-[#2f2e2e]">
                                             {{ $partner->name }}
                                         </span>
                                     @endif
-                                </a>
+                                </div>
                             </div>
                         @endforeach
                     </div>
                 @else
                     <div class="mx-auto max-w-4xl rounded-[1.75rem] border border-white/10 bg-white/5 px-6 py-12 text-center shadow-[0_18px_48px_rgba(0,0,0,0.24)]">
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                             Open Collaboration
                         </p>
                         <h2 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
@@ -68,7 +66,7 @@
                 @endif
 
                 <div class="mt-10 text-center">
-                    <a href="{{ route('landing.contact') }}" class="inline-flex rounded-2xl bg-ember px-6 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-red-500" wire:navigate>
+                    <a href="{{ route('landing.contact') }}" class="inline-flex min-w-[12rem] items-center justify-center rounded-2xl border border-white/12 bg-[#2f2e2e] px-6 py-3 font-display text-2xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-[#242323] disabled:cursor-not-allowed disabled:opacity-60" wire:navigate>
                         Partner With Us
                     </a>
                 </div>

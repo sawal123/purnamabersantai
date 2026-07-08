@@ -23,15 +23,19 @@
         ->filter(fn (array $item) => count($item['links']) > 1);
 @endphp
 
-<section id="tickets" class="relative z-10 flex min-h-screen items-center pb-24 pt-32">
+<section id="tickets" class="ticket-section relative z-10 flex min-h-screen items-center pb-24 pt-32">
     <div class="mx-auto w-full max-w-7xl px-5 lg:px-8">
-        <div class="reveal text-center">
-            <h2 class="font-display text-5xl uppercase tracking-[0.12em] sm:text-6xl">
-                Get <span class="inline-block rounded-md bg-white/10 px-3 text-[#ffd7a9]">Your Ticket</span>
-                Now
+        <div class="ticket-section-heading reveal text-center">
+            <p class="ticket-section-kicker">
+                Official Event Pass
+            </p>
+            <h2 class="ticket-section-title font-display uppercase">
+                <span>Get</span>
+                <span class="ticket-section-title-pass">Your Ticket</span>
+                <span>Now</span>
             </h2>
-            <p class="mt-2 text-lg text-white/70">
-                Secure your spot before it sells out.
+            <p class="mx-auto mt-4 max-w-2xl text-lg text-white/78">
+                Pilih pass resmi Purnama Bersantai dan amankan aksesmu sebelum kuota habis.
             </p>
         </div>
 
@@ -233,9 +237,9 @@
             </button>
 
             <div class="ticket-modal-shell">
-                <p id="ticket-modal-batch" class="text-sm font-semibold uppercase tracking-[0.24em] text-[#ffbf6c]"></p>
+                <p id="ticket-modal-batch" class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]"></p>
                 <h3 id="ticket-modal-title" class="mt-3 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl"></h3>
-                <p id="ticket-modal-price" class="mt-4 font-display text-4xl uppercase tracking-[0.05em] text-[#ffd7a9] sm:text-5xl"></p>
+                <p id="ticket-modal-price" class="mt-4 font-display text-4xl uppercase tracking-[0.05em] text-[#fff700] sm:text-5xl"></p>
                 <p class="mt-3 max-w-2xl text-base text-white/68 sm:text-lg">
                     Pilih channel pembelian yang ingin Anda gunakan untuk melanjutkan checkout ticket.
                 </p>

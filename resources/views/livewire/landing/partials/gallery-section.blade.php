@@ -31,7 +31,7 @@
                             ?: ($moment->alt_text ?: 'Dokumentasi momen Purnama Bersantai yang menangkap suasana festival, energi penonton, dan cerita hangat dari malam acara.');
                     @endphp
                     <div class="w-full px-2 sm:w-1/2 lg:w-1/3 xl:w-1/4">
-                        <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 shadow-[0_20px_40px_rgba(0,0,0,0.35)] transition hover:-translate-y-2">
+                        <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 transition hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
                             <button
                                 type="button"
                                 class="gallery-card-image-button"
@@ -66,7 +66,7 @@
                         $fallbackDescription = 'Dokumentasi momen Purnama Bersantai akan tampil di sini setelah gallery ditambahkan dari dashboard.';
                     @endphp
                     <div class="w-full max-w-md px-2">
-                        <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
+                        <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 transition hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
                             <button
                                 type="button"
                                 class="gallery-card-image-button"
@@ -93,6 +93,24 @@
                     </div>
                 @endforelse
             </div>
+
+            @if ($hasMoreGalleryMoments ?? false)
+                <div class="mt-10 flex justify-center">
+                    <button
+                        type="button"
+                        class="inline-flex min-w-[12rem] items-center justify-center gap-3 rounded-2xl border border-white/12 bg-[#2f2e2e] px-6 py-3 font-display text-2xl uppercase tracking-[0.08em] text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)] transition hover:-translate-y-1 hover:bg-[#242323] disabled:cursor-not-allowed disabled:opacity-60"
+                        wire:click="loadMore"
+                        wire:loading.attr="disabled"
+                        wire:target="loadMore"
+                    >
+                        <span wire:loading.remove wire:target="loadMore">More</span>
+                        <span wire:loading wire:target="loadMore" class="inline-flex items-center gap-3">
+                            <span class="lineup-spinner h-5 w-5 rounded-full border-2 border-white/20 border-t-[#fff700]"></span>
+                            Loading
+                        </span>
+                    </button>
+                </div>
+            @endif
         @else
             <div class="swiper content-swiper moments-swiper reveal mt-12" style="--delay: 80ms">
                 <div class="swiper-wrapper">
@@ -105,7 +123,7 @@
                                 ?: ($moment->alt_text ?: 'Dokumentasi momen Purnama Bersantai yang menangkap suasana festival, energi penonton, dan cerita hangat dari malam acara.');
                         @endphp
                         <div class="swiper-slide">
-                            <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 shadow-[0_20px_40px_rgba(0,0,0,0.35)] transition hover:-translate-y-2">
+                            <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 transition hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
                                 <button
                                     type="button"
                                     class="gallery-card-image-button"
@@ -140,7 +158,7 @@
                             $fallbackDescription = 'Dokumentasi momen Purnama Bersantai akan tampil di sini setelah gallery ditambahkan dari dashboard.';
                         @endphp
                         <div class="swiper-slide">
-                            <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
+                            <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 transition hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
                                 <button
                                     type="button"
                                     class="gallery-card-image-button"

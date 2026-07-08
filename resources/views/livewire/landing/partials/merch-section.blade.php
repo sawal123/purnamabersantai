@@ -64,6 +64,24 @@
                     </div>
                 @endforelse
             </div>
+
+            @if ($hasMoreMerchandiseProducts ?? false)
+                <div class="mt-10 flex justify-center">
+                    <button
+                        type="button"
+                        class="inline-flex min-w-[12rem] items-center justify-center gap-3 rounded-2xl border border-white/12 bg-[#2f2e2e] px-6 py-3 font-display text-2xl uppercase tracking-[0.08em] text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)] transition hover:-translate-y-1 hover:bg-[#242323] disabled:cursor-not-allowed disabled:opacity-60"
+                        wire:click="loadMore"
+                        wire:loading.attr="disabled"
+                        wire:target="loadMore"
+                    >
+                        <span wire:loading.remove wire:target="loadMore">More</span>
+                        <span wire:loading wire:target="loadMore" class="inline-flex items-center gap-3">
+                            <span class="lineup-spinner h-5 w-5 rounded-full border-2 border-white/20 border-t-[#fff700]"></span>
+                            Loading
+                        </span>
+                    </button>
+                </div>
+            @endif
         @else
             <div class="swiper content-swiper merch-swiper reveal mt-12" style="--delay: 80ms">
                 <div class="swiper-wrapper">

@@ -13,7 +13,7 @@
         <section class="relative z-10 pb-12 pt-32">
             <div class="mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                         Festival History
                     </p>
                     <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
@@ -31,7 +31,7 @@
                 <section class="reveal overflow-hidden rounded-[1.9rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(0,0,0,0.25)] sm:p-8">
                     <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                         <div class="max-w-3xl">
-                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                                 Full Archive
                             </p>
                             <h2 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white sm:text-5xl">
@@ -50,9 +50,9 @@
                                 <article class="relative grid gap-4 md:grid-cols-[7rem_minmax(0,1fr)] md:gap-6">
                                     <div class="relative flex items-start justify-center md:justify-center">
                                         @if (! $loop->last)
-                                            <span class="absolute left-1/2 top-[3.4rem] hidden h-[calc(100%+1.5rem)] w-px -translate-x-1/2 bg-gradient-to-b from-amber-300/55 via-white/18 to-transparent md:block"></span>
+                                            <span class="absolute left-1/2 top-[3.4rem] hidden h-[calc(100%+1.5rem)] w-px -translate-x-1/2 bg-gradient-to-b from-[#fff700]/55 via-white/18 to-transparent md:block"></span>
                                         @endif
-                                        <div class="inline-flex rounded-full border border-amber-300/25 bg-amber-300/10 px-4 py-2 font-display text-2xl uppercase tracking-[0.08em] text-amber-200 md:min-w-[5.5rem] md:justify-center">
+                                        <div class="inline-flex rounded-full border border-[#fff700]/25 bg-[#fff700]/10 px-4 py-2 font-display text-2xl uppercase tracking-[0.08em] text-[#fff700] md:min-w-[5.5rem] md:justify-center">
                                             {{ $item['year'] }}
                                         </div>
                                     </div>
@@ -73,7 +73,7 @@
                                                     <h3 class="font-display text-3xl uppercase tracking-[0.08em] text-white">
                                                         {{ $item['title'] }}
                                                     </h3>
-                                                    <p class="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-amber-200/80">
+                                                    <p class="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#fff700]/80">
                                                         {{ $item['location'] }}
                                                     </p>
                                                 </div>
@@ -92,7 +92,7 @@
                                 </article>
                             @empty
                                 <div class="rounded-[1.6rem] border border-white/10 bg-white/5 px-6 py-12 text-center">
-                                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                                         Belum Ada History
                                     </p>
                                     <h3 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white">

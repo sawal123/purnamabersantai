@@ -1,79 +1,94 @@
-<footer class="relative border-t border-white/10 bg-black/20 pb-8 pt-16">
-    <img
-        src="{{ asset('landing/assets/sobekan.svg') }}"
-        alt=""
-        class="footer-tear"
-    />
-    <div class="mx-auto max-w-7xl px-5 pt-8 lg:px-8">
-        <div class="footer-card px-6 py-7 text-white/72 lg:px-8 lg:py-8">
-            <div class="grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.85fr)_minmax(0,0.8fr)]">
-                <section aria-labelledby="footer-about">
-                    <h2
-                        id="footer-about"
-                        class="font-display text-4xl uppercase tracking-[0.08em] text-white"
-                    >
-                        {{ $landingSetting?->site_name ?? 'Purnama Bersantai Festival' }}
-                    </h2>
-                    <p class="mt-3 max-w-2xl text-base leading-relaxed">
-                        {{ $landingSetting?->footer_description ?? 'Purnama Bersantai adalah festival musik malam yang menghadirkan penampilan artis, ticketing resmi, merchandise eksklusif, dan momen komunitas dalam satu pengalaman event yang hangat dan berkesan.' }}
-                    </p>
-                    <p class="mt-4 text-sm font-medium text-white/62">
-                        {{ $landingSetting?->sponsor_text ?? 'Sponsor & partner slots available.' }}
-                    </p>
-                </section>
+@php
+    $logoPath = $landingSetting?->logo_path;
+    $logoUrl = $logoPath
+        ? (str_starts_with($logoPath, 'http') || str_starts_with($logoPath, '/') ? $logoPath : asset($logoPath))
+        : asset('landing/assets/logo.png');
 
-                <nav aria-labelledby="footer-links">
-                    <h2
-                        id="footer-links"
-                        class="font-display text-3xl uppercase tracking-[0.08em] text-white"
-                    >
-                        Quick Links
-                    </h2>
-                    <ul class="footer-link-list mt-4 space-y-3 text-sm font-semibold uppercase tracking-[0.16em]">
-                        <li><a href="{{ route('home') }}" wire:navigate>Festival Info</a></li>
-                        <li><a href="{{ route('landing.lineup') }}" wire:navigate>Lineup</a></li>
-                        <li><a href="{{ route('landing.tickets') }}" wire:navigate>Ticketing</a></li>
-                        <li><a href="{{ route('landing.merch') }}" wire:navigate>Merchandise</a></li>
-                        <li><a href="{{ route('landing.gallery') }}" wire:navigate>Gallery</a></li>
-                        <li><a href="{{ route('landing.playlist') }}" wire:navigate>Playlist</a></li>
-                        <li><a href="{{ route('landing.sponsors') }}" wire:navigate>Sponsor & Partner</a></li>
-                        <li><a href="{{ route('landing.about') }}" wire:navigate>About</a></li>
-                        <li><a href="{{ route('landing.contact') }}" wire:navigate>Contact</a></li>
-                        <li><a href="{{ route('landing.faq') }}" wire:navigate>FAQ</a></li>
-                    </ul>
+    $eventInfo = collect($landingSetting?->event_info ?? []);
+    $eventDate = $eventInfo->get('date') ?? $eventInfo->get('tanggal') ?? 'Event date coming soon';
+    $eventVenue = $eventInfo->get('venue') ?? $eventInfo->get('lokasi') ?? $eventInfo->get('location') ?? 'Venue coming soon';
+    $eventGate = $eventInfo->get('open_gate') ?? $eventInfo->get('gate') ?? null;
+    $footerHeadline = $landingSetting?->footer_description
+        ?: ($landingSetting?->hero_tagline ?: 'Purnama Bersantai menghadirkan ruang temu untuk musik, komunitas, dan karya lokal.');
+    $footerLinks = [
+        ['label' => 'Home', 'href' => route('home')],
+        ['label' => 'Lineup', 'href' => route('landing.lineup')],
+        ['label' => 'Gallery', 'href' => route('landing.gallery')],
+        ['label' => 'Sponsor & Partners', 'href' => route('landing.sponsors')],
+        ['label' => 'Contact Us', 'href' => route('landing.contact')],
+    ];
+    $socialChannels = $contactChannels
+        ->filter(fn ($channel) => filled($channel->url) && in_array($channel->type, ['instagram', 'tiktok', 'website', 'email', 'whatsapp'], true))
+        ->take(5);
+@endphp
+
+<footer class="footer-simple relative overflow-hidden py-12 text-white">
+    <div class="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
+        <div class="flex flex-col gap-5 lg:flex-row lg:items-start">
+            <a href="{{ route('home') }}" class="shrink-0" aria-label="{{ $landingSetting?->site_name ?? 'Purnama Bersantai' }} home" wire:navigate>
+                <img
+                    src="{{ $logoUrl }}"
+                    alt="{{ $landingSetting?->site_name ?? 'Purnama Bersantai' }} logo"
+                    class="h-20 w-20 rounded-full object-cover"
+                />
+            </a>
+
+            <div class="font-display text-3xl uppercase tracking-[0.05em] text-white sm:text-4xl">
+                <p>
+                    {{ $eventDate }}
+                    @if ($eventGate)
+                        <span class="mx-2 text-[#fff700]">-</span>{{ $eventGate }}
+                    @endif
+                </p>
+                <p class="mt-1 text-white/90">{{ $eventVenue }}</p>
+            </div>
+        </div>
+
+        <h2 class="mt-10 max-w-5xl font-display text-5xl uppercase leading-none tracking-[0.04em] text-white sm:text-6xl">
+            {{ $footerHeadline }}
+        </h2>
+
+        <div class="mt-10 border-y border-white/12 py-7">
+            <div class="flex flex-col gap-8 xl:flex-row xl:items-center xl:justify-between">
+                <nav class="flex flex-wrap gap-x-9 gap-y-4" aria-label="Footer navigation">
+                    @foreach ($footerLinks as $link)
+                        <a
+                            href="{{ $link['href'] }}"
+                            class="group inline-flex items-center gap-2 font-display text-2xl uppercase tracking-[0.05em] text-white transition hover:text-[#fff700]"
+                            wire:navigate
+                        >
+                            {{ $link['label'] }}
+                            <svg class="size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                    @endforeach
                 </nav>
 
-                <section aria-labelledby="footer-contact">
-                    <h2
-                        id="footer-contact"
-                        class="font-display text-3xl uppercase tracking-[0.08em] text-white"
-                    >
-                        Event Info
-                    </h2>
-                    <div class="mt-4 space-y-3 text-sm leading-relaxed text-white/70">
-                        @if ($landingSetting?->event_info)
-                            @foreach ($landingSetting->event_info as $label => $value)
-                                <p><span class="font-semibold text-white/85">{{ str($label)->headline() }}:</span> {{ $value }}</p>
+                @if ($socialChannels->isNotEmpty())
+                    <div class="flex flex-wrap items-center gap-4">
+                        <p class="font-display text-xl uppercase tracking-[0.08em] text-white">Follow Us</p>
+                        <div class="flex flex-wrap items-center gap-3">
+                            @foreach ($socialChannels as $channel)
+                                <a
+                                    href="{{ $channel->url }}"
+                                    class="inline-flex size-10 items-center justify-center rounded-full border border-white/14 text-white/78 transition hover:border-[#fff700] hover:bg-[#fff700] hover:text-[#111111]"
+                                    aria-label="{{ $channel->label }}"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <x-contact-channel-icon :icon="$channel->icon" :type="$channel->type" class="size-5" />
+                                </a>
                             @endforeach
-                        @else
-                            <p>Official festival updates, ticket release info, and merchandise announcements are published on this page.</p>
-                            <p>Browse lineup, gallery, ticketing, and merchandise sections for the latest event information.</p>
-                        @endif
-
-                        @foreach ($contactChannels->take(2) as $channel)
-                            <p><span class="font-semibold text-white/85">{{ $channel->label }}:</span> {{ $channel->value ?: $channel->url }}</p>
-                        @endforeach
+                        </div>
                     </div>
-                </section>
+                @endif
             </div>
+        </div>
 
-            <div class="mt-8 flex flex-col gap-3 border-t border-white/10 pt-5 text-sm text-white/50 lg:flex-row lg:items-center lg:justify-between">
-                <p>
-                    &copy; {{ now()->year }} {{ $landingSetting?->site_name ?? 'Purnama Bersantai Festival' }}. Official event
-                    information, tickets, lineup, and merchandise.
-                </p>
-                <p>Built for festival discovery, ticket purchase, and merch drop updates.</p>
-            </div>
+        <div class="mt-8 flex flex-col gap-3 text-sm font-semibold uppercase tracking-[0.05em] text-white/70 sm:flex-row sm:items-center sm:justify-between">
+            <p>&copy; {{ now()->year }} {{ $landingSetting?->site_name ?? 'Purnama Bersantai' }}</p>
+            <p>{{ $landingSetting?->sponsor_text ?? 'Official festival information and partnership updates.' }}</p>
         </div>
     </div>
 </footer>

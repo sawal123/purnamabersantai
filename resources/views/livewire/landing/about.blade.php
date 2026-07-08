@@ -7,7 +7,7 @@
             <section class="relative z-10 pb-12 pt-32">
                 <div class="mx-auto max-w-6xl px-5 lg:px-8">
                     <div class="reveal text-center">
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                             About the Festival
                         </p>
                         <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
@@ -23,7 +23,7 @@
             <section class="relative z-10 pb-24">
                 <div class="mx-auto max-w-6xl px-5 lg:px-8">
                     <article class="reveal rounded-[1.75rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(0,0,0,0.25)]">
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                             Who We Are
                         </p>
                         <h2 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white">
@@ -41,7 +41,7 @@
                 <div class="mx-auto mt-6 max-w-6xl px-5 lg:px-8">
                     <section class="reveal overflow-hidden rounded-[1.9rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(0,0,0,0.25)] sm:p-8">
                         <div class="max-w-3xl">
-                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                                 Our History
                             </p>
                             <h2 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white sm:text-5xl">
@@ -58,9 +58,9 @@
                                     <article class="relative grid gap-4 md:grid-cols-[7rem_minmax(0,1fr)] md:gap-6">
                                         <div class="relative flex items-start justify-center md:justify-center">
                                             @if (! $loop->last)
-                                                <span class="absolute left-1/2 top-[3.4rem] hidden h-[calc(100%+1.5rem)] w-px -translate-x-1/2 bg-gradient-to-b from-amber-300/55 via-white/18 to-transparent md:block"></span>
+                                                <span class="absolute left-1/2 top-[3.4rem] hidden h-[calc(100%+1.5rem)] w-px -translate-x-1/2 bg-gradient-to-b from-[#fff700]/55 via-white/18 to-transparent md:block"></span>
                                             @endif
-                                            <div class="inline-flex rounded-full border border-amber-300/25 bg-amber-300/10 px-4 py-2 font-display text-2xl uppercase tracking-[0.08em] text-amber-200 md:min-w-[5.5rem] md:justify-center">
+                                            <div class="inline-flex rounded-full border border-[#fff700]/25 bg-[#fff700]/10 px-4 py-2 font-display text-2xl uppercase tracking-[0.08em] text-[#fff700] md:min-w-[5.5rem] md:justify-center">
                                                 {{ $item['year'] }}
                                             </div>
                                         </div>
@@ -71,7 +71,7 @@
                                                     <h3 class="font-display text-3xl uppercase tracking-[0.08em] text-white">
                                                         {{ $item['title'] }}
                                                     </h3>
-                                                    <p class="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-amber-200/80">
+                                                    <p class="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#fff700]/80">
                                                         {{ $item['location'] }}
                                                     </p>
                                                 </div>
@@ -92,7 +92,7 @@
                         </div>
 
                         <div class="mt-10 flex justify-center">
-                            <a href="{{ route('landing.history') }}" class="inline-flex rounded-2xl bg-ember px-6 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-red-500" wire:navigate>
+                            <a href="{{ route('landing.history') }}" class="inline-flex rounded-2xl bg-ember px-6 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e]" wire:navigate>
                                 Lihat Semua History
                             </a>
                         </div>

@@ -7,7 +7,7 @@
         <section class="relative z-10 pb-12 pt-32">
             <div class="mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                         Frequently Asked Questions
                     </p>
                     <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
@@ -31,7 +31,7 @@
 
                             <article
                                 wire:key="faq-mobile-{{ $faq->id }}"
-                                class="overflow-hidden rounded-[2rem] border border-white/10 bg-[#1d0a0c]/95 text-white shadow-[0_24px_70px_rgba(0,0,0,0.28)] transition hover:border-white/20"
+                                class="overflow-hidden rounded-[2rem] border border-white/10 bg-[#2f2e2e]/95 text-white shadow-[0_24px_70px_rgba(0,0,0,0.28)] transition hover:border-white/20"
                             >
                                 <button
                                     type="button"
@@ -77,7 +77,7 @@
 
                                     <article
                                         wire:key="faq-desktop-{{ $columnIndex }}-{{ $faq->id }}"
-                                        class="overflow-hidden rounded-[2rem] border border-white/10 bg-[#1d0a0c]/95 text-white shadow-[0_24px_70px_rgba(0,0,0,0.28)] transition hover:border-white/20"
+                                        class="overflow-hidden rounded-[2rem] border border-white/10 bg-[#2f2e2e]/95 text-white shadow-[0_24px_70px_rgba(0,0,0,0.28)] transition hover:border-white/20"
                                     >
                                         <button
                                             type="button"
@@ -112,7 +112,7 @@
                     </div>
                 @else
                     <article class="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/5 p-8 text-center shadow-[0_18px_48px_rgba(0,0,0,0.25)]">
-                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-amber-300/80">FAQ</p>
+                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff700]/80">FAQ</p>
                         <h2 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white">Coming Soon</h2>
                         <p class="mt-4 text-base leading-relaxed text-white/72">
                             Daftar pertanyaan dan jawaban akan segera ditampilkan.

@@ -7,7 +7,7 @@
         <section class="relative z-10 pb-12 pt-32">
             <div class="mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-amber-300/80">
+                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                         Official Playlist
                     </p>
                     <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
@@ -22,10 +22,10 @@
 
         <section class="relative z-10 pb-24">
             <div class="mx-auto max-w-5xl px-5 lg:px-8">
-                <article class="overflow-hidden rounded-[2rem] border border-white/10 bg-[#1d0a0c]/95 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-6">
+                <article class="overflow-hidden rounded-[2rem] border border-white/10 bg-[#2f2e2e]/95 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-6">
                     <div class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                         <div>
-                            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-amber-300/80">Spotify</p>
+                            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff700]/80">Spotify</p>
                             <h2 class="mt-2 font-display text-4xl uppercase tracking-[0.08em] text-white">
                                 Festival Warm Up
                             </h2>

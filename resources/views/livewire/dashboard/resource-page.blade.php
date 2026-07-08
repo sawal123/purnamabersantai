@@ -76,6 +76,10 @@
                             <span class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
                                 {{ $this->formatCellValue($record, $column) }} {{ $column['suffix'] ?? 'link' }}
                             </span>
+                        @elseif ($this->isContactIconColumn($column))
+                            <span class="inline-flex size-10 items-center justify-center rounded-2xl bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
+                                <x-contact-channel-icon :icon="data_get($record, $column['key'])" :type="data_get($record, 'type')" class="size-5" />
+                            </span>
                         @else
                             {{ $this->formatCellValue($record, $column) }}
                         @endif
@@ -120,11 +124,11 @@
                 @endphp
 
                 <div class="{{ $fullWidth ? 'md:col-span-2' : '' }}">
-                    @if (in_array($field['type'], ['text', 'url', 'number', 'date'], true))
+                    @if (in_array($field['type'], ['text', 'url', 'number', 'date', 'datetime'], true))
                         <x-dashboard.text-input
                             :label="$field['label']"
                             :name="$field['name']"
-                            :type="in_array($field['type'], ['number', 'date'], true) ? $field['type'] : ($field['type'] === 'url' ? 'url' : 'text')"
+                            :type="$field['type'] === 'datetime' ? 'datetime-local' : (in_array($field['type'], ['number', 'date'], true) ? $field['type'] : ($field['type'] === 'url' ? 'url' : 'text'))"
                             :error="'form.'.$field['name']"
                             wire:model="form.{{ $field['name'] }}"
                         />
@@ -197,6 +201,23 @@
                                                         </x-dashboard.button>
                                                     </div>
                                                 </div>
+
+                                                @if (isset($field['item_title_field']))
+                                                    <div class="border-t border-zinc-200 px-3 py-3 dark:border-zinc-700">
+                                                        <label class="grid gap-2">
+                                                            <span class="text-sm font-medium text-zinc-700 dark:text-zinc-200">{{ $field['item_title_label'] ?? 'Image Name' }}</span>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="{{ $field['item_title_placeholder'] ?? 'Nama gambar' }}"
+                                                                class="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-400/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500"
+                                                                wire:model="form.{{ $field['name'] }}.{{ $galleryIndex }}.title"
+                                                            >
+                                                            @error('form.'.$field['name'].'.'.$galleryIndex.'.title')
+                                                                <span class="text-sm text-red-500">{{ $message }}</span>
+                                                            @enderror
+                                                        </label>
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endforeach
                                     </div>

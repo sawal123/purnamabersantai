@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\ContactChannel;
+use App\Models\CountdownSetting;
 use App\Models\FrequentlyAskedQuestion;
 use App\Models\GalleryMoment;
 use App\Models\History;
@@ -12,6 +13,8 @@ use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
 use App\Models\MerchandiseProductFeature;
 use App\Models\MerchandiseProductImage;
+use App\Models\RundownMap;
+use App\Models\RundownMapImage;
 use App\Models\SponsorPartner;
 use App\Models\Ticket;
 use Illuminate\Database\Seeder;
@@ -47,6 +50,37 @@ class DashboardDummySeeder extends Seeder
             LandingHeroImage::query()->updateOrCreate(
                 ['image_path' => $heroImage['image_path']],
                 ['landing_setting_id' => $setting->id, 'is_active' => true, ...$heroImage],
+            );
+        }
+
+        CountdownSetting::query()->updateOrCreate(
+            ['title' => 'PURNAMA BERSANTAI 2026'],
+            [
+                'target_at' => '2026-08-24 15:00:00',
+                'description' => 'Countdown menuju pembukaan gate Purnama Bersantai 2026.',
+                'is_active' => true,
+            ],
+        );
+
+        $rundownMap = RundownMap::query()->updateOrCreate(
+            ['tahun' => 2026],
+            [
+                'google_map' => 'https://www.google.com/maps?q=Bandung&output=embed',
+                'is_active' => true,
+            ],
+        );
+
+        foreach ([
+            ['name' => 'Rundown Stage', 'image_path' => '/storage/dashboard/brand/hero-stage.png'],
+            ['name' => 'Festival Area Map', 'image_path' => '/storage/dashboard/brand/sponsor-board.png'],
+        ] as $index => $image) {
+            RundownMapImage::query()->updateOrCreate(
+                ['rundown_map_id' => $rundownMap->id, 'name' => $image['name']],
+                [
+                    'sort_order' => $index + 1,
+                    'is_active' => true,
+                    ...$image,
+                ],
             );
         }
 
@@ -92,6 +126,12 @@ class DashboardDummySeeder extends Seeder
             ['name' => 'Raka Pradana', 'image_path' => '/storage/dashboard/lineup/artist-raka.png', 'is_featured' => true],
             ['name' => 'Nara Swara', 'image_path' => '/storage/dashboard/lineup/artist-nara.png', 'is_featured' => false],
             ['name' => 'Kirana & The Moons', 'image_path' => '/storage/dashboard/lineup/artist-kirana.png', 'is_featured' => false],
+            ['name' => 'Arunika Senja', 'image_path' => '/storage/dashboard/lineup/artist-senja.png', 'is_featured' => false],
+            ['name' => 'Langit Selatan', 'image_path' => '/storage/dashboard/lineup/artist-raka.png', 'is_featured' => false],
+            ['name' => 'Tala Rimba', 'image_path' => '/storage/dashboard/lineup/artist-nara.png', 'is_featured' => false],
+            ['name' => 'Malam Minggu Club', 'image_path' => '/storage/dashboard/lineup/artist-kirana.png', 'is_featured' => false],
+            ['name' => 'Ruang Nada', 'image_path' => '/storage/dashboard/lineup/artist-senja.png', 'is_featured' => false],
+            ['name' => 'Bulan Kota', 'image_path' => '/storage/dashboard/lineup/artist-raka.png', 'is_featured' => false],
         ] as $index => $artist) {
             LineupArtist::query()->updateOrCreate(
                 ['name' => $artist['name']],
@@ -132,6 +172,14 @@ class DashboardDummySeeder extends Seeder
             ['slug' => 'moon-cap', 'kicker' => 'Headwear', 'name' => 'Moon Cap', 'price' => 145000, 'thumbnail_path' => '/storage/dashboard/merchandise/moon-cap.png'],
             ['slug' => 'festival-tote', 'kicker' => 'Daily Carry', 'name' => 'Festival Tote', 'price' => 120000, 'thumbnail_path' => '/storage/dashboard/merchandise/festival-tote.png'],
             ['slug' => 'pin-pack', 'kicker' => 'Collectible', 'name' => 'Pin Pack', 'price' => 65000, 'thumbnail_path' => '/storage/dashboard/merchandise/pin-pack.png'],
+            ['slug' => 'moonlight-hoodie', 'kicker' => 'Outerwear', 'name' => 'Moonlight Hoodie', 'price' => 265000, 'thumbnail_path' => '/storage/dashboard/merchandise/moonlight-hoodie.png'],
+            ['slug' => 'crescent-socks', 'kicker' => 'Daily Wear', 'name' => 'Crescent Socks', 'price' => 55000, 'thumbnail_path' => '/storage/dashboard/merchandise/crescent-socks.png'],
+            ['slug' => 'stage-poster', 'kicker' => 'Wall Art', 'name' => 'Stage Poster', 'price' => 85000, 'thumbnail_path' => '/storage/dashboard/merchandise/stage-poster.png'],
+            ['slug' => 'moon-mug', 'kicker' => 'Drinkware', 'name' => 'Moon Mug', 'price' => 95000, 'thumbnail_path' => '/storage/dashboard/merchandise/moon-mug.png'],
+            ['slug' => 'festival-lanyard', 'kicker' => 'Festival Kit', 'name' => 'Festival Lanyard', 'price' => 45000, 'thumbnail_path' => '/storage/dashboard/merchandise/festival-lanyard.png'],
+            ['slug' => 'sticker-sheet', 'kicker' => 'Collectible', 'name' => 'Sticker Sheet', 'price' => 35000, 'thumbnail_path' => '/storage/dashboard/merchandise/sticker-sheet.png'],
+            ['slug' => 'moon-bucket-hat', 'kicker' => 'Headwear', 'name' => 'Moon Bucket Hat', 'price' => 155000, 'thumbnail_path' => '/storage/dashboard/merchandise/moon-bucket-hat.png'],
+            ['slug' => 'night-bandana', 'kicker' => 'Accessory', 'name' => 'Night Bandana', 'price' => 75000, 'thumbnail_path' => '/storage/dashboard/merchandise/night-bandana.png'],
         ];
 
         foreach ($products as $index => $productData) {
@@ -168,10 +216,18 @@ class DashboardDummySeeder extends Seeder
         }
 
         foreach ([
-            ['title' => 'Moonlight Crowd', 'username' => '@bulanberisik', 'image_path' => '/storage/dashboard/gallery/moonlight-crowd.png'],
-            ['title' => 'Food Booth Friends', 'username' => '@senjajan', 'image_path' => '/storage/dashboard/gallery/food-booth-friends.png'],
-            ['title' => 'Acoustic Sunset', 'username' => '@petiksenja', 'image_path' => '/storage/dashboard/gallery/acoustic-sunset.png'],
-            ['title' => 'Ticket Hands', 'username' => '@tiketpurnama', 'image_path' => '/storage/dashboard/gallery/ticket-hands.png'],
+            ['title' => 'Moonlight Crowd', 'username' => '@bulanberisik', 'image_path' => '/storage/dashboard/gallery/moonlight-crowd.png', 'description' => 'Penonton bernyanyi bersama di bawah lampu panggung dan langit malam festival.'],
+            ['title' => 'Food Booth Friends', 'username' => '@senjajan', 'image_path' => '/storage/dashboard/gallery/food-booth-friends.png', 'description' => 'Area tenant ramai dengan tawa, camilan lokal, dan obrolan santai sebelum penampilan utama.'],
+            ['title' => 'Acoustic Sunset', 'username' => '@petiksenja', 'image_path' => '/storage/dashboard/gallery/acoustic-sunset.png', 'description' => 'Sesi akustik sore membuka malam dengan suasana hangat dan intim.'],
+            ['title' => 'Ticket Hands', 'username' => '@tiketpurnama', 'image_path' => '/storage/dashboard/gallery/ticket-hands.png', 'description' => 'Tiket festival siap dipindai sebelum pengunjung masuk ke area Purnama Bersantai.'],
+            ['title' => 'Lantern Walk', 'username' => '@jalansenja', 'image_path' => '/storage/dashboard/gallery/lantern-walk.png', 'description' => 'Lorong lampion menjadi spot favorit untuk berjalan pelan dan mengambil foto.'],
+            ['title' => 'Merch Booth Line', 'username' => '@dropbulan', 'image_path' => '/storage/dashboard/gallery/merch-booth-line.png', 'description' => 'Antrian merchandise bergerak ramai saat koleksi festival mulai dibuka.'],
+            ['title' => 'Front Row Glow', 'username' => '@barisdepan', 'image_path' => '/storage/dashboard/gallery/front-row-glow.png', 'description' => 'Barisan depan menyala oleh pantulan lampu panggung dan energi penonton.'],
+            ['title' => 'Picnic Corner', 'username' => '@tikarbulan', 'image_path' => '/storage/dashboard/gallery/picnic-corner.png', 'description' => 'Sudut piknik memberi ruang istirahat untuk menikmati makanan dan musik dari kejauhan.'],
+            ['title' => 'Backstage Notes', 'username' => '@catatanstage', 'image_path' => '/storage/dashboard/gallery/backstage-notes.png', 'description' => 'Catatan kecil dari belakang panggung sebelum performer naik ke stage.'],
+            ['title' => 'Moon Arch Entry', 'username' => '@gerbangpurnama', 'image_path' => '/storage/dashboard/gallery/moon-arch-entry.png', 'description' => 'Gerbang bulan menyambut pengunjung sebelum memasuki area utama festival.'],
+            ['title' => 'Community Jam', 'username' => '@jamsantai', 'image_path' => '/storage/dashboard/gallery/community-jam.png', 'description' => 'Musisi komunitas mengisi jeda acara dengan sesi jam yang akrab.'],
+            ['title' => 'Final Singalong', 'username' => '@chorusmalam', 'image_path' => '/storage/dashboard/gallery/final-singalong.png', 'description' => 'Lagu terakhir dinyanyikan bersama sebelum malam Purnama Bersantai ditutup.'],
         ] as $index => $moment) {
             GalleryMoment::query()->updateOrCreate(
                 ['title' => $moment['title']],
@@ -203,10 +259,10 @@ class DashboardDummySeeder extends Seeder
         }
 
         foreach ([
-            ['label' => 'Ticketing WhatsApp', 'type' => 'whatsapp', 'value' => '+62 812-2026-0824', 'url' => 'https://wa.me/6281220260824'],
-            ['label' => 'Email Partnership', 'type' => 'email', 'value' => 'partner@purnamabersantai.test', 'url' => 'mailto:partner@purnamabersantai.test'],
-            ['label' => 'Instagram', 'type' => 'instagram', 'value' => '@purnamabersantai', 'url' => 'https://instagram.com/purnamabersantai'],
-            ['label' => 'Website', 'type' => 'website', 'value' => 'purnamabersantai.test', 'url' => 'https://purnamabersantai.test'],
+            ['label' => 'Ticketing WhatsApp', 'icon' => 'whatsapp', 'type' => 'whatsapp', 'value' => '+62 812-2026-0824', 'url' => 'https://wa.me/6281220260824'],
+            ['label' => 'Email Partnership', 'icon' => 'email', 'type' => 'email', 'value' => 'partner@purnamabersantai.test', 'url' => 'mailto:partner@purnamabersantai.test'],
+            ['label' => 'Instagram', 'icon' => 'instagram', 'type' => 'instagram', 'value' => '@purnamabersantai', 'url' => 'https://instagram.com/purnamabersantai'],
+            ['label' => 'Website', 'icon' => 'website', 'type' => 'website', 'value' => 'purnamabersantai.test', 'url' => 'https://purnamabersantai.test'],
         ] as $index => $channel) {
             ContactChannel::query()->updateOrCreate(
                 ['label' => $channel['label'], 'type' => $channel['type']],
