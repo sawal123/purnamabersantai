@@ -25,7 +25,7 @@
                     Back to History
                 </a>
 
-                <article class="reveal mt-8 overflow-hidden rounded-[1.9rem] border border-white/10 bg-white/5 shadow-[0_18px_48px_rgba(0,0,0,0.25)]">
+                <article class="reveal mt-8 overflow-hidden rounded-[1.9rem] border border-white/10 bg-[#2f2e2e]">
                     <div class="relative min-h-[34rem] overflow-hidden">
                         <img
                             src="{{ $heroImage }}"
@@ -67,7 +67,7 @@
         <section class="relative z-10 pb-24">
             <div class="mx-auto grid max-w-6xl gap-8 px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-8">
                 <div class="space-y-8">
-                    <article class="reveal rounded-[1.7rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(0,0,0,0.22)] sm:p-8">
+                    <article class="reveal rounded-[1.7rem] border border-white/10 bg-[#2f2e2e] p-6 sm:p-8">
                         <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                             Story
                         </p>
@@ -83,7 +83,7 @@
                     @if (count($secondaryMedia) > 0)
                         <section class="reveal grid gap-4 sm:grid-cols-2">
                             @foreach ($secondaryMedia as $image)
-                                <figure class="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/5">
+                                <figure class="overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#2f2e2e]">
                                     <img
                                         src="{{ $imageUrl($image, asset('landing/assets/Rectangle 17.png')) }}"
                                         alt="{{ $history['title'] }} media {{ $loop->iteration }}"
@@ -105,7 +105,7 @@
 
                             <div class="mt-5 grid gap-4 sm:grid-cols-2">
                                 @foreach ($galleryImages as $image)
-                                    <figure class="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/5">
+                                    <figure class="overflow-hidden rounded-[1.4rem] border border-white/10 bg-[#2f2e2e]">
                                         <img
                                             src="{{ $imageUrl($image, asset('landing/assets/Rectangle 17.png')) }}"
                                             alt="{{ $history['title'] }} gallery {{ $loop->iteration }}"
@@ -119,7 +119,7 @@
                 </div>
 
                 <aside class="reveal h-fit space-y-5 lg:sticky lg:top-28">
-                    <section class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5 shadow-[0_18px_48px_rgba(0,0,0,0.22)]">
+                    <section class="rounded-[1.6rem] border border-white/10 bg-[#2f2e2e] p-5">
                         <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff700]/80">
                             Detail Acara
                         </p>
@@ -140,14 +140,14 @@
                     </section>
 
                     @if (count($relatedHistory ?? []) > 0)
-                        <section class="rounded-[1.6rem] border border-white/10 bg-white/5 p-5 shadow-[0_18px_48px_rgba(0,0,0,0.22)]">
+                        <section class="rounded-[1.6rem] border border-white/10 bg-[#2f2e2e] p-5">
                             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff700]/80">
                                 History Lainnya
                             </p>
 
                             <div class="mt-5 space-y-3">
                                 @foreach ($relatedHistory as $item)
-                                    <a href="{{ route('landing.history.show', ['title' => $item['slug']]) }}" class="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 rounded-2xl border border-white/10 bg-black/20 p-2 transition hover:-translate-y-1 hover:bg-white/10" wire:navigate>
+                                    <a href="{{ route('landing.history.show', ['title' => $item['slug']]) }}" class="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 rounded-2xl border border-white/10 bg-[#2f2e2e] p-2 transition hover:-translate-y-1 hover:bg-[#242323]" wire:navigate>
                                         <img
                                             src="{{ $imageUrl($item['thumbnail'] ?? null, asset('landing/assets/Rectangle 17.png')) }}"
                                             alt="{{ $item['title'] }}"

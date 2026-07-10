@@ -116,6 +116,24 @@
                     </div>
                 @endforelse
             </div>
+
+            @if ($hasMoreTickets ?? false)
+                <div class="mt-10 flex justify-center">
+                    <button
+                        type="button"
+                        class="inline-flex min-w-[12rem] items-center justify-center gap-3 rounded-2xl border border-white/12 bg-[#2f2e2e] px-6 py-3 font-display text-2xl uppercase tracking-[0.08em] text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)] transition hover:-translate-y-1 hover:bg-[#242323] disabled:cursor-not-allowed disabled:opacity-60"
+                        wire:click="loadMore"
+                        wire:loading.attr="disabled"
+                        wire:target="loadMore"
+                    >
+                        <span wire:loading.remove wire:target="loadMore">More</span>
+                        <span wire:loading wire:target="loadMore" class="inline-flex items-center gap-3">
+                            <span class="lineup-spinner h-5 w-5 rounded-full border-2 border-white/20 border-t-amber-300"></span>
+                            Loading
+                        </span>
+                    </button>
+                </div>
+            @endif
         @else
             <div class="swiper content-swiper ticket-swiper reveal mt-14" style="--delay: 80ms">
                 <div class="swiper-wrapper">
@@ -210,42 +228,50 @@
                     </div>
                 </div>
             </div>
+
+            <div class="reveal mt-10 text-center" style="--delay: 160ms">
+                <a
+                    href="{{ route('landing.ticket') }}"
+                    class="inline-flex rounded-2xl border border-[#2f2e2e] bg-[#2f2e2e] px-8 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:border-[#fff700] hover:bg-[#fff700] hover:text-[#2f2e2e]"
+                    wire:navigate
+                >
+                    See All Tickets
+                </a>
+            </div>
         @endif
     </div>
 </section>
 
-@if ($ticketModalData->isNotEmpty())
-    <script type="application/json" id="ticket-purchase-options-json">@json($ticketModalData)</script>
+<script type="application/json" id="ticket-purchase-options-json">@json($ticketModalData)</script>
 
-    <div id="ticket-modal" class="ticket-modal" aria-hidden="true">
-        <div class="ticket-modal-backdrop" data-ticket-close></div>
-        <div
-            class="ticket-modal-panel"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="ticket-modal-title"
+<div id="ticket-modal" class="ticket-modal" aria-hidden="true">
+    <div class="ticket-modal-backdrop" data-ticket-close></div>
+    <div
+        class="ticket-modal-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ticket-modal-title"
+    >
+        <button
+            type="button"
+            class="section-slider-button ticket-modal-close"
+            aria-label="Close ticket modal"
+            data-ticket-close
         >
-            <button
-                type="button"
-                class="section-slider-button ticket-modal-close"
-                aria-label="Close ticket modal"
-                data-ticket-close
-            >
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-            </button>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+        </button>
 
-            <div class="ticket-modal-shell">
-                <p id="ticket-modal-batch" class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]"></p>
-                <h3 id="ticket-modal-title" class="mt-3 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl"></h3>
-                <p id="ticket-modal-price" class="mt-4 font-display text-4xl uppercase tracking-[0.05em] text-[#fff700] sm:text-5xl"></p>
-                <p class="mt-3 max-w-2xl text-base text-white/68 sm:text-lg">
-                    Pilih channel pembelian yang ingin Anda gunakan untuk melanjutkan checkout ticket.
-                </p>
+        <div class="ticket-modal-shell">
+            <p id="ticket-modal-batch" class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]"></p>
+            <h3 id="ticket-modal-title" class="mt-3 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl"></h3>
+            <p id="ticket-modal-price" class="mt-4 font-display text-4xl uppercase tracking-[0.05em] text-[#fff700] sm:text-5xl"></p>
+            <p class="mt-3 max-w-2xl text-base text-white/68 sm:text-lg">
+                Pilih channel pembelian yang ingin Anda gunakan untuk melanjutkan checkout ticket.
+            </p>
 
-                <div id="ticket-modal-links" class="ticket-modal-links mt-8"></div>
-            </div>
+            <div id="ticket-modal-links" class="ticket-modal-links mt-8"></div>
         </div>
     </div>
-@endif
+</div>

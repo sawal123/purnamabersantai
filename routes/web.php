@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', Home::class)->name('home');
 Route::livewire('/lineup', Lineup::class)->name('landing.lineup');
+Route::livewire('/ticket', Tickets::class)->name('landing.ticket');
 Route::livewire('/tickets', Tickets::class)->name('landing.tickets');
 Route::livewire('/merchandise', Merch::class)->name('landing.merch');
 Route::livewire('/gallery', Gallery::class)->name('landing.gallery');

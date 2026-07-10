@@ -468,8 +468,6 @@ const initTicketModal = () => {
     return;
   }
 
-  const ticketOptions = JSON.parse(ticketOptionsElement.textContent || "{}");
-
   const closeTicketModal = () => {
     ticketModal.classList.remove("is-open");
     ticketModal.setAttribute("aria-hidden", "true");
@@ -477,6 +475,12 @@ const initTicketModal = () => {
   };
 
   const openTicketModal = (ticketKey) => {
+    const currentTicketOptionsElement = document.getElementById(
+      "ticket-purchase-options-json",
+    );
+    const ticketOptions = JSON.parse(
+      currentTicketOptionsElement?.textContent || "{}",
+    );
     const ticket = ticketOptions[ticketKey];
     if (!ticket) {
       return;

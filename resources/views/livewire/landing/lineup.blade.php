@@ -27,16 +27,16 @@
                 </div>
 
                 <div class="mx-auto mt-10 max-w-3xl">
-                    <div class="lineup-search-shell relative overflow-hidden rounded-[1.75rem] border border-white/12 bg-white/[0.04] p-3 shadow-[0_18px_48px_rgba(0,0,0,0.24)] backdrop-blur-xl">
-                        <div class="flex items-center gap-3 rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-3">
-                            <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0 text-white/55" aria-hidden="true">
+                    <div class="lineup-search-shell relative overflow-hidden rounded-[1.75rem] border border-[#fff700]/45 bg-[#2f2e2e]/70 p-3 shadow-[0_22px_60px_rgba(47,46,46,0.34),0_0_34px_rgba(255,247,0,0.16)] backdrop-blur-xl transition focus-within:border-[#fff700] focus-within:shadow-[0_24px_68px_rgba(47,46,46,0.42),0_0_42px_rgba(255,247,0,0.28)]">
+                        <div class="flex items-center gap-3 rounded-[1.2rem] border border-[#ff9f3c]/35 bg-gradient-to-r from-[#2f2e2e] via-[#4a2a19] to-[#ec5b00]/70 px-4 py-3 transition focus-within:border-[#fff700]/75">
+                            <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5 shrink-0 text-[#fff700]" aria-hidden="true">
                                 <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
 
                             <input
                                 type="text"
                                 placeholder="Search artist name..."
-                                class="min-w-0 flex-1 bg-transparent text-base text-white outline-none placeholder:text-white/35"
+                                class="min-w-0 flex-1 bg-transparent text-base font-medium text-white caret-[#fff700] outline-none placeholder:text-white/55"
                                 wire:model.live.debounce.350ms="search"
                             />
 
@@ -44,7 +44,7 @@
                                 @if ($search !== '')
                                     <button
                                         type="button"
-                                        class="text-xs font-semibold uppercase tracking-[0.16em] text-white/45 transition hover:text-white"
+                                        class="text-xs font-semibold uppercase tracking-[0.16em] text-[#fff700]/80 transition hover:text-white"
                                         wire:click="$set('search', '')"
                                     >
                                         Clear
@@ -129,7 +129,7 @@
                             </div>
                         @endif
                     @else
-                        <div class="rounded-[2rem] border border-white/10 bg-white/5 px-6 py-14 text-center shadow-[0_18px_48px_rgba(0,0,0,0.22)]">
+                        <div class="rounded-[2rem] border border-[#fff700]/20 bg-[#2f2e2e] px-6 py-14 text-center shadow-[0_18px_48px_rgba(47,46,46,0.32)]">
                             <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                                 No Result
                             </p>

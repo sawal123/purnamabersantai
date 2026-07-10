@@ -64,7 +64,7 @@
             {{ $landingSetting?->hero_description ?? 'A vibrant night of sing-alongs, merch drops, and unforgettable memories under one stage.' }}
         </p>
         <div class="hero-actions reveal is-visible mt-5 flex flex-col items-center justify-center gap-4 sm:flex-row" style="--delay: 340ms">
-            <a href="{{ route('landing.tickets') }}" class="rounded-2xl bg-ember font-display uppercase tracking-[0.08em] text-white shadow-lg shadow-[#2f2e2e]/50 transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e]" wire:navigate>
+            <a href="{{ route('landing.ticket') }}" class="rounded-2xl bg-ember font-display uppercase tracking-[0.08em] text-white shadow-lg shadow-[#2f2e2e]/50 transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e]" wire:navigate>
                 Buy Ticket
             </a>
             <a href="{{ route('landing.merch') }}" class="rounded-2xl bg-cobalt font-display uppercase tracking-[0.08em] text-white shadow-lg shadow-[#2f2e2e]/50 transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e]" wire:navigate>

@@ -28,7 +28,7 @@
 
         <section class="relative z-10 pb-24">
             <div class="mx-auto max-w-6xl px-5 lg:px-8">
-                <section class="reveal overflow-hidden rounded-[1.9rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(0,0,0,0.25)] sm:p-8">
+                <section class="reveal overflow-hidden rounded-[1.9rem] border border-white/10 bg-[#2f2e2e] p-6 sm:p-8">
                     <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                         <div class="max-w-3xl">
                             <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
@@ -57,7 +57,7 @@
                                         </div>
                                     </div>
 
-                                    <a href="{{ route('landing.history.show', ['title' => $item['slug']]) }}" class="grid overflow-hidden rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] shadow-[0_12px_34px_rgba(0,0,0,0.22)] transition hover:-translate-y-1 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0.04)_100%)] sm:grid-cols-[14rem_minmax(0,1fr)]" wire:navigate>
+                                    <a href="{{ route('landing.history.show', ['title' => $item['slug']]) }}" class="grid overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#2f2e2e] transition hover:-translate-y-1 hover:bg-[#242323] sm:grid-cols-[14rem_minmax(0,1fr)]" wire:navigate>
                                         <div class="relative min-h-52 sm:min-h-full">
                                             <img
                                                 src="{{ $imageUrl($item['thumbnail'] ?? null, asset('landing/assets/Rectangle 17.png')) }}"
@@ -91,7 +91,7 @@
                                     </a>
                                 </article>
                             @empty
-                                <div class="rounded-[1.6rem] border border-white/10 bg-white/5 px-6 py-12 text-center">
+                                <div class="rounded-[1.6rem] border border-white/10 bg-[#2f2e2e] px-6 py-12 text-center">
                                     <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                                         Belum Ada History
                                     </p>

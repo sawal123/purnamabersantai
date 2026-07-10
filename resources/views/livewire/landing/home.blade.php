@@ -8,7 +8,9 @@
         @include('livewire.landing.partials.lineup-section', ['compactTop' => true])
         @include('livewire.landing.partials.about-video')
         @include('livewire.landing.partials.tickets-section')
+        @include('livewire.landing.partials.tickets-merch-marquee')
         @include('livewire.landing.partials.merch-section')
+        @include('livewire.landing.partials.gallery-marquee')
         @include('livewire.landing.partials.gallery-section')
         <livewire:landing.share-moment-form />
     </main>

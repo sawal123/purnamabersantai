@@ -148,6 +148,16 @@
                     </div>
                 </div>
             </div>
+
+            <div class="reveal mt-10 text-center" style="--delay: 160ms">
+                <a
+                    href="{{ route('landing.merch') }}"
+                    class="inline-flex rounded-2xl border border-[#2f2e2e] bg-[#2f2e2e] px-8 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:border-[#fff700] hover:bg-[#fff700] hover:text-[#2f2e2e]"
+                    wire:navigate
+                >
+                    See All Merchandise
+                </a>
+            </div>
         @endif
     </div>
 </section>
