@@ -20,9 +20,21 @@
     $socialChannels = $contactChannels
         ->filter(fn ($channel) => filled($channel->url) && in_array($channel->type, ['instagram', 'tiktok', 'website', 'email', 'whatsapp'], true))
         ->take(5);
+    $footerBackground = collect(glob(public_path('landing/assets/footer/*.{png,jpg,jpeg,webp,svg}'), GLOB_BRACE) ?: [])
+        ->sort()
+        ->map(fn (string $path) => asset('landing/assets/footer/'.basename($path)))
+        ->first();
 @endphp
 
 <footer class="footer-simple relative overflow-hidden py-12 text-white">
+    @if ($footerBackground)
+        <div
+            class="footer-simple-bg"
+            style="background-image: url('{{ $footerBackground }}')"
+            aria-hidden="true"
+        ></div>
+    @endif
+
     <div class="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
         <div class="flex flex-col gap-5 lg:flex-row lg:items-start">
             <a href="{{ route('home') }}" class="shrink-0" aria-label="{{ $landingSetting?->site_name ?? 'Purnama Bersantai' }} home" wire:navigate>

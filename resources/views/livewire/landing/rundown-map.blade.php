@@ -16,11 +16,23 @@
 
         return $map;
     };
+
+    $currentYear = now()->year;
+    $availableYears = $rundownMaps
+        ->pluck('tahun')
+        ->filter()
+        ->map(fn ($year) => (int) $year)
+        ->unique()
+        ->sortDesc()
+        ->values();
+    $yearOptions = collect([$currentYear])
+        ->merge($availableYears->reject(fn (int $year) => $year === $currentYear))
+        ->values();
 @endphp
 
 <div
     class="relative overflow-x-hidden"
-    x-data="{ tab: 'rundown', selectedRundown: null }"
+    x-data="{ tab: 'rundown', selectedYear: @js($currentYear), selectedRundown: null }"
     x-effect="document.body.classList.toggle('modal-open', selectedRundown !== null)"
     x-on:keydown.escape.window="selectedRundown = null"
 >
@@ -42,7 +54,22 @@
                 </p>
             </div>
 
-            <div class="mx-auto mt-10 flex w-fit rounded-2xl border border-white/12 bg-[#2f2e2e]/80 p-1">
+            <div class="mx-auto mt-10 max-w-4xl">
+                <div class="rundown-year-scroll flex snap-x justify-center gap-3 overflow-x-auto px-1 pb-3" aria-label="Pilih tahun rundown dan map">
+                    @foreach ($yearOptions as $year)
+                        <button
+                            type="button"
+                            class="snap-center rounded-2xl border px-6 py-3 font-display text-2xl uppercase tracking-[0.08em] transition"
+                            :class="selectedYear === @js((int) $year) ? 'border-[#fff700] bg-[#fff700] text-[#2f2e2e] shadow-[0_14px_34px_rgba(255,247,0,0.24)]' : 'border-white/12 bg-[#2f2e2e]/70 text-white/70 hover:border-[#fff700]/50 hover:text-white'"
+                            x-on:click="selectedYear = @js((int) $year)"
+                        >
+                            {{ $year }}
+                        </button>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="mx-auto mt-5 flex w-fit rounded-2xl border border-white/12 bg-[#2f2e2e]/80 p-1">
                 <button
                     type="button"
                     class="rounded-xl px-6 py-3 font-display text-2xl uppercase tracking-[0.08em] transition"
@@ -62,71 +89,87 @@
             </div>
 
             <div class="mt-12">
-                @if ($rundownMaps->isNotEmpty())
-                    <section x-show="tab === 'rundown'" x-transition.opacity.duration.200ms>
-                        @php($hasRundownImages = $rundownMaps->flatMap->images->isNotEmpty())
+                <section x-show="tab === 'rundown'" x-transition.opacity.duration.200ms>
+                    @foreach ($yearOptions as $year)
+                        @php
+                            $yearRundowns = $rundownMaps->where('tahun', (int) $year);
+                            $yearImages = $yearRundowns->flatMap->images;
+                        @endphp
 
-                        @if ($hasRundownImages)
-                            <div class="flex flex-wrap justify-center gap-y-5">
-                                @foreach ($rundownMaps as $rundown)
-                                    @foreach ($rundown->images as $image)
-                                        <div class="w-1/2 px-2.5 lg:w-1/4" wire:key="rundown-image-{{ $image->id }}">
-                                            <button
-                                                type="button"
-                                                class="lineup-card rundown-lineup-card relative isolate aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-[1.75rem]"
-                                                aria-label="Open full image for {{ $image->name }}"
-                                                data-rundown-src="{{ $imageUrl($image->image_path, asset('landing/assets/Rectangle 17.png')) }}"
-                                                data-rundown-alt="{{ $image->name ?: 'Rundown image' }}"
-                                                data-rundown-name="{{ $image->name }}"
-                                                data-rundown-year="{{ $rundown->tahun }}"
-                                                x-on:click="selectedRundown = {
-                                                    src: $el.dataset.rundownSrc,
-                                                    alt: $el.dataset.rundownAlt,
-                                                    name: $el.dataset.rundownName,
-                                                    year: $el.dataset.rundownYear
-                                                }"
-                                            >
-                                                <div class="lineup-media">
-                                                    <img
-                                                        src="{{ $imageUrl($image->image_path, asset('landing/assets/Rectangle 17.png')) }}"
-                                                        alt="{{ $image->name ?: 'Rundown image' }}"
-                                                        class="object-cover"
-                                                    />
-                                                </div>
-                                                <div class="glass-name rounded-2xl px-3 py-2 text-center">
-                                                    <p class="font-display text-[1.35rem] uppercase tracking-[0.08em] text-white sm:text-[1.55rem]">
-                                                        {{ $image->name }}
-                                                    </p>
-                                                    <p class="mt-0.5 text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
-                                                        {{ $rundown->tahun }}
-                                                    </p>
-                                                </div>
-                                            </button>
-                                        </div>
+                        <div x-cloak x-show="selectedYear === @js((int) $year)" x-transition.opacity.duration.200ms>
+                            @if ($yearImages->isNotEmpty())
+                                <div class="flex flex-wrap justify-center gap-y-5">
+                                    @foreach ($yearRundowns as $rundown)
+                                        @foreach ($rundown->images as $image)
+                                            <div class="w-1/2 px-2.5 lg:w-1/4" wire:key="rundown-image-{{ $image->id }}">
+                                                <button
+                                                    type="button"
+                                                    class="lineup-card rundown-lineup-card relative isolate aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-[1.75rem]"
+                                                    aria-label="Open full image for {{ $image->name }}"
+                                                    data-rundown-src="{{ $imageUrl($image->image_path, asset('landing/assets/Rectangle 17.png')) }}"
+                                                    data-rundown-alt="{{ $image->name ?: 'Rundown image' }}"
+                                                    data-rundown-name="{{ $image->name }}"
+                                                    data-rundown-year="{{ $rundown->tahun }}"
+                                                    x-on:click="selectedRundown = {
+                                                        src: $el.dataset.rundownSrc,
+                                                        alt: $el.dataset.rundownAlt,
+                                                        name: $el.dataset.rundownName,
+                                                        year: $el.dataset.rundownYear
+                                                    }"
+                                                >
+                                                    <div class="lineup-media">
+                                                        <img
+                                                            src="{{ $imageUrl($image->image_path, asset('landing/assets/Rectangle 17.png')) }}"
+                                                            alt="{{ $image->name ?: 'Rundown image' }}"
+                                                            class="object-cover"
+                                                        />
+                                                    </div>
+                                                    <div class="glass-name rounded-2xl px-3 py-2 text-center">
+                                                        <p class="font-display text-[1.35rem] uppercase tracking-[0.08em] text-white sm:text-[1.55rem]">
+                                                            {{ $image->name }}
+                                                        </p>
+                                                        <p class="mt-0.5 text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
+                                                            {{ $rundown->tahun }}
+                                                        </p>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        @endforeach
                                     @endforeach
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="rounded-[2rem] border border-white/10 bg-[#2f2e2e]/70 px-6 py-14 text-center">
-                                <h2 class="font-display text-4xl uppercase tracking-[0.08em] text-white">
-                                    Rundown Coming Soon
-                                </h2>
-                                <p class="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/70">
-                                    Detail rundown festival akan segera ditampilkan.
-                                </p>
-                            </div>
-                        @endif
-                    </section>
+                                </div>
+                            @else
+                                <div class="rounded-[2rem] border border-white/10 bg-[#2f2e2e]/70 px-6 py-14 text-center shadow-[0_18px_48px_rgba(47,46,46,0.26)]">
+                                    <div class="mx-auto grid size-20 place-items-center rounded-full border border-[#fff700]/25 bg-[#fff700]/10">
+                                        <span class="font-display text-5xl text-[#fff700]">{{ substr((string) $year, -2) }}</span>
+                                    </div>
+                                    <p class="mt-5 text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
+                                        {{ $year }}
+                                    </p>
+                                    <h2 class="mt-3 font-display text-4xl uppercase tracking-[0.08em] text-white sm:text-5xl">
+                                        Rundown Sedang Dibuat
+                                    </h2>
+                                    <p class="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/70">
+                                        Rundown Purnama Bersantai {{ $year }} belum tersedia. Tim kami sedang menyiapkan susunan acara terbaik untuk tahun ini.
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </section>
 
-                    <section x-cloak x-show="tab === 'map'" x-transition.opacity.duration.200ms>
-                        @php($hasMaps = $rundownMaps->contains(fn ($rundown) => $mapSource($rundown->google_map) !== null))
+                <section x-cloak x-show="tab === 'map'" x-transition.opacity.duration.200ms>
+                    @foreach ($yearOptions as $year)
+                        @php
+                            $yearRundowns = $rundownMaps->where('tahun', (int) $year);
+                            $yearMaps = $yearRundowns->filter(fn ($rundown) => $mapSource($rundown->google_map) !== null);
+                        @endphp
 
-                        @if ($hasMaps)
-                            <div class="grid gap-6">
-                                @foreach ($rundownMaps as $rundown)
-                                    @php($mapSrc = $mapSource($rundown->google_map))
+                        <div x-cloak x-show="selectedYear === @js((int) $year)" x-transition.opacity.duration.200ms>
+                            @if ($yearMaps->isNotEmpty())
+                                <div class="grid gap-6">
+                                    @foreach ($yearMaps as $rundown)
+                                        @php($mapSrc = $mapSource($rundown->google_map))
 
-                                    @if ($mapSrc)
                                         <article wire:key="rundown-map-frame-{{ $rundown->id }}" class="overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#2f2e2e]/72">
                                             <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
                                                 <h2 class="font-display text-3xl uppercase tracking-[0.08em] text-white">
@@ -144,30 +187,27 @@
                                                 allowfullscreen
                                             ></iframe>
                                         </article>
-                                    @endif
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="rounded-[2rem] border border-white/10 bg-[#2f2e2e]/70 px-6 py-14 text-center">
-                                <h2 class="font-display text-4xl uppercase tracking-[0.08em] text-white">
-                                    Map Coming Soon
-                                </h2>
-                                <p class="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/70">
-                                    Lokasi festival akan segera ditampilkan.
-                                </p>
-                            </div>
-                        @endif
-                    </section>
-                @else
-                    <div class="rounded-[2rem] border border-white/10 bg-[#2f2e2e]/70 px-6 py-14 text-center">
-                        <h2 class="font-display text-4xl uppercase tracking-[0.08em] text-white">
-                            Rundown & Map Coming Soon
-                        </h2>
-                        <p class="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/70">
-                            Detail rundown dan map festival akan segera ditampilkan.
-                        </p>
-                    </div>
-                @endif
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="rounded-[2rem] border border-white/10 bg-[#2f2e2e]/70 px-6 py-14 text-center shadow-[0_18px_48px_rgba(47,46,46,0.26)]">
+                                    <div class="mx-auto grid size-20 place-items-center rounded-full border border-[#fff700]/25 bg-[#fff700]/10">
+                                        <span class="font-display text-5xl text-[#fff700]">{{ substr((string) $year, -2) }}</span>
+                                    </div>
+                                    <p class="mt-5 text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
+                                        {{ $year }}
+                                    </p>
+                                    <h2 class="mt-3 font-display text-4xl uppercase tracking-[0.08em] text-white sm:text-5xl">
+                                        Map Sedang Dibuat
+                                    </h2>
+                                    <p class="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-white/70">
+                                        Area festival dan lokasi resmi Purnama Bersantai {{ $year }} akan segera ditampilkan setelah map final siap.
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </section>
             </div>
         </section>
     </main>

@@ -2,6 +2,12 @@
     $imageUrl = fn (?string $path, string $fallback) => $path
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
+    $lineupFrames = collect(glob(public_path('landing/assets/frame/*.{png,jpg,jpeg,webp,svg}'), GLOB_BRACE) ?: [])
+        ->map(fn (string $path) => asset('landing/assets/frame/'.basename($path)))
+        ->values();
+    $lineupFrame = fn (mixed $seed) => $lineupFrames->isNotEmpty()
+        ? $lineupFrames[abs(crc32((string) $seed)) % $lineupFrames->count()]
+        : asset('landing/assets/frame/frame1.png');
 @endphp
 
 @include('livewire.landing.partials.lineup-marquee')
@@ -21,7 +27,10 @@
             <div class="swiper-wrapper">
                 @forelse ($lineupArtists as $artist)
                     <div class="swiper-slide">
-                        <article class="lineup-card relative isolate aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-glow transition duration-300 hover:-translate-y-2">
+                        <article
+                            class="lineup-card relative isolate aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-glow transition duration-300 hover:-translate-y-2"
+                            style="--lineup-frame-image: url('{{ $lineupFrame($artist->id) }}')"
+                        >
                             <div class="lineup-media">
                                 <img
                                     src="{{ $imageUrl($artist->image_path, asset('landing/assets/Rectangle 17.png')) }}"
@@ -38,7 +47,10 @@
                     </div>
                 @empty
                     <div class="swiper-slide">
-                        <article class="lineup-card relative isolate aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-glow">
+                        <article
+                            class="lineup-card relative isolate aspect-[4/5] overflow-hidden rounded-[1.75rem] shadow-glow"
+                            style="--lineup-frame-image: url('{{ $lineupFrame('coming-soon') }}')"
+                        >
                             <div class="lineup-media">
                                 <img src="{{ asset('landing/assets/Rectangle 17.png') }}" alt="Festival performer" />
                             </div>

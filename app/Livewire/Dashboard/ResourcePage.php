@@ -8,7 +8,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -17,6 +17,7 @@ use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Throwable;
 
 #[Layout('layouts::app')]
 class ResourcePage extends Component
@@ -164,6 +165,8 @@ class ResourcePage extends Component
 
     public function save(): void
     {
+        $this->prepareHiddenSeoFields();
+
         $validated = $this->validate($this->rules(), [], $this->validationAttributes());
         $payload = $this->prepareForPersistence($validated['form']);
         $payload = $this->storeImageUploads($payload);
@@ -187,6 +190,87 @@ class ResourcePage extends Component
         $this->closeFormModal();
         $this->resetPage();
         $this->loadFieldOptions();
+    }
+
+    public function generateSeoTextWithAi(): void
+    {
+        if ($this->resource !== 'seo-setting') {
+            return;
+        }
+
+        $apiKey = config('services.openai.key');
+
+        if (! is_string($apiKey) || trim($apiKey) === '') {
+            Flux::toast(variant: 'danger', text: __('OPENAI_API_KEY belum tersedia di konfigurasi.'));
+
+            return;
+        }
+
+        try {
+            $response = Http::withToken($apiKey)
+                ->acceptJson()
+                ->asJson()
+                ->timeout(45)
+                ->post('https://api.openai.com/v1/responses', [
+                    'model' => config('services.openai.model', 'gpt-5.6-luna'),
+                    'store' => false,
+                    'input' => [
+                        [
+                            'role' => 'system',
+                            'content' => $this->seoGeneratorSystemPrompt(),
+                        ],
+                        [
+                            'role' => 'user',
+                            'content' => json_encode($this->seoGeneratorContext(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+                        ],
+                    ],
+                    'text' => [
+                        'format' => [
+                            'type' => 'json_schema',
+                            'name' => 'seo_setting_text',
+                            'strict' => true,
+                            'schema' => $this->seoGeneratorSchema(),
+                        ],
+                    ],
+                ])
+                ->throw()
+                ->json();
+
+            $generated = $this->decodeOpenAiJsonResponse($response);
+
+            $this->form = array_replace($this->form, [
+                'site_name' => $generated['site_name'] ?? ($this->form['site_name'] ?? 'Purnama Bersantai'),
+                'meta_title' => $generated['meta_title'] ?? ($this->form['meta_title'] ?? ''),
+                'meta_description' => $generated['meta_description'] ?? ($this->form['meta_description'] ?? ''),
+                'meta_keywords' => $generated['meta_keywords'] ?? ($this->form['meta_keywords'] ?? ''),
+                'canonical_url' => $generated['canonical_url'] ?? ($this->form['canonical_url'] ?? ''),
+                'og_title' => $generated['og_title'] ?? ($this->form['og_title'] ?? ''),
+                'og_description' => $generated['og_description'] ?? ($this->form['og_description'] ?? ''),
+                'og_type' => $generated['og_type'] ?? ($this->form['og_type'] ?? 'website'),
+                'twitter_card' => $generated['twitter_card'] ?? ($this->form['twitter_card'] ?? 'summary_large_image'),
+                'twitter_title' => $generated['twitter_title'] ?? ($this->form['twitter_title'] ?? ''),
+                'twitter_description' => $generated['twitter_description'] ?? ($this->form['twitter_description'] ?? ''),
+                'theme_color' => $generated['theme_color'] ?? ($this->form['theme_color'] ?? '#151515'),
+                'locale' => $generated['locale'] ?? ($this->form['locale'] ?? 'id_ID'),
+                'schema_json' => $this->normalizeGeneratedSchemaJson($generated['schema_json'] ?? ''),
+            ]);
+
+            Flux::toast(variant: 'success', text: __('SEO text generated with AI.'));
+        } catch (Throwable $exception) {
+            report($exception);
+
+            Flux::toast(variant: 'danger', text: __('Gagal generate SEO dengan AI. Cek API key, model, atau koneksi server.'));
+        }
+    }
+
+    protected function prepareHiddenSeoFields(): void
+    {
+        if ($this->resource !== 'seo-setting') {
+            return;
+        }
+
+        $this->form['schema_json'] = $this->normalizeGeneratedSchemaJson($this->form['schema_json'] ?? '')
+            ?: $this->defaultSeoSchemaJson();
     }
 
     public function delete(): void
@@ -332,6 +416,18 @@ class ResourcePage extends Component
             ->all();
     }
 
+    public function imageListUploadPreviews(string $fieldName): array
+    {
+        return collect($this->imageUploads[$fieldName] ?? [])
+            ->filter(fn ($upload) => $upload instanceof TemporaryUploadedFile)
+            ->map(fn (TemporaryUploadedFile $upload) => [
+                'url' => $upload->temporaryUrl(),
+                'name' => $upload->getClientOriginalName(),
+            ])
+            ->values()
+            ->all();
+    }
+
     public function currentImageUrl(string $fieldName): ?string
     {
         $value = $this->form[$fieldName] ?? null;
@@ -343,6 +439,21 @@ class ResourcePage extends Component
         return str_starts_with($value, 'http') || str_starts_with($value, '/')
             ? $value
             : asset($value);
+    }
+
+    public function imageListItems(string $fieldName): array
+    {
+        return collect($this->form[$fieldName] ?? [])
+            ->filter(fn ($path) => is_string($path) && trim($path) !== '')
+            ->map(fn (string $path, int $index) => [
+                'index' => $index,
+                'path' => $path,
+                'url' => str_starts_with($path, 'http') || str_starts_with($path, '/')
+                    ? $path
+                    : asset($path),
+            ])
+            ->values()
+            ->all();
     }
 
     public function currentImageGallery(string $fieldName): array
@@ -537,6 +648,12 @@ class ResourcePage extends Component
                 continue;
             }
 
+            if ($type === 'image_list') {
+                $form[$field['name']] = [];
+
+                continue;
+            }
+
             if ($type === 'link_list') {
                 $form[$field['name']] = $default ?? [$this->defaultLinkListItem()];
 
@@ -610,6 +727,15 @@ class ResourcePage extends Component
                 continue;
             }
 
+            if ($type === 'image_list') {
+                $this->form[$name] = collect(is_array($value) ? $value : [])
+                    ->filter(fn ($path) => is_string($path) && trim($path) !== '')
+                    ->values()
+                    ->all();
+
+                continue;
+            }
+
             if ($type === 'checkbox') {
                 $this->form[$name] = (bool) $value;
 
@@ -667,6 +793,15 @@ class ResourcePage extends Component
                 continue;
             }
 
+            if ($type === 'image_list') {
+                $payload[$name] = collect(is_array($value) ? $value : [])
+                    ->filter(fn ($path) => is_string($path) && trim($path) !== '')
+                    ->values()
+                    ->all();
+
+                continue;
+            }
+
             if ($type === 'link_list') {
                 $links = $this->normalizeLinkList($value);
                 $payload[$name] = $links !== [] ? $links : null;
@@ -693,12 +828,33 @@ class ResourcePage extends Component
     protected function storeImageUploads(array $payload): array
     {
         foreach ($this->resourceConfig['form_fields'] as $field) {
-            if (($field['type'] ?? 'text') !== 'image') {
+            if (! in_array(($field['type'] ?? 'text'), ['image', 'image_list'], true)) {
                 continue;
             }
 
             $name = $field['name'];
             $upload = $this->imageUploads[$name] ?? null;
+
+            if (($field['type'] ?? 'text') === 'image_list') {
+                $uploads = collect(is_array($upload) ? $upload : [])
+                    ->filter(fn ($item) => $item instanceof TemporaryUploadedFile);
+
+                if ($uploads->isEmpty()) {
+                    continue;
+                }
+
+                $storedPaths = $uploads
+                    ->map(fn (TemporaryUploadedFile $item) => '/storage/'.$item->storePublicly("dashboard/uploads/{$this->resource}", 'public'))
+                    ->values()
+                    ->all();
+
+                $payload[$name] = collect($payload[$name] ?? [])
+                    ->merge($storedPaths)
+                    ->values()
+                    ->all();
+
+                continue;
+            }
 
             if (! $upload instanceof TemporaryUploadedFile) {
                 continue;
@@ -756,6 +912,10 @@ class ResourcePage extends Component
             }
 
             if ($type === 'image_gallery') {
+                $ruleSet[] = 'array';
+            }
+
+            if ($type === 'image_list') {
                 $ruleSet[] = 'array';
             }
 
@@ -818,6 +978,18 @@ class ResourcePage extends Component
                 }
             }
 
+            if ($type === 'image_list') {
+                $maxKb = (int) ($field['max_kb'] ?? 1024);
+
+                $rules["form.{$name}.*"] = ['string', 'max:2048'];
+                $rules["imageUploads.{$name}"] = ['nullable', 'array'];
+                $rules["imageUploads.{$name}.*"] = [
+                    'image',
+                    'mimes:jpg,jpeg,png,webp',
+                    'max:'.$maxKb,
+                ];
+            }
+
             if ($type === 'image') {
                 $uploadRules = [
                     'nullable',
@@ -855,6 +1027,11 @@ class ResourcePage extends Component
                 if (isset($field['item_title_field'])) {
                     $attributes["form.{$field['name']}.*.title"] = ($field['item_title_label'] ?? 'Image Name');
                 }
+            }
+
+            if (($field['type'] ?? 'text') === 'image_list') {
+                $attributes["form.{$field['name']}.*"] = $field['label'];
+                $attributes["imageUploads.{$field['name']}.*"] = $field['label'];
             }
 
             if (($field['type'] ?? 'text') === 'image') {
@@ -910,6 +1087,18 @@ class ResourcePage extends Component
         $this->imageUploads[$fieldName] = array_values($uploads);
     }
 
+    public function removeImageListItem(string $fieldName, int $index): void
+    {
+        $items = $this->form[$fieldName] ?? [];
+
+        if (! is_array($items) || ! array_key_exists($index, $items)) {
+            return;
+        }
+
+        unset($items[$index]);
+        $this->form[$fieldName] = array_values($items);
+    }
+
     public function moveImageGalleryItem(string $fieldName, string $draggedItemKey, string $targetItemKey): void
     {
         if ($draggedItemKey === $targetItemKey) {
@@ -933,9 +1122,180 @@ class ResourcePage extends Component
         $this->form[$fieldName] = $reordered->values()->all();
     }
 
+    public function updateImageGalleryItemTitle(string $fieldName, string $itemKey, string $title): void
+    {
+        $this->form[$fieldName] = collect($this->form[$fieldName] ?? [])
+            ->map(function (array $item) use ($itemKey, $title) {
+                if (($item['item_key'] ?? null) === $itemKey) {
+                    $item['title'] = $title;
+                }
+
+                return $item;
+            })
+            ->values()
+            ->all();
+    }
+
     protected function isSingleResource(): bool
     {
         return (bool) ($this->resourceConfig['single_record'] ?? false);
+    }
+
+    protected function seoGeneratorSystemPrompt(): string
+    {
+        return <<<'PROMPT'
+You are an Indonesian SEO specialist for a music festival landing page.
+Generate concise, production-ready SEO copy in Indonesian for "Purnama Bersantai".
+Do not generate or modify image paths, upload references, Google verification codes, Bing verification codes, or admin-only values.
+Use natural keyword coverage, avoid keyword stuffing, and keep descriptions compelling for search and social previews.
+The schema_json field must be a valid JSON-LD string, not markdown and not an escaped PHP array.
+Return only data that matches the requested JSON schema.
+PROMPT;
+    }
+
+    protected function seoGeneratorContext(): array
+    {
+        return [
+            'current_form' => [
+                'site_name' => $this->form['site_name'] ?? null,
+                'meta_title' => $this->form['meta_title'] ?? null,
+                'meta_description' => $this->form['meta_description'] ?? null,
+                'meta_keywords' => $this->form['meta_keywords'] ?? null,
+                'canonical_url' => $this->form['canonical_url'] ?? null,
+                'locale' => $this->form['locale'] ?? 'id_ID',
+            ],
+            'site' => [
+                'app_name' => config('app.name'),
+                'app_url' => config('app.url'),
+                'default_site_name' => 'Purnama Bersantai',
+            ],
+            'content_brief' => [
+                'event_type' => 'festival musik malam',
+                'audience' => 'penonton musik, komunitas kreatif, pencinta event lokal, calon pembeli tiket',
+                'positioning' => 'festival dengan suasana santai, komunitas, lineup pilihan, merchandise, gallery moment, ticketing resmi, sponsor partner, rundown, dan map acara',
+                'language' => 'id_ID',
+            ],
+            'requirements' => [
+                'meta_title_max_chars' => 60,
+                'meta_description_min_chars' => 120,
+                'meta_description_max_chars' => 160,
+                'social_title_max_chars' => 70,
+                'social_description_max_chars' => 200,
+                'canonical_url' => $this->form['canonical_url'] ?: config('app.url'),
+                'theme_color' => $this->form['theme_color'] ?: '#151515',
+            ],
+        ];
+    }
+
+    protected function seoGeneratorSchema(): array
+    {
+        return [
+            'type' => 'object',
+            'additionalProperties' => false,
+            'required' => [
+                'site_name',
+                'meta_title',
+                'meta_description',
+                'meta_keywords',
+                'canonical_url',
+                'og_title',
+                'og_description',
+                'og_type',
+                'twitter_card',
+                'twitter_title',
+                'twitter_description',
+                'theme_color',
+                'locale',
+                'schema_json',
+            ],
+            'properties' => [
+                'site_name' => ['type' => 'string'],
+                'meta_title' => ['type' => 'string'],
+                'meta_description' => ['type' => 'string'],
+                'meta_keywords' => ['type' => 'string'],
+                'canonical_url' => ['type' => 'string'],
+                'og_title' => ['type' => 'string'],
+                'og_description' => ['type' => 'string'],
+                'og_type' => ['type' => 'string', 'enum' => ['website', 'article', 'event']],
+                'twitter_card' => ['type' => 'string', 'enum' => ['summary_large_image', 'summary']],
+                'twitter_title' => ['type' => 'string'],
+                'twitter_description' => ['type' => 'string'],
+                'theme_color' => ['type' => 'string'],
+                'locale' => ['type' => 'string'],
+                'schema_json' => [
+                    'type' => 'string',
+                    'description' => 'A valid JSON-LD string using Schema.org Event or WebSite markup.',
+                ],
+            ],
+        ];
+    }
+
+    protected function normalizeGeneratedSchemaJson(mixed $schemaJson): string
+    {
+        if (is_array($schemaJson)) {
+            return json_encode($schemaJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '';
+        }
+
+        if (! is_string($schemaJson) || trim($schemaJson) === '') {
+            return '';
+        }
+
+        $decoded = json_decode($schemaJson, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $schemaJson;
+        }
+
+        return json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: $schemaJson;
+    }
+
+    protected function defaultSeoSchemaJson(): string
+    {
+        $siteName = trim((string) ($this->form['site_name'] ?? 'Purnama Bersantai')) ?: 'Purnama Bersantai';
+        $metaTitle = trim((string) ($this->form['meta_title'] ?? $siteName)) ?: $siteName;
+        $metaDescription = trim((string) ($this->form['meta_description'] ?? ''));
+        $canonicalUrl = trim((string) ($this->form['canonical_url'] ?? '')) ?: config('app.url');
+        $locale = trim((string) ($this->form['locale'] ?? 'id_ID')) ?: 'id_ID';
+
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => $siteName,
+            'headline' => $metaTitle,
+            'url' => $canonicalUrl,
+            'inLanguage' => str_replace('_', '-', $locale),
+        ];
+
+        if ($metaDescription !== '') {
+            $schema['description'] = $metaDescription;
+        }
+
+        return json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '';
+    }
+
+    protected function decodeOpenAiJsonResponse(array $response): array
+    {
+        $text = $response['output_text'] ?? null;
+
+        if (! is_string($text)) {
+            $text = collect($response['output'] ?? [])
+                ->flatMap(fn (array $output) => $output['content'] ?? [])
+                ->pluck('text')
+                ->filter(fn (mixed $value) => is_string($value) && $value !== '')
+                ->first();
+        }
+
+        if (! is_string($text) || $text === '') {
+            throw new \RuntimeException('OpenAI response did not include JSON text.');
+        }
+
+        $decoded = json_decode($text, true, 512, JSON_THROW_ON_ERROR);
+
+        if (! is_array($decoded)) {
+            throw new \RuntimeException('OpenAI response JSON is not an object.');
+        }
+
+        return $decoded;
     }
 
     protected function primaryRecordId(): ?int
@@ -1005,6 +1365,7 @@ class ResourcePage extends Component
 
                     $firstStoredPath ??= (string) $image->getAttribute($pathField);
                     $sortOrder++;
+
                     continue;
                 }
 

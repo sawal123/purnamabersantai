@@ -4,12 +4,12 @@
         $totalChecks = $healthChecks->count();
     @endphp
 
-    <div class="overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-950 text-white shadow-sm dark:border-zinc-700">
+    <div class="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-white shadow-xl shadow-indigo-500/15">
         <div class="grid gap-8 p-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.8fr)] lg:p-8">
             <div class="max-w-3xl">
-                <p class="text-sm font-semibold uppercase tracking-[0.28em] text-amber-300">Control Center</p>
-                <h1 class="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">Ringkasan konten Purnama Bersantai</h1>
-                <p class="mt-4 text-sm leading-6 text-zinc-300 md:text-base">
+                <span class="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-bold ring-1 ring-white/20">Control Center</span>
+                <h1 class="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">Ringkasan konten Purnama Bersantai</h1>
+                <p class="mt-4 text-sm leading-6 text-indigo-100 md:text-base">
                     Pantau kesiapan landing page, SEO, ticketing, lineup, media, dan data penting lain dari satu tempat sebelum masuk ke halaman CRUD.
                 </p>
 
@@ -18,10 +18,10 @@
                         <a
                             href="{{ $action['url'] }}"
                             wire:navigate
-                            class="inline-flex items-center gap-2 rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:-translate-y-0.5 hover:bg-amber-100"
+                            class="inline-flex items-center gap-2 rounded-2xl bg-white px-4 py-2.5 text-sm font-bold text-indigo-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-indigo-50"
                         >
                             {{ $action['label'] }}
-                            <flux:icon.arrow-right class="size-4" />
+                            <x-ui-dashboard.icon name="arrow-right" class="size-4" />
                         </a>
                     @endforeach
                 </div>
@@ -29,28 +29,28 @@
 
             <div class="grid gap-3 sm:grid-cols-2">
                 <div class="rounded-2xl border border-white/10 bg-white/10 p-4">
-                    <p class="text-xs uppercase tracking-[0.2em] text-zinc-400">Readiness</p>
-                    <p class="mt-2 text-3xl font-semibold">{{ $contentReadiness }}%</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-indigo-100">Readiness</p>
+                    <p class="mt-2 text-3xl font-extrabold">{{ $contentReadiness }}%</p>
                     <div class="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-                        <div class="h-full rounded-full bg-amber-300" style="width: {{ $contentReadiness }}%"></div>
+                        <div class="h-full rounded-full bg-white" style="width: {{ $contentReadiness }}%"></div>
                     </div>
                 </div>
                 <div class="rounded-2xl border border-white/10 bg-white/10 p-4">
-                    <p class="text-xs uppercase tracking-[0.2em] text-zinc-400">Health Check</p>
-                    <p class="mt-2 text-3xl font-semibold">{{ $completedChecks }}/{{ $totalChecks }}</p>
-                    <p class="mt-3 text-xs text-zinc-400">Item penting sudah aktif</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-indigo-100">Health Check</p>
+                    <p class="mt-2 text-3xl font-extrabold">{{ $completedChecks }}/{{ $totalChecks }}</p>
+                    <p class="mt-3 text-xs text-indigo-100">Item penting sudah aktif</p>
                 </div>
                 <div class="rounded-2xl border border-white/10 bg-white/10 p-4">
-                    <p class="text-xs uppercase tracking-[0.2em] text-zinc-400">Active Records</p>
-                    <p class="mt-2 text-3xl font-semibold">{{ $activeRecordCount }}</p>
-                    <p class="mt-3 text-xs text-zinc-400">dari {{ $recordCount }} total record</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-indigo-100">Active Records</p>
+                    <p class="mt-2 text-3xl font-extrabold">{{ $activeRecordCount }}</p>
+                    <p class="mt-3 text-xs text-indigo-100">dari {{ $recordCount }} total record</p>
                 </div>
                 <div class="rounded-2xl border border-white/10 bg-white/10 p-4">
-                    <p class="text-xs uppercase tracking-[0.2em] text-zinc-400">Last Update</p>
-                    <p class="mt-2 text-xl font-semibold">
+                    <p class="text-xs uppercase tracking-[0.2em] text-indigo-100">Last Update</p>
+                    <p class="mt-2 text-xl font-extrabold">
                         {{ $lastUpdatedAt ? \Illuminate\Support\Carbon::parse($lastUpdatedAt)->diffForHumans() : 'Belum ada' }}
                     </p>
-                    <p class="mt-3 text-xs text-zinc-400">{{ $moduleCount }} modul terpantau</p>
+                    <p class="mt-3 text-xs text-indigo-100">{{ $moduleCount }} modul terpantau</p>
                 </div>
             </div>
         </div>
@@ -121,7 +121,7 @@
                             <p class="font-semibold text-zinc-950 dark:text-white">{{ $item['label'] }}</p>
                             <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ $item['reason'] }}</p>
                         </div>
-                        <flux:icon.arrow-up-right class="size-5 text-zinc-400" />
+                        <x-ui-dashboard.icon name="arrow-up-right" class="size-5 text-zinc-400" />
                     </a>
                 @empty
                     <div class="rounded-2xl bg-emerald-50 p-4 text-sm leading-6 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200">
@@ -145,7 +145,7 @@
                                 <p class="font-semibold text-zinc-950 dark:text-white">{{ $action['label'] }}</p>
                                 <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ $action['description'] }}</p>
                             </div>
-                            <flux:icon.arrow-right class="size-5 text-zinc-400" />
+                            <x-ui-dashboard.icon name="arrow-right" class="size-5 text-zinc-400" />
                         </div>
                     </a>
                 @endforeach

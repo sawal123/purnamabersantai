@@ -39,6 +39,7 @@
     --color-accent-foreground: var(--color-white);
 
     --shadow-glow: 0 0 50px rgba(255, 247, 0, 0.15);
+    --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
 }
 
 .bg-haze {
@@ -87,3 +88,64 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.dark * {
+    scrollbar-color: #475569 transparent;
+}
+
+[data-hidden="true"] {
+    display: none !important;
+}
+
+.dashboard-fade-in {
+    animation: dashboardFadeIn 0.14s ease-out;
+    will-change: opacity;
+}
+
+.dashboard-scale-in {
+    animation: dashboardScaleIn 0.14s ease-out;
+    will-change: opacity, transform;
+}
+
+.dashboard-toast-in {
+    animation: dashboardToastIn 0.28s ease-out;
+}
+
+@keyframes dashboardFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes dashboardScaleIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dashboardToastIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

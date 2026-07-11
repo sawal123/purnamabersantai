@@ -2,6 +2,12 @@
     $imageUrl = fn (?string $path, string $fallback) => $path
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
+    $lineupFrames = collect(glob(public_path('landing/assets/frame/*.{png,jpg,jpeg,webp,svg}'), GLOB_BRACE) ?: [])
+        ->map(fn (string $path) => asset('landing/assets/frame/'.basename($path)))
+        ->values();
+    $lineupFrame = fn (mixed $seed) => $lineupFrames->isNotEmpty()
+        ? $lineupFrames[abs(crc32((string) $seed)) % $lineupFrames->count()]
+        : asset('landing/assets/frame/frame1.png');
 @endphp
 
 <div
@@ -87,6 +93,7 @@
                                         type="button"
                                         wire:key="lineup-artist-{{ $artist->id }}"
                                         class="lineup-card lineup-page-card relative isolate aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-[1.75rem] transition duration-300"
+                                        style="--lineup-frame-image: url('{{ $lineupFrame($artist->id) }}')"
                                         aria-label="Open full image for {{ $artist->name }}"
                                         x-on:click="selectedArtist = {
                                             src: @js($artistImage),
