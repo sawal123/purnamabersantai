@@ -81,6 +81,7 @@
     $twitterTitle = $seoSetting?->twitter_title ?: $ogTitle;
     $twitterDescription = trim((string) ($seoSetting?->twitter_description ?: $ogDescription));
     $twitterImage = $absoluteImageUrl($seoSetting?->twitter_image_path) ?: $ogImage;
+    $faviconImage = $absoluteImageUrl($seoSetting?->og_image_path) ?: asset('favicon-32x32.png').'?v=20260713';
     $themeColor = $seoSetting?->theme_color ?: '#2f2e2e';
     $locale = $seoSetting?->locale ?: str_replace('-', '_', app()->getLocale());
     $schemaJson =
@@ -128,10 +129,9 @@
         <script type="application/ld+json">@json($schemaJson, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)</script>
     @endif
 
-    <link rel="icon" href="{{ asset('favicon.svg') }}?v=20260713" type="image/svg+xml">
-    <link rel="icon" href="{{ asset('favicon.ico') }}?v=20260713" sizes="any">
-    <link rel="icon" href="{{ asset('favicon-32x32.png') }}?v=20260713" type="image/png">
-    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v=20260713">
+    <link rel="icon" href="{{ $faviconImage }}" type="image/png">
+    <link rel="shortcut icon" href="{{ $faviconImage }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ $faviconImage }}">
 
     <script>
         document.documentElement.classList.add('js');
