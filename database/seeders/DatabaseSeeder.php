@@ -23,5 +23,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(DashboardDummySeeder::class);
+        $this->call(SongSeeder::class);
+        $this->call(LandingMarqueeSeeder::class);
+        $this->call(YoutubeVideoSeeder::class);
     }
 }

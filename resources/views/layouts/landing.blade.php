@@ -7,20 +7,43 @@
         asset('landing/css/app.css') . '?v=' . (file_exists($landingCssPath) ? filemtime($landingCssPath) : time());
     $landingJsUrl =
         asset('landing/js/app.js') . '?v=' . (file_exists($landingJsPath) ? filemtime($landingJsPath) : time());
+    $song = null;
     $songFile = null;
 
-    foreach (['mp3', 'wav', 'ogg', 'm4a'] as $songExtension) {
-        $songMatches = glob(public_path("song/*.{$songExtension}")) ?: [];
+    if (\Illuminate\Support\Facades\Schema::hasTable('songs')) {
+        $song = \App\Models\Song::query()->active()->ordered()->first();
+    }
 
-        if ($songMatches !== []) {
-            $songFile = $songMatches[0];
+    if (! $song) {
+        foreach (['mp3', 'wav', 'ogg', 'm4a'] as $songExtension) {
+            $songMatches = glob(public_path("song/*.{$songExtension}")) ?: [];
 
-            break;
+            if ($songMatches !== []) {
+                $songFile = $songMatches[0];
+
+                break;
+            }
         }
     }
 
-    $songUrl = $songFile ? asset('song/' . rawurlencode(basename($songFile))) : null;
-    $songTitle = $songFile ? pathinfo($songFile, PATHINFO_FILENAME) : 'Purnama Bersantai';
+    $songAssetUrl = static function (?string $path): ?string {
+        if (! is_string($path) || trim($path) === '') {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (str_starts_with($path, '/')) {
+            return $path;
+        }
+
+        return asset(collect(explode('/', $path))->map(fn (string $part) => rawurlencode($part))->implode('/'));
+    };
+
+    $songUrl = $song ? $songAssetUrl($song->audio_path) : ($songFile ? asset('song/' . rawurlencode(basename($songFile))) : null);
+    $songTitle = $song ? $song->display_title : ($songFile ? pathinfo($songFile, PATHINFO_FILENAME) : 'Purnama Bersantai');
 
     $seoSetting = null;
 

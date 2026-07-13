@@ -544,7 +544,12 @@ const initMerchModal = (assetBase, contactUrl) => {
   const merchModalTitle = document.getElementById("merch-modal-title");
   const merchModalPrice = document.getElementById("merch-modal-price");
   const merchModalDescription = document.getElementById("merch-modal-description");
-  const merchModalFeatures = document.getElementById("merch-modal-features");
+  const merchModalStock = document.getElementById("merch-modal-stock");
+  const merchModalSizeField = document.getElementById("merch-modal-size-field");
+  const merchModalSize = document.getElementById("merch-modal-size");
+  const merchModalColorField = document.getElementById("merch-modal-color-field");
+  const merchModalColor = document.getElementById("merch-modal-color");
+  const merchModalQty = document.getElementById("merch-modal-qty");
   const merchModalOrder = document.getElementById("merch-modal-order");
   const merchModalCloseButton = merchModal?.querySelector(".merch-modal-close");
   const merchCloseTriggers = merchModal
@@ -555,26 +560,219 @@ const initMerchModal = (assetBase, contactUrl) => {
     return;
   }
 
-  const merchandiseProductsElement = document.getElementById(
-    "merchandise-products-json",
-  );
-  const merchandiseProducts = merchandiseProductsElement
-    ? JSON.parse(merchandiseProductsElement.textContent || "{}")
-    : buildMerchandiseProducts(assetBase, contactUrl);
+  const getMerchandiseProducts = () => {
+    const merchandiseProductsElement = document.getElementById(
+      "merchandise-products-json",
+    );
 
-  const setActiveMerchImage = (gallery, activeIndex) => {
+    if (!merchandiseProductsElement) {
+      return buildMerchandiseProducts(assetBase, contactUrl);
+    }
+
+    try {
+      return JSON.parse(merchandiseProductsElement.textContent || "{}");
+    } catch (error) {
+      return {};
+    }
+  };
+
+  let merchActiveIndex = 0;
+
+  const scrollMerchThumbIntoView = (activeIndex) => {
+    const activeThumb = merchModalGallery.querySelector(
+      `[data-thumb-index="${activeIndex}"]`,
+    );
+
+    activeThumb?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  };
+
+  const renderMerchThumbs = (product) => {
+    const gallery = Array.isArray(product.gallery) ? product.gallery : [];
+    const hasMultipleImages = gallery.length > 1;
+
+    merchModalGallery.innerHTML = `
+      <div class="merch-modal-thumbs-viewport${hasMultipleImages ? "" : " is-single"}">
+        ${
+          hasMultipleImages
+            ? `
+              <button type="button" class="merch-modal-thumb-arrow is-prev" data-merch-thumb-prev aria-label="Gambar sebelumnya">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            `
+            : ""
+        }
+        <div class="merch-modal-thumbs-track minimal-scrollbar" data-merch-thumbs-track>
+          ${gallery
+          .map((item, index) => {
+            return `
+              <button
+                type="button"
+                class="merch-modal-thumb${index === merchActiveIndex ? " is-active" : ""}"
+                data-merch-thumb
+                data-thumb-index="${index}"
+                aria-label="View merchandise image ${index + 1}"
+              >
+                <img
+                  src="${item.src}"
+                  alt="${item.alt}"
+                  class="${item.className || ""}"
+                />
+              </button>
+            `;
+          })
+          .join("")}
+        </div>
+        ${
+          hasMultipleImages
+            ? `
+              <button type="button" class="merch-modal-thumb-arrow is-next" data-merch-thumb-next aria-label="Gambar berikutnya">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            `
+            : ""
+        }
+      </div>
+      ${
+        hasMultipleImages
+          ? `
+            <p class="merch-modal-thumb-counter">${merchActiveIndex + 1} / ${gallery.length}</p>
+          `
+          : ""
+      }
+    `;
+
+    merchModalGallery.querySelectorAll("[data-merch-thumb]").forEach((thumb) => {
+      thumb.onclick = () => {
+        const index = Number(thumb.getAttribute("data-thumb-index"));
+        setActiveMerchImage(product, index);
+      };
+    });
+
+    merchModalGallery.querySelector("[data-merch-thumb-prev]")?.addEventListener("click", () => {
+      const nextIndex = (merchActiveIndex - 1 + gallery.length) % gallery.length;
+      setActiveMerchImage(product, nextIndex);
+    });
+
+    merchModalGallery.querySelector("[data-merch-thumb-next]")?.addEventListener("click", () => {
+      const nextIndex = (merchActiveIndex + 1) % gallery.length;
+      setActiveMerchImage(product, nextIndex);
+    });
+
+    scrollMerchThumbIntoView(merchActiveIndex);
+  };
+
+  const setActiveMerchImage = (product, activeIndex) => {
+    const gallery = Array.isArray(product.gallery) ? product.gallery : [];
     const activeItem = gallery[activeIndex];
     if (!activeItem) {
       return;
     }
 
+    merchActiveIndex = activeIndex;
     merchModalImage.src = activeItem.src;
     merchModalImage.alt = activeItem.alt;
     merchModalImage.className = activeItem.className || "";
 
-    merchModalGallery.querySelectorAll("[data-merch-thumb]").forEach((thumb, index) => {
-      thumb.classList.toggle("is-active", index === activeIndex);
+    merchModalGallery.querySelectorAll("[data-merch-thumb]").forEach((thumb) => {
+      thumb.classList.toggle(
+        "is-active",
+        Number(thumb.getAttribute("data-thumb-index")) === activeIndex,
+      );
     });
+
+    const counter = merchModalGallery.querySelector(".merch-modal-thumb-counter");
+    if (counter) {
+      counter.textContent = `${activeIndex + 1} / ${gallery.length}`;
+    }
+
+    scrollMerchThumbIntoView(activeIndex);
+  };
+
+  const fillMerchOptions = (select, field, options) => {
+    if (!select || !field) {
+      return;
+    }
+
+    select.replaceChildren();
+
+    if (!Array.isArray(options) || options.length === 0) {
+      field.hidden = true;
+      return;
+    }
+
+    field.hidden = false;
+
+    options.forEach((item) => {
+      const option = document.createElement("option");
+      option.value = item;
+      option.textContent = item;
+      select.append(option);
+    });
+  };
+
+  const buildMerchOrderUrl = (product) => {
+    const qty = Math.max(1, Number(merchModalQty?.value || 1));
+    const details = [];
+
+    if (merchModalSizeField && !merchModalSizeField.hidden && merchModalSize?.value) {
+      details.push(`size ${merchModalSize.value}`);
+    }
+
+    if (merchModalColorField && !merchModalColorField.hidden && merchModalColor?.value) {
+      details.push(`Warna ${merchModalColor.value}`);
+    }
+
+    details.push(`qty ${qty}`);
+
+    const message = `Saya ingin pesan merchandise ${product.title} dengan ${details.join(", ")}`;
+    const baseUrl = product.orderUrl || contactUrl;
+
+    if (!/wa\.me|whatsapp\.com/i.test(baseUrl)) {
+      return baseUrl;
+    }
+
+    try {
+      const url = new URL(baseUrl, window.location.href);
+      url.searchParams.set("text", message);
+
+      return url.toString();
+    } catch (error) {
+      const separator = baseUrl.includes("?") ? "&" : "?";
+
+      return `${baseUrl}${separator}text=${encodeURIComponent(message)}`;
+    }
+  };
+
+  const syncMerchOrderState = (product) => {
+    const stockQuantity = Number(product.stockQuantity || 0);
+    const hasStock = stockQuantity > 0;
+
+    if (merchModalStock) {
+      merchModalStock.textContent = hasStock
+        ? `Stok tersedia: ${stockQuantity}`
+        : "Stok belum tersedia";
+    }
+
+    if (merchModalQty) {
+      merchModalQty.max = hasStock ? String(stockQuantity) : "1";
+      merchModalQty.disabled = !hasStock;
+
+      const currentQty = Math.max(1, Number(merchModalQty.value || 1));
+      merchModalQty.value = hasStock ? String(Math.min(currentQty, stockQuantity)) : "1";
+    }
+
+    merchModalOrder.classList.toggle("pointer-events-none", !hasStock);
+    merchModalOrder.classList.toggle("opacity-60", !hasStock);
+    merchModalOrder.textContent = hasStock ? "Order" : "Stok Habis";
+    merchModalOrder.setAttribute("href", hasStock ? buildMerchOrderUrl(product) : "#");
   };
 
   const closeMerchModal = () => {
@@ -584,6 +782,7 @@ const initMerchModal = (assetBase, contactUrl) => {
   };
 
   const openMerchModal = (productKey) => {
+    const merchandiseProducts = getMerchandiseProducts();
     const product = merchandiseProducts[productKey];
     if (!product) {
       return;
@@ -592,42 +791,30 @@ const initMerchModal = (assetBase, contactUrl) => {
     merchModalKicker.textContent = product.kicker;
     merchModalTitle.textContent = product.title;
     merchModalPrice.textContent = product.price;
-    merchModalDescription.textContent = product.description;
-    merchModalOrder.setAttribute("href", product.orderUrl);
-    merchModalGallery.innerHTML = product.gallery
-      .map(
-        (item, index) => `
-          <button
-            type="button"
-            class="merch-modal-thumb${index === 0 ? " is-active" : ""}"
-            data-merch-thumb
-            data-thumb-index="${index}"
-            aria-label="View merchandise image ${index + 1}"
-          >
-            <img
-              src="${item.src}"
-              alt="${item.alt}"
-              class="${item.className || ""}"
-            />
-          </button>
-        `,
-      )
-      .join("");
-    merchModalFeatures.innerHTML = product.features
-      .map((feature) => `<li>${feature}</li>`)
-      .join("");
+    merchModalDescription.innerHTML = product.description;
+    fillMerchOptions(merchModalSize, merchModalSizeField, product.sizes);
+    fillMerchOptions(merchModalColor, merchModalColorField, product.colors);
 
-    setActiveMerchImage(product.gallery, 0);
+    if (merchModalQty) {
+      merchModalQty.value = "1";
+    }
+
+    syncMerchOrderState(product);
+    merchActiveIndex = 0;
+    renderMerchThumbs(product);
+    setActiveMerchImage(product, 0);
 
     merchModal.classList.add("is-open");
     merchModal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
 
-    merchModalGallery.querySelectorAll("[data-merch-thumb]").forEach((thumb) => {
-      thumb.onclick = () => {
-        const index = Number(thumb.getAttribute("data-thumb-index"));
-        setActiveMerchImage(product.gallery, index);
-      };
+    [merchModalSize, merchModalColor, merchModalQty].forEach((control) => {
+      if (!control) {
+        return;
+      }
+
+      control.oninput = () => syncMerchOrderState(product);
+      control.onchange = () => syncMerchOrderState(product);
     });
 
     merchModalCloseButton?.focus();

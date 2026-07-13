@@ -11,7 +11,6 @@ use App\Models\LandingHeroImage;
 use App\Models\LandingSetting;
 use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
-use App\Models\MerchandiseProductFeature;
 use App\Models\MerchandiseProductImage;
 use App\Models\RundownMap;
 use App\Models\RundownMapImage;
@@ -183,11 +182,25 @@ class DashboardDummySeeder extends Seeder
         ];
 
         foreach ($products as $index => $productData) {
+            $sizeOptions = str_contains($productData['slug'], 'tee') || str_contains($productData['slug'], 'hoodie')
+                ? ['S', 'M', 'L', 'XL', 'XXL']
+                : [];
+            $colorOptions = match (true) {
+                str_contains($productData['slug'], 'cap'),
+                str_contains($productData['slug'], 'hat') => ['Hitam', 'Cream'],
+                str_contains($productData['slug'], 'tee'),
+                str_contains($productData['slug'], 'hoodie') => ['Hitam', 'Putih'],
+                default => ['Hitam'],
+            };
+
             $product = MerchandiseProduct::query()->updateOrCreate(
                 ['slug' => $productData['slug']],
                 [
                     'currency' => 'IDR',
+                    'stock_quantity' => 25,
                     'description' => 'Merchandise resmi festival dengan material nyaman dan desain bertema bulan.',
+                    'size_options' => $sizeOptions,
+                    'color_options' => $colorOptions,
                     'thumbnail_alt' => $productData['name'],
                     'thumbnail_class' => 'object-cover',
                     'order_url' => 'https://purnamabersantai.test/merchandise',
@@ -206,13 +219,6 @@ class DashboardDummySeeder extends Seeder
                     'is_active' => true,
                 ],
             );
-
-            foreach (['Limited festival edition', 'Ready stock during event', 'Cocok untuk koleksi'] as $featureIndex => $feature) {
-                MerchandiseProductFeature::query()->updateOrCreate(
-                    ['merchandise_product_id' => $product->id, 'text' => $feature],
-                    ['sort_order' => $featureIndex + 1, 'is_active' => true],
-                );
-            }
         }
 
         foreach ([

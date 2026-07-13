@@ -28,7 +28,6 @@ class Merch extends Component
         $query = MerchandiseProduct::query()
             ->with([
                 'images' => fn ($query) => $query->where('is_active', true),
-                'features' => fn ($query) => $query->where('is_active', true),
             ])
             ->where('is_active', true)
             ->ordered();

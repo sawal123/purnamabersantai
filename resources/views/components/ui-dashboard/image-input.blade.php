@@ -34,7 +34,7 @@
             name="{{ $name }}"
             type="file"
             accept="image/png,image/jpeg,image/jpg,image/webp"
-            {{ $attributes->merge(['class' => 'sr-only']) }}
+            {{ $attributes->merge(['class' => 'absolute inset-0 h-full w-full cursor-pointer opacity-0']) }}
         >
     </label>
 

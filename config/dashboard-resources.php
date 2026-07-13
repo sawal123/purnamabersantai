@@ -9,7 +9,6 @@ use App\Models\LandingHeroImage;
 use App\Models\LandingSetting;
 use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
-use App\Models\MerchandiseProductFeature;
 use App\Models\MerchandiseProductImage;
 use App\Models\RundownMap;
 use App\Models\RundownMapImage;
@@ -220,7 +219,6 @@ return [
         ],
         'table_columns' => [
             ['key' => 'thumbnail', 'label' => 'Thumbnail', 'type' => 'image'],
-            ['key' => 'order_by', 'label' => 'Order'],
             ['key' => 'title', 'label' => 'Title', 'truncate' => 42],
             ['key' => 'tahun', 'label' => 'Tahun'],
             ['key' => 'lokasi', 'label' => 'Lokasi', 'truncate' => 32],
@@ -231,13 +229,13 @@ return [
             ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
         ],
         'form_fields' => [
-            ['name' => 'order_by', 'label' => 'Order By', 'type' => 'number', 'default' => 0],
+            ['name' => 'order_by', 'label' => 'Order By', 'type' => 'number', 'default' => 0, 'hidden_from_form' => true],
             ['name' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true],
             ['name' => 'tahun', 'label' => 'Tahun', 'type' => 'number', 'required' => true, 'default' => 2026],
             ['name' => 'lokasi', 'label' => 'Lokasi', 'type' => 'text', 'required' => true],
             ['name' => 'capacity', 'label' => 'Capacity', 'type' => 'number', 'default' => 0],
             ['name' => 'tanggal_acara', 'label' => 'Tanggal Acara', 'type' => 'date'],
-            ['name' => 'content', 'label' => 'Content', 'type' => 'textarea', 'full_width' => true],
+            ['name' => 'content', 'label' => 'Content', 'type' => 'rich_text', 'full_width' => true],
             ['name' => 'thumbnail', 'label' => 'Thumbnail', 'type' => 'image'],
             ['name' => 'media', 'label' => 'Media', 'type' => 'image_list', 'full_width' => true, 'max_kb' => 1024],
             ['name' => 'festival_galery', 'label' => 'Festival Gallery', 'type' => 'image_list', 'full_width' => true, 'max_kb' => 1024],
@@ -254,6 +252,8 @@ return [
         'description' => 'Kelola artis lineup, gambar, featured flag, dan urutan tampil.',
         'searchable' => ['name', 'alt_text', 'image_class'],
         'with' => [],
+        'reorderable' => true,
+        'reorder_field' => 'sort_order',
         'default_sort' => [
             ['column' => 'sort_order', 'direction' => 'asc'],
             ['column' => 'id', 'direction' => 'asc'],
@@ -347,6 +347,7 @@ return [
             ['key' => 'name', 'label' => 'Product'],
             ['key' => 'slug', 'label' => 'Slug'],
             ['key' => 'price', 'label' => 'Price', 'type' => 'money', 'currency_field' => 'currency'],
+            ['key' => 'stock_quantity', 'label' => 'Stock'],
             ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
         ],
         'form_fields' => [
@@ -358,7 +359,10 @@ return [
                 ['value' => 'IDR', 'label' => 'IDR'],
                 ['value' => 'USD', 'label' => 'USD'],
             ]],
-            ['name' => 'description', 'label' => 'Description', 'type' => 'textarea', 'full_width' => true],
+            ['name' => 'stock_quantity', 'label' => 'Stock Product', 'type' => 'number', 'default' => 0],
+            ['name' => 'description', 'label' => 'Description', 'type' => 'rich_text', 'full_width' => true],
+            ['name' => 'size_options', 'label' => 'Size Options', 'type' => 'option_list', 'full_width' => true, 'placeholder' => "S\nM\nL\nXL"],
+            ['name' => 'color_options', 'label' => 'Color Options', 'type' => 'option_list', 'full_width' => true, 'placeholder' => "Hitam\nPutih\nCream"],
             ['name' => 'thumbnail_alt', 'label' => 'Thumbnail Alt', 'type' => 'text'],
             ['name' => 'thumbnail_class', 'label' => 'Thumbnail Class', 'type' => 'text'],
             [
@@ -376,7 +380,6 @@ return [
                 'default_class' => 'object-cover',
                 'auto_fill_thumbnail' => true,
             ],
-            ['name' => 'order_url', 'label' => 'Order URL', 'type' => 'url'],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
@@ -408,33 +411,6 @@ return [
             ['name' => 'image_path', 'label' => 'Image', 'type' => 'image', 'required' => true],
             ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text'],
             ['name' => 'image_class', 'label' => 'Image Class', 'type' => 'text'],
-            ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
-            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
-        ],
-    ],
-    'product-feature' => [
-        'label' => 'Product Features',
-        'navigation_label' => 'Product Features',
-        'navigation_group' => 'Merchandise',
-        'navigation_icon' => 'list-bullet',
-        'model' => MerchandiseProductFeature::class,
-        'page_title' => 'Product Features',
-        'description' => 'Kelola fitur atau selling points untuk tiap produk merchandise.',
-        'searchable' => ['text'],
-        'with' => ['product'],
-        'default_sort' => [
-            ['column' => 'sort_order', 'direction' => 'asc'],
-            ['column' => 'id', 'direction' => 'asc'],
-        ],
-        'table_columns' => [
-            ['key' => 'product.name', 'label' => 'Product'],
-            ['key' => 'text', 'label' => 'Feature', 'truncate' => 60],
-            ['key' => 'sort_order', 'label' => 'Order'],
-            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
-        ],
-        'form_fields' => [
-            ['name' => 'merchandise_product_id', 'label' => 'Product', 'type' => 'select', 'required' => true, 'options_model' => MerchandiseProduct::class, 'option_label' => 'name'],
-            ['name' => 'text', 'label' => 'Feature Text', 'type' => 'textarea', 'required' => true, 'full_width' => true],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
@@ -481,6 +457,8 @@ return [
         'description' => 'Kelola sponsor, partner, tier, logo, url, dan deskripsi.',
         'searchable' => ['name', 'tier', 'description'],
         'with' => [],
+        'reorderable' => true,
+        'reorder_field' => 'sort_order',
         'default_sort' => [
             ['column' => 'sort_order', 'direction' => 'asc'],
             ['column' => 'id', 'direction' => 'asc'],
@@ -559,6 +537,8 @@ return [
         'description' => 'Kelola daftar pertanyaan dan jawaban yang tampil pada halaman FAQ.',
         'searchable' => ['question', 'answer'],
         'with' => [],
+        'reorderable' => true,
+        'reorder_field' => 'sort_order',
         'default_sort' => [
             ['column' => 'sort_order', 'direction' => 'asc'],
             ['column' => 'id', 'direction' => 'asc'],

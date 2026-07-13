@@ -111,6 +111,8 @@ class FestivalHistory
 
     protected static function fromModel(HistoryModel $history): array
     {
+        $plainContent = trim(strip_tags((string) $history->content));
+
         return [
             'year' => (string) $history->tahun,
             'title' => $history->title,
@@ -120,7 +122,7 @@ class FestivalHistory
             'capacity_label' => $history->capacity ? number_format($history->capacity) : null,
             'date' => $history->tanggal_acara?->toDateString(),
             'date_label' => $history->tanggal_acara?->format('d M Y'),
-            'summary' => $history->content,
+            'summary' => Str::limit($plainContent, 180),
             'content' => $history->content,
             'thumbnail' => $history->thumbnail,
             'media' => array_values($history->media ?? []),

@@ -7,16 +7,16 @@
 ])
 
 @if ($show)
-    <div class="fixed inset-0 z-[80]">
+    <div {{ $attributes->merge(['class' => 'fixed inset-0 z-[80] overflow-y-auto']) }}>
         @if ($closeAction)
-            <button type="button" class="absolute inset-0 bg-slate-950/70 dashboard-fade-in" wire:click="{{ $closeAction }}" aria-label="Close modal"></button>
+            <button type="button" class="fixed inset-0 bg-slate-950/70 dashboard-fade-in" wire:click="{{ $closeAction }}" aria-label="Close modal"></button>
         @else
-            <div class="absolute inset-0 bg-slate-950/70 dashboard-fade-in" aria-hidden="true"></div>
+            <div class="fixed inset-0 bg-slate-950/70 dashboard-fade-in" aria-hidden="true"></div>
         @endif
 
-        <div class="relative flex min-h-full items-center justify-center p-4">
-            <div class="dashboard-scale-in w-full {{ $maxWidth }} overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
-                <div class="flex items-start justify-between gap-4 border-b border-slate-200 p-5 dark:border-slate-800">
+        <div class="relative flex min-h-full items-start justify-center p-4 sm:p-6">
+            <div class="dashboard-scale-in my-auto flex max-h-[calc(100vh-2rem)] w-full {{ $maxWidth }} flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900 sm:max-h-[calc(100vh-3rem)]">
+                <div class="shrink-0 flex items-start justify-between gap-4 border-b border-slate-200 p-5 dark:border-slate-800">
                     <div>
                         <h2 class="text-xl font-extrabold tracking-tight text-slate-950 dark:text-white">{{ $title }}</h2>
                         @if ($description)
@@ -32,12 +32,12 @@
                     @endif
                 </div>
 
-                <div class="max-h-[75vh] overflow-y-auto p-5">
+                <div class="min-h-0 flex-1 overflow-y-auto p-5">
                     {{ $slot }}
                 </div>
 
                 @isset($footer)
-                    <div class="flex flex-wrap justify-end gap-3 border-t border-slate-200 p-5 dark:border-slate-800">
+                    <div class="shrink-0 flex flex-wrap justify-end gap-3 border-t border-slate-200 p-5 dark:border-slate-800">
                         {{ $footer }}
                     </div>
                 @endisset

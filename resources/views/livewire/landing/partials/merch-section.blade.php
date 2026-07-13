@@ -7,7 +7,7 @@
 
 <section id="merch" class="relative z-10 pb-24 pt-32">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
-        <div class="reveal text-center">
+        <div class="reveal {{ ($staticLayout ?? false) === true ? 'is-visible' : '' }} text-center">
             <h2 class="font-display text-5xl uppercase tracking-[0.12em] text-white sm:text-6xl">
                 Merchandise Drop
             </h2>

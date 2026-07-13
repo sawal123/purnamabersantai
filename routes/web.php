@@ -1,7 +1,11 @@
 <?php
 
 use App\Livewire\Dashboard\Overview as DashboardOverview;
+use App\Livewire\Dashboard\LandingMarqueePage as DashboardLandingMarqueePage;
+use App\Livewire\Dashboard\MerchandiseProductPage as DashboardMerchandiseProductPage;
 use App\Livewire\Dashboard\ResourcePage as DashboardResourcePage;
+use App\Livewire\Dashboard\SongPage as DashboardSongPage;
+use App\Livewire\Dashboard\YoutubePage as DashboardYoutubePage;
 use App\Livewire\Landing\About;
 use App\Livewire\Landing\Contact;
 use App\Livewire\Landing\Faq;
@@ -35,6 +39,19 @@ Route::livewire('/faq', Faq::class)->name('landing.faq');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('dashboard', DashboardOverview::class)->name('dashboard');
+    Route::livewire('dashboard/merchandise-product', DashboardMerchandiseProductPage::class)
+        ->defaults('resource', 'merchandise-product')
+        ->name('dashboard.merchandise-product');
+    Route::livewire('dashboard/song', DashboardSongPage::class)
+        ->defaults('resource', 'song')
+        ->name('dashboard.song');
+    Route::livewire('dashboard/landing-marquee', DashboardLandingMarqueePage::class)
+        ->defaults('resource', 'landing-marquee')
+        ->name('dashboard.landing-marquee');
+    Route::livewire('dashboard/youtube', DashboardYoutubePage::class)
+        ->defaults('resource', 'youtube')
+        ->name('dashboard.youtube');
+
     Route::livewire('dashboard/{resource}', DashboardResourcePage::class)
         ->whereIn('resource', DashboardResourceRegistry::keys())
         ->name('dashboard.resource');

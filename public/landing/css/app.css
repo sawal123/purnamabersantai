@@ -287,6 +287,48 @@ button:not(:disabled) {
         display: none;
       }
 
+      .history-story-content ul,
+      .history-story-content ol {
+        margin: 1rem 0;
+        padding-left: 1.35rem;
+      }
+
+      .history-story-content ul {
+        list-style: disc;
+      }
+
+      .history-story-content ol {
+        list-style: decimal;
+      }
+
+      .history-story-content a {
+        color: #fff700;
+        text-decoration: underline;
+        text-underline-offset: 0.18em;
+      }
+
+      .history-story-content h2,
+      .history-story-content h3 {
+        font-family: "Squada One", cursive;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #fff;
+      }
+
+      .history-story-content h2 {
+        font-size: 2rem;
+      }
+
+      .history-story-content h3 {
+        font-size: 1.6rem;
+      }
+
+      .history-story-content blockquote {
+        border-left: 3px solid #fff700;
+        padding-left: 1rem;
+        color: rgba(255, 255, 255, 0.86);
+      }
+
       .lineup-search-shell::before {
         content: "";
         position: absolute;
@@ -999,22 +1041,43 @@ button:not(:disabled) {
 }
 
 .merch-modal-thumbs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    position: relative;
+    padding: 0.75rem 0.85rem 0.95rem;
+}
+
+.merch-modal-thumbs-viewport {
+    position: relative;
+}
+
+.merch-modal-thumbs-track {
+    display: flex;
     gap: 0.65rem;
-    padding: 0.75rem 0.85rem 0.85rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding: 0.15rem 2.25rem;
+    scroll-behavior: smooth;
+    scroll-padding-inline: 2.25rem;
+    scroll-snap-type: x proximity;
+}
+
+.merch-modal-thumbs-viewport.is-single .merch-modal-thumbs-track {
+    justify-content: center;
+    padding-inline: 0.15rem;
 }
 
 .merch-modal-thumb {
+    flex: 0 0 clamp(4.4rem, 18vw, 5.6rem);
     overflow: hidden;
-    border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.9rem;
+    border: 2px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.03);
     opacity: 0.7;
+    scroll-snap-align: center;
     transition:
         opacity 0.2s ease,
         transform 0.2s ease,
-        border-color 0.2s ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .merch-modal-thumb:hover {
@@ -1023,7 +1086,8 @@ button:not(:disabled) {
 }
 
 .merch-modal-thumb.is-active {
-    border-color: rgba(255, 247, 0, 0.7);
+    border-color: #fff700;
+    box-shadow: 0 0 0 2px rgba(255, 247, 0, 0.22);
     opacity: 1;
 }
 
@@ -1034,6 +1098,56 @@ button:not(:disabled) {
     object-fit: cover;
 }
 
+.merch-modal-thumb-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(20, 20, 20, 0.78);
+    color: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 0.7rem 1.4rem rgba(0, 0, 0, 0.24);
+    transform: translateY(-50%);
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.merch-modal-thumb-arrow.is-prev {
+    left: 0;
+}
+
+.merch-modal-thumb-arrow.is-next {
+    right: 0;
+}
+
+.merch-modal-thumb-arrow svg {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.merch-modal-thumb-arrow:hover {
+    border-color: rgba(255, 247, 0, 0.72);
+    background: rgba(47, 46, 46, 0.96);
+    color: #fff700;
+    transform: translateY(-50%) scale(1.04);
+}
+
+.merch-modal-thumb-counter {
+    margin-top: 0.55rem;
+    text-align: center;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: rgba(255, 255, 255, 0.52);
+}
+
 .merch-modal-copy {
     display: flex;
     flex-direction: column;
@@ -1041,20 +1155,86 @@ button:not(:disabled) {
     padding: 0.25rem 0.15rem 0.35rem;
 }
 
-.merch-modal-features li {
-    position: relative;
-    padding-left: 1rem;
+.merch-modal-description p + p,
+.merch-modal-description ul,
+.merch-modal-description ol,
+.merch-modal-description blockquote {
+    margin-top: 0.85rem;
 }
 
-.merch-modal-features li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.55rem;
-    height: 0.35rem;
-    width: 0.35rem;
-    border-radius: 9999px;
-    background: #fff700;
+.merch-modal-description ul,
+.merch-modal-description ol {
+    padding-left: 1.25rem;
+}
+
+.merch-modal-description ul {
+    list-style: disc;
+}
+
+.merch-modal-description ol {
+    list-style: decimal;
+}
+
+.merch-modal-description a {
+    color: #fff700;
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+}
+
+.merch-modal-description h2,
+.merch-modal-description h3 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff700;
+}
+
+.merch-modal-description blockquote {
+    border-left: 3px solid rgba(255, 247, 0, 0.65);
+    padding-left: 1rem;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.merch-order-form {
+    max-width: 27rem;
+}
+
+.merch-order-field {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.merch-order-field[hidden] {
+    display: none;
+}
+
+.merch-order-field label {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 247, 0, 0.86);
+}
+
+.merch-order-field select,
+.merch-order-field input {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.9rem 1rem;
+    color: #ffffff;
+    outline: none;
+}
+
+.merch-order-field select:focus,
+.merch-order-field input:focus {
+    border-color: rgba(255, 247, 0, 0.72);
+    box-shadow: 0 0 0 4px rgba(255, 247, 0, 0.12);
+}
+
+.merch-order-field option {
+    color: #2f2e2e;
 }
 
 @media (min-width: 1024px) {

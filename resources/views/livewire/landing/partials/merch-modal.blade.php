@@ -3,7 +3,26 @@
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
     $formatPrice = fn ($product) => $product->currency.' '.number_format($product->price, 0, ',', '.');
-    $modalProducts = $merchandiseProducts->mapWithKeys(function ($product) use ($imageUrl, $formatPrice) {
+    $safeDescription = function (?string $description, string $fallback): string {
+        $content = trim((string) $description) ?: $fallback;
+        $content = strip_tags($content, '<p><br><strong><b><em><i><u><ul><ol><li><a><h2><h3><blockquote>');
+        $content = preg_replace('/\s+on[a-z]+\s*=\s*(["\']).*?\1/i', '', $content) ?? $content;
+
+        return preg_replace('/javascript\s*:/i', '', $content) ?? $content;
+    };
+    $whatsappChannel = collect($contactChannels ?? [])
+        ->first(fn ($channel) => $channel->type === 'whatsapp' && (filled($channel->url) || filled($channel->value)));
+    $whatsappOrderUrl = null;
+
+    if ($whatsappChannel?->url) {
+        $whatsappOrderUrl = $whatsappChannel->url;
+    } elseif ($whatsappChannel?->value) {
+        $phoneNumber = preg_replace('/\D+/', '', $whatsappChannel->value);
+        $phoneNumber = str_starts_with((string) $phoneNumber, '0') ? '62'.substr((string) $phoneNumber, 1) : $phoneNumber;
+        $whatsappOrderUrl = $phoneNumber ? 'https://wa.me/'.$phoneNumber : null;
+    }
+
+    $modalProducts = $merchandiseProducts->mapWithKeys(function ($product) use ($imageUrl, $formatPrice, $safeDescription, $whatsappOrderUrl) {
         $gallery = $product->images->map(fn ($image) => [
             'src' => $imageUrl($image->image_path, asset('landing/assets/Rectangle 17.png')),
             'alt' => $image->alt_text ?: $product->name,
@@ -23,9 +42,11 @@
                 'kicker' => $product->kicker ?: 'Official Merch',
                 'title' => $product->name,
                 'price' => $formatPrice($product),
-                'description' => $product->description ?: 'Merchandise resmi Purnama Bersantai.',
-                'features' => $product->features->pluck('text')->values(),
-                'orderUrl' => $product->order_url ?: route('landing.contact'),
+                'description' => $safeDescription($product->description, 'Merchandise resmi Purnama Bersantai.'),
+                'stockQuantity' => (int) ($product->stock_quantity ?? 0),
+                'sizes' => collect($product->size_options ?? [])->filter()->values(),
+                'colors' => collect($product->color_options ?? [])->filter()->values(),
+                'orderUrl' => $whatsappOrderUrl ?: route('landing.contact'),
                 'gallery' => $gallery,
             ],
         ];
@@ -86,21 +107,36 @@
                 >
                     Rp0
                 </p>
-                <p
+                <div
                     id="merch-modal-description"
-                    class="mt-5 text-base leading-relaxed text-white/72"
+                    class="merch-modal-description mt-5 text-base leading-relaxed text-white/72"
                 >
                     Detail produk akan tampil di sini.
-                </p>
-                <ul
-                    id="merch-modal-features"
-                    class="merch-modal-features mt-6 space-y-3 text-sm font-medium text-white/72 sm:text-base"
-                ></ul>
+                </div>
+
+                <div class="merch-order-form mt-6 space-y-4">
+                    <p id="merch-modal-stock" class="text-sm font-semibold text-white/65"></p>
+
+                    <div id="merch-modal-size-field" class="merch-order-field">
+                        <label for="merch-modal-size">Size</label>
+                        <select id="merch-modal-size"></select>
+                    </div>
+
+                    <div id="merch-modal-color-field" class="merch-order-field">
+                        <label for="merch-modal-color">Warna</label>
+                        <select id="merch-modal-color"></select>
+                    </div>
+
+                    <div class="merch-order-field">
+                        <label for="merch-modal-qty">Qty</label>
+                        <input id="merch-modal-qty" type="number" min="1" value="1" inputmode="numeric" />
+                    </div>
+                </div>
+
                 <a
                     id="merch-modal-order"
                     href="{{ route('landing.contact') }}"
                     class="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-ember px-6 py-4 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e] sm:w-auto sm:min-w-[12rem]"
-                    wire:navigate
                 >
                     Order
                 </a>

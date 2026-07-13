@@ -36,8 +36,20 @@
             <x-ui-dashboard.text-input label="Search" name="search" placeholder="Cari data..." error="search"
                 wire:model.live.debounce.300ms="search" />
 
-            <x-ui-dashboard.select label="Rows per page" name="per_page" :options="$this->perPageChoices" placeholder="Pilih jumlah data"
-                error="perPage" wire:model.live="perPage" />
+            <label class="block">
+                <span class="mb-2 block text-sm font-bold text-slate-800 dark:text-slate-100">Rows per page</span>
+                <select name="per_page" wire:model.live="perPage"
+                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-950 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:ring-indigo-500/10">
+                    <option value="">Pilih jumlah data</option>
+                    @foreach ($this->perPageChoices as $option)
+                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                    @endforeach
+                </select>
+
+                @error('perPage')
+                    <span class="mt-2 block text-sm font-semibold text-rose-500">{{ $message }}</span>
+                @enderror
+            </label>
         </div>
 
         <x-ui-dashboard.button wire:click="openPrimaryAction">
@@ -78,6 +90,31 @@
                                 class="inline-flex size-10 items-center justify-center rounded-2xl bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
                                 <x-contact-channel-icon :icon="data_get($record, $column['key'])" :type="data_get($record, 'type')" class="size-5" />
                             </span>
+                        @elseif ($this->isReorderColumn($column))
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="inline-flex min-w-10 justify-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300">
+                                    {{ $this->formatCellValue($record, $column) }}
+                                </span>
+
+                                <div
+                                    class="inline-flex overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+                                    <button type="button"
+                                        class="grid size-9 place-items-center text-slate-600 transition hover:bg-slate-100 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-indigo-300"
+                                        title="Naikkan urutan"
+                                        wire:click="moveSortOrder({{ $record->getKey() }}, 'up')"
+                                        wire:loading.attr="disabled">
+                                        <x-ui-dashboard.icon name="arrow-up" class="size-4" />
+                                    </button>
+                                    <button type="button"
+                                        class="grid size-9 place-items-center border-l border-slate-200 text-slate-600 transition hover:bg-slate-100 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-indigo-300"
+                                        title="Turunkan urutan"
+                                        wire:click="moveSortOrder({{ $record->getKey() }}, 'down')"
+                                        wire:loading.attr="disabled">
+                                        <x-ui-dashboard.icon name="arrow-down" class="size-4" />
+                                    </button>
+                                </div>
+                            </div>
                         @else
                             {{ $this->formatCellValue($record, $column) }}
                         @endif
@@ -106,12 +143,74 @@
         @endforelse
 
         <x-slot:pagination>
-            {{ $records->links() }}
+            @if ($records->hasPages())
+                @php
+                    $currentPage = $records->currentPage();
+                    $lastPage = $records->lastPage();
+                    $startPage = max(1, $currentPage - 2);
+                    $endPage = min($lastPage, $currentPage + 2);
+                @endphp
+
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Menampilkan {{ $records->firstItem() }}-{{ $records->lastItem() }} dari {{ $records->total() }} data
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button"
+                            class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-45 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                            wire:click="previousPage" wire:loading.attr="disabled" @disabled($records->onFirstPage())>
+                            Prev
+                        </button>
+
+                        @if ($startPage > 1)
+                            <button type="button"
+                                class="grid size-10 place-items-center rounded-xl border border-slate-200 text-sm font-bold text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                wire:click="gotoPage(1)" wire:loading.attr="disabled">
+                                1
+                            </button>
+                            @if ($startPage > 2)
+                                <span class="px-1 text-sm font-bold text-slate-400">...</span>
+                            @endif
+                        @endif
+
+                        @for ($page = $startPage; $page <= $endPage; $page++)
+                            <button type="button"
+                                class="{{ $page === $currentPage ? 'border-indigo-500 bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800' }} grid size-10 place-items-center rounded-xl border text-sm font-bold transition"
+                                wire:click="gotoPage({{ $page }})" wire:loading.attr="disabled">
+                                {{ $page }}
+                            </button>
+                        @endfor
+
+                        @if ($endPage < $lastPage)
+                            @if ($endPage < $lastPage - 1)
+                                <span class="px-1 text-sm font-bold text-slate-400">...</span>
+                            @endif
+                            <button type="button"
+                                class="grid size-10 place-items-center rounded-xl border border-slate-200 text-sm font-bold text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                wire:click="gotoPage({{ $lastPage }})" wire:loading.attr="disabled">
+                                {{ $lastPage }}
+                            </button>
+                        @endif
+
+                        <button type="button"
+                            class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-45 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                            wire:click="nextPage" wire:loading.attr="disabled" @disabled(! $records->hasMorePages())>
+                            Next
+                        </button>
+                    </div>
+                </div>
+            @else
+                <p class="text-sm font-medium text-slate-500 dark:text-slate-400">
+                    Menampilkan {{ $records->count() }} data
+                </p>
+            @endif
         </x-slot:pagination>
     </x-ui-dashboard.table>
 
     <x-ui-dashboard.modal :show="$showFormModal" :title="$editingId ? 'Edit ' . $this->resourceConfig['label'] : 'Tambah ' . $this->resourceConfig['label']" description="Gunakan form berikut untuk menyimpan data."
-        closeAction="closeFormModal" maxWidth="max-w-5xl">
+        closeAction="closeFormModal" maxWidth="max-w-5xl"
+        wire:key="dashboard-form-modal-{{ $this->resource }}">
         <form wire:submit="save" class="grid gap-4 md:grid-cols-2">
             @if ($this->resource === 'seo-setting')
                 <div class="md:col-span-2 rounded-2xl border border-amber-400/40 bg-amber-400/10 p-4">
@@ -141,7 +240,7 @@
                 @php
                     $fullWidth =
                         ($field['full_width'] ?? false) === true ||
-                        in_array($field['type'], ['textarea', 'json', 'image', 'image_gallery', 'image_list'], true);
+                        in_array($field['type'], ['textarea', 'json', 'rich_text', 'option_list', 'image', 'image_gallery', 'image_list'], true);
                 @endphp
 
                 <div class="{{ $fullWidth ? 'md:col-span-2' : '' }}">
@@ -149,11 +248,32 @@
                         <x-ui-dashboard.text-input :label="$field['label']" :name="$field['name']" :type="$field['type'] === 'datetime' ? 'datetime-local' : (in_array($field['type'], ['number', 'date'], true) ? $field['type'] : ($field['type'] === 'url' ? 'url' : 'text'))" :error="'form.' . $field['name']"
                             wire:model="form.{{ $field['name'] }}" />
                     @elseif ($field['type'] === 'select')
-                        <x-ui-dashboard.select :label="$field['label']" :name="$field['name']" :options="$this->optionsFor($field['name'])" :error="'form.' . $field['name']"
-                            wire:model="form.{{ $field['name'] }}" />
+                        <label class="block">
+                            <span class="mb-2 block text-sm font-bold text-slate-800 dark:text-slate-100">{{ $field['label'] }}</span>
+                            <select name="{{ $field['name'] }}" wire:model="form.{{ $field['name'] }}"
+                                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-950 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:ring-indigo-500/10">
+                                <option value="">Pilih {{ $field['label'] }}</option>
+                                @foreach ($this->optionsFor($field['name']) as $option)
+                                    <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                                @endforeach
+                            </select>
+
+                            @error('form.' . $field['name'])
+                                <span class="mt-2 block text-sm font-semibold text-rose-500">{{ $message }}</span>
+                            @enderror
+                        </label>
                     @elseif (in_array($field['type'], ['textarea', 'json'], true))
                         <x-ui-dashboard.textarea :label="$field['label']" :name="$field['name']" :rows="$field['type'] === 'json' ? 8 : 4"
                             :error="'form.' . $field['name']" wire:model="form.{{ $field['name'] }}" />
+                    @elseif ($field['type'] === 'option_list')
+                        <x-ui-dashboard.textarea :label="$field['label']" :name="$field['name']" rows="4" :placeholder="$field['placeholder'] ?? 'Satu opsi per baris'"
+                            :error="'form.' . $field['name']" wire:model="form.{{ $field['name'] }}" />
+                        <p class="mt-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                            Isi satu pilihan per baris. Kosongkan jika produk tidak membutuhkan pilihan ini.
+                        </p>
+                    @elseif ($field['type'] === 'rich_text')
+                        <x-ui-dashboard.rich-text-editor :label="$field['label']" :name="$field['name']" :error="'form.' . $field['name']"
+                            wire:model="form.{{ $field['name'] }}" />
                     @elseif ($field['type'] === 'image')
                         <x-ui-dashboard.image-input :label="$field['label']" :name="$field['name']" :current="$this->currentImageUrl($field['name'])"
                             :preview="$this->imagePreviewUrl($field['name'])" :error="'imageUploads.' . $field['name']" wire:model="imageUploads.{{ $field['name'] }}" />
@@ -207,7 +327,7 @@
                                     type="file"
                                     accept="image/png,image/jpeg,image/jpg,image/webp"
                                     multiple
-                                    class="sr-only"
+                                    class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                                     wire:model="imageUploads.{{ $field['name'] }}"
                                 >
                             </label>
@@ -244,8 +364,15 @@
                                                 data-item-key="{{ $image['item_key'] }}"
                                                 data-component-id="{{ $this->getId() }}" draggable="true"
                                                 class="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900/60">
-                                                <img src="{{ $image['url'] }}" alt="{{ $image['alt'] }}"
-                                                    class="h-40 w-full object-cover">
+                                                @if (filled($image['url']))
+                                                    <img src="{{ $image['url'] }}" alt="{{ $image['alt'] }}"
+                                                        class="h-40 w-full object-cover">
+                                                @else
+                                                    <div
+                                                        class="grid h-40 place-items-center bg-zinc-100 text-center text-xs font-semibold text-zinc-500 dark:bg-zinc-950 dark:text-zinc-400">
+                                                        Preview sedang diproses
+                                                    </div>
+                                                @endif
 
                                                 <div
                                                     class="flex items-center justify-between gap-3 border-t border-zinc-200 px-3 py-3 dark:border-zinc-700">
@@ -299,7 +426,7 @@
                             @endif
 
                             <label
-                                class="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 px-4 py-6 text-center transition hover:border-amber-400 hover:bg-amber-50 dark:border-zinc-700 dark:bg-zinc-950/60 dark:hover:border-amber-400 dark:hover:bg-amber-400/10">
+                                class="group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 px-4 py-6 text-center transition hover:border-amber-400 hover:bg-amber-50 dark:border-zinc-700 dark:bg-zinc-950/60 dark:hover:border-amber-400 dark:hover:bg-amber-400/10">
                                 <div
                                     class="mb-4 flex size-14 items-center justify-center rounded-full bg-white text-zinc-500 ring-1 ring-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:ring-zinc-700">
                                     <x-ui-dashboard.icon name="photo" class="size-7" />
@@ -311,7 +438,7 @@
                                     maksimal 4MB per file</span>
 
                                 <input name="{{ $field['name'] }}" type="file"
-                                    accept="image/png,image/jpeg,image/jpg,image/webp" multiple class="sr-only"
+                                    accept="image/png,image/jpeg,image/jpg,image/webp" multiple class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                                     wire:model="imageUploads.{{ $field['name'] }}">
                             </label>
 

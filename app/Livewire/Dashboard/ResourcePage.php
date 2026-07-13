@@ -8,6 +8,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -172,15 +173,25 @@ class ResourcePage extends Component
         $payload = $this->storeImageUploads($payload);
 
         $modelClass = $this->resourceConfig['model'];
+        $record = null;
 
         if ($this->editingId !== null) {
             $record = $modelClass::query()->findOrFail($this->editingId);
-            $record->update($payload);
-            $this->syncImageGalleryFields($record);
+
+            DB::transaction(function () use ($record, &$payload) {
+                $payload = $this->reserveSortOrder($payload, $record);
+                $record->update($payload);
+                $this->syncImageGalleryFields($record);
+            });
+
             $message = "{$this->resourceConfig['label']} updated successfully.";
         } else {
-            $record = $modelClass::query()->create($payload);
-            $this->syncImageGalleryFields($record);
+            DB::transaction(function () use ($modelClass, &$payload, &$record) {
+                $payload = $this->reserveSortOrder($payload);
+                $record = $modelClass::query()->create($payload);
+                $this->syncImageGalleryFields($record);
+            });
+
             $message = "{$this->resourceConfig['label']} created successfully.";
         }
 
@@ -292,6 +303,51 @@ class ResourcePage extends Component
         $this->loadFieldOptions();
     }
 
+    public function moveSortOrder(int $id, string $direction): void
+    {
+        if (! $this->supportsSortOrderControls() || ! in_array($direction, ['up', 'down'], true)) {
+            return;
+        }
+
+        $modelClass = $this->resourceConfig['model'];
+        $sortField = $this->sortOrderField();
+
+        DB::transaction(function () use ($modelClass, $sortField, $id, $direction) {
+            $records = $modelClass::query()
+                ->orderBy($sortField)
+                ->orderBy('id')
+                ->get()
+                ->values();
+
+            $currentIndex = $records->search(
+                fn (Model $record) => (int) $record->getKey() === $id
+            );
+
+            if ($currentIndex === false) {
+                return;
+            }
+
+            $targetIndex = $direction === 'up' ? $currentIndex - 1 : $currentIndex + 1;
+
+            if ($targetIndex < 0 || $targetIndex >= $records->count()) {
+                return;
+            }
+
+            $reordered = $records->all();
+            [$reordered[$currentIndex], $reordered[$targetIndex]] = [$reordered[$targetIndex], $reordered[$currentIndex]];
+
+            foreach ($reordered as $index => $record) {
+                $nextSortOrder = $index + 1;
+
+                if ((int) $record->getAttribute($sortField) === $nextSortOrder) {
+                    continue;
+                }
+
+                $record->forceFill([$sortField => $nextSortOrder])->save();
+            }
+        });
+    }
+
     public function getRecordsProperty(): LengthAwarePaginator
     {
         if (! Schema::hasTable($this->tableName())) {
@@ -387,6 +443,12 @@ class ResourcePage extends Component
         return ($column['type'] ?? 'text') === 'contact_icon';
     }
 
+    public function isReorderColumn(array $column): bool
+    {
+        return $this->supportsSortOrderControls()
+            && ($column['key'] ?? null) === $this->sortOrderField();
+    }
+
     public function imageUrl(Model $record, array $column): ?string
     {
         $value = data_get($record, $column['key']);
@@ -404,14 +466,15 @@ class ResourcePage extends Component
     {
         $upload = $this->imageUploads[$fieldName] ?? null;
 
-        return $upload instanceof TemporaryUploadedFile ? $upload->temporaryUrl() : null;
+        return $upload instanceof TemporaryUploadedFile ? $this->temporaryUploadUrl($upload) : null;
     }
 
     public function imageGalleryPreviewUrls(string $fieldName): array
     {
         return collect($this->imageUploads[$fieldName] ?? [])
             ->filter(fn ($upload) => $upload instanceof TemporaryUploadedFile)
-            ->map(fn (TemporaryUploadedFile $upload) => $upload->temporaryUrl())
+            ->map(fn (TemporaryUploadedFile $upload) => $this->temporaryUploadUrl($upload))
+            ->filter()
             ->values()
             ->all();
     }
@@ -421,9 +484,10 @@ class ResourcePage extends Component
         return collect($this->imageUploads[$fieldName] ?? [])
             ->filter(fn ($upload) => $upload instanceof TemporaryUploadedFile)
             ->map(fn (TemporaryUploadedFile $upload) => [
-                'url' => $upload->temporaryUrl(),
+                'url' => $this->temporaryUploadUrl($upload),
                 'name' => $upload->getClientOriginalName(),
             ])
+            ->filter(fn (array $preview) => filled($preview['url']))
             ->values()
             ->all();
     }
@@ -459,6 +523,7 @@ class ResourcePage extends Component
     public function currentImageGallery(string $fieldName): array
     {
         return collect($this->form[$fieldName] ?? [])
+            ->filter(fn ($item) => is_array($item))
             ->map(function (array $item) {
                 $path = $item['path'] ?? null;
 
@@ -484,14 +549,17 @@ class ResourcePage extends Component
         $uploads = $this->keyedImageGalleryUploads($fieldName);
 
         return collect($this->form[$fieldName] ?? [])
+            ->filter(fn ($item) => is_array($item))
             ->map(function (array $item) use ($uploads) {
                 $path = $item['path'] ?? null;
                 $uploadKey = $item['upload_key'] ?? null;
 
                 if ($uploadKey && isset($uploads[$uploadKey])) {
+                    $temporaryUrl = $this->temporaryUploadUrl($uploads[$uploadKey]);
+
                     return [
                         'item_key' => $item['item_key'] ?? ('upload-'.$uploadKey),
-                        'url' => $uploads[$uploadKey]->temporaryUrl(),
+                        'url' => $temporaryUrl,
                         'title' => $item['title'] ?? '',
                         'alt' => $item['alt'] ?? '',
                         'is_new' => true,
@@ -515,6 +583,17 @@ class ResourcePage extends Component
             ->filter()
             ->values()
             ->all();
+    }
+
+    public function temporaryUploadUrl(TemporaryUploadedFile $upload): ?string
+    {
+        try {
+            return $upload->temporaryUrl();
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return null;
+        }
     }
 
     public function formatCellValue(Model $record, array $column): string
@@ -571,6 +650,62 @@ class ResourcePage extends Component
         }
 
         return $query;
+    }
+
+    protected function supportsSortOrderControls(): bool
+    {
+        return (bool) ($this->resourceConfig['reorderable'] ?? false)
+            && is_string($this->sortOrderField())
+            && $this->sortOrderField() !== '';
+    }
+
+    protected function sortOrderField(): string
+    {
+        return (string) ($this->resourceConfig['reorder_field'] ?? 'sort_order');
+    }
+
+    protected function reserveSortOrder(array $payload, ?Model $record = null): array
+    {
+        if (! $this->supportsSortOrderControls()) {
+            return $payload;
+        }
+
+        $sortField = $this->sortOrderField();
+
+        if (! array_key_exists($sortField, $payload)) {
+            return $payload;
+        }
+
+        $modelClass = $this->resourceConfig['model'];
+        $records = $modelClass::query()
+            ->when($record !== null, fn (Builder $query) => $query->whereKeyNot($record->getKey()))
+            ->orderBy($sortField)
+            ->orderBy('id')
+            ->get();
+
+        $rawTarget = (int) ($payload[$sortField] ?? 0);
+        $maxPosition = $records->count() + 1;
+        $targetPosition = $record === null && $rawTarget <= 0
+            ? $maxPosition
+            : max(1, min($rawTarget, $maxPosition));
+
+        $position = 1;
+
+        foreach ($records as $orderedRecord) {
+            if ($position === $targetPosition) {
+                $position++;
+            }
+
+            if ((int) $orderedRecord->getAttribute($sortField) !== $position) {
+                $orderedRecord->forceFill([$sortField => $position])->save();
+            }
+
+            $position++;
+        }
+
+        $payload[$sortField] = $targetPosition;
+
+        return $payload;
     }
 
     protected function loadFieldOptions(): void
@@ -650,6 +785,12 @@ class ResourcePage extends Component
 
             if ($type === 'image_list') {
                 $form[$field['name']] = [];
+
+                continue;
+            }
+
+            if ($type === 'option_list') {
+                $form[$field['name']] = '';
 
                 continue;
             }
@@ -742,6 +883,14 @@ class ResourcePage extends Component
                 continue;
             }
 
+            if ($type === 'option_list') {
+                $this->form[$name] = collect(is_array($value) ? $value : [])
+                    ->filter(fn ($item) => is_string($item) && trim($item) !== '')
+                    ->implode("\n");
+
+                continue;
+            }
+
             if ($type === 'link_list') {
                 $fallbackField = $field['sync_first_url_to'] ?? null;
                 $fallbackUrl = $fallbackField ? $record->getAttribute($fallbackField) : null;
@@ -796,6 +945,17 @@ class ResourcePage extends Component
             if ($type === 'image_list') {
                 $payload[$name] = collect(is_array($value) ? $value : [])
                     ->filter(fn ($path) => is_string($path) && trim($path) !== '')
+                    ->values()
+                    ->all();
+
+                continue;
+            }
+
+            if ($type === 'option_list') {
+                $payload[$name] = collect(preg_split('/\R|,/', (string) $value) ?: [])
+                    ->map(fn (string $item) => trim($item))
+                    ->filter()
+                    ->unique()
                     ->values()
                     ->all();
 
@@ -879,9 +1039,9 @@ class ResourcePage extends Component
 
             $ruleSet[] = ($field['required'] ?? false) && $type !== 'image' ? 'required' : 'nullable';
 
-            if ($type === 'text' || $type === 'textarea') {
+            if (in_array($type, ['text', 'textarea', 'rich_text', 'option_list'], true)) {
                 $ruleSet[] = 'string';
-                $ruleSet[] = $type === 'text' ? 'max:255' : 'max:5000';
+                $ruleSet[] = $type === 'text' ? 'max:255' : 'max:12000';
             }
 
             if (in_array($type, ['date', 'datetime'], true)) {
@@ -1411,8 +1571,19 @@ PROMPT;
     {
         return collect($this->imageUploads[$fieldName] ?? [])
             ->filter(fn ($upload) => $upload instanceof TemporaryUploadedFile)
-            ->mapWithKeys(fn (TemporaryUploadedFile $upload) => [$upload->getFilename() => $upload])
+            ->mapWithKeys(fn (TemporaryUploadedFile $upload) => [
+                $this->temporaryUploadKey($upload) => $upload,
+            ])
             ->all();
+    }
+
+    protected function temporaryUploadKey(TemporaryUploadedFile $upload): string
+    {
+        return sha1(implode('|', [
+            $upload->getFilename(),
+            $upload->getClientOriginalName(),
+            (string) $upload->getSize(),
+        ]));
     }
 
     protected function defaultLinkListItem(): array

@@ -13,7 +13,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'name',
     'price',
     'currency',
+    'stock_quantity',
     'description',
+    'size_options',
+    'color_options',
     'thumbnail_path',
     'thumbnail_alt',
     'thumbnail_class',
@@ -27,6 +30,9 @@ class MerchandiseProduct extends Model
     {
         return [
             'price' => 'integer',
+            'stock_quantity' => 'integer',
+            'size_options' => 'array',
+            'color_options' => 'array',
             'is_active' => 'boolean',
         ];
     }

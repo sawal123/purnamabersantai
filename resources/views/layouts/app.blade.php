@@ -4,6 +4,9 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
     <head>
         @include('partials.head')
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Squada+One&display=swap" rel="stylesheet" />
         <meta name="color-scheme" content="light dark" />
         <script>
             (() => {
@@ -20,14 +23,42 @@
     <body class="min-h-screen bg-slate-100 text-slate-800 antialiased transition-colors dark:bg-slate-950 dark:text-slate-100">
         @php
             $resourceGroups = \App\Support\DashboardResourceRegistry::navigation();
+            $resourceGroups = collect($resourceGroups)
+                ->map(function (array $group) {
+                    if (($group['heading'] ?? null) === 'Media & Partnership') {
+                        $group['items'][] = [
+                            'key' => 'landing-marquee',
+                            'label' => 'Landing Marquees',
+                            'icon' => 'list-bullet',
+                            'route' => route('dashboard.landing-marquee'),
+                        ];
+                        $group['items'][] = [
+                            'key' => 'song',
+                            'label' => 'Songs',
+                            'icon' => 'music-note',
+                            'route' => route('dashboard.song'),
+                        ];
+                        $group['items'][] = [
+                            'key' => 'youtube',
+                            'label' => 'YouTube Videos',
+                            'icon' => 'play',
+                            'route' => route('dashboard.youtube'),
+                        ];
+                    }
+
+                    return $group;
+                })
+                ->values()
+                ->all();
             $currentResource = request()->route('resource');
             $user = auth()->user();
             $avatarUrl = 'https://ui-avatars.com/api/?name='.rawurlencode($user?->name ?? 'Admin').'&background=4f46e5&color=fff';
+            $currentResourceLabel = $currentResource
+                ? collect($resourceGroups)->flatMap(fn ($group) => $group['items'])->firstWhere('key', $currentResource)['label'] ?? null
+                : null;
             $pageTitle = filled($title ?? null)
                 ? $title
-                : (request()->routeIs('dashboard.resource')
-                    ? collect($resourceGroups)->flatMap(fn ($group) => $group['items'])->firstWhere('key', $currentResource)['label'] ?? 'Dashboard'
-                    : 'Dashboard');
+                : ($currentResourceLabel ?? 'Dashboard');
         @endphp
 
         <div id="dashboardSidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-950/55 backdrop-blur-sm lg:hidden" data-dashboard-sidebar-overlay></div>
@@ -49,7 +80,7 @@
                 </button>
             </div>
 
-            <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-6">
+            <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-6" data-dashboard-sidebar-nav>
                 <p class="mb-3 px-3 text-[11px] font-bold uppercase tracking-[.18em] text-slate-400">Overview</p>
                 <a
                     href="{{ route('dashboard') }}"
@@ -64,9 +95,9 @@
                     <p class="mb-3 mt-7 px-3 text-[11px] font-bold uppercase tracking-[.18em] text-slate-400">{{ $group['heading'] }}</p>
 
                     @foreach ($group['items'] as $item)
-                        @php($isCurrent = request()->routeIs('dashboard.resource') && $currentResource === $item['key'])
+                        @php($isCurrent = $currentResource === $item['key'])
                         <a
-                            href="{{ route('dashboard.resource', $item['key']) }}"
+                            href="{{ $item['route'] ?? route('dashboard.resource', $item['key']) }}"
                             wire:navigate
                             class="{{ $isCurrent ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white' }} group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium transition"
                         >
@@ -155,27 +186,96 @@
         @fluxScripts
         <script>
             (() => {
-                const sidebar = document.querySelector('[data-dashboard-sidebar]');
-                const overlay = document.querySelector('[data-dashboard-sidebar-overlay]');
+                const sidebarScrollKey = 'purnama-dashboard-sidebar-scroll-top';
 
                 const setSidebar = (open) => {
+                    const sidebar = document.querySelector('[data-dashboard-sidebar]');
+                    const overlay = document.querySelector('[data-dashboard-sidebar-overlay]');
+
                     sidebar?.classList.toggle('-translate-x-full', ! open);
                     overlay?.classList.toggle('hidden', ! open);
                 };
 
-                document.querySelectorAll('[data-dashboard-sidebar-open]').forEach((button) => button.addEventListener('click', () => setSidebar(true)));
-                document.querySelectorAll('[data-dashboard-sidebar-close], [data-dashboard-sidebar-overlay]').forEach((button) => button.addEventListener('click', () => setSidebar(false)));
-                document.querySelectorAll('[data-dashboard-theme-toggle]').forEach((button) => {
-                    button.addEventListener('click', () => {
-                        document.documentElement.classList.toggle('dark');
-                        localStorage.setItem('dashboard-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-                    });
-                });
-                document.addEventListener('keydown', (event) => {
-                    if (event.key === 'Escape') {
-                        setSidebar(false);
+                const sidebarNav = () => document.querySelector('[data-dashboard-sidebar-nav]');
+
+                const saveSidebarScroll = () => {
+                    const nav = sidebarNav();
+
+                    if (! nav) {
+                        return;
                     }
-                });
+
+                    sessionStorage.setItem(sidebarScrollKey, String(nav.scrollTop));
+                };
+
+                const restoreSidebarScroll = () => {
+                    const nav = sidebarNav();
+
+                    if (! nav) {
+                        return;
+                    }
+
+                    const savedScrollTop = Number(sessionStorage.getItem(sidebarScrollKey) || 0);
+
+                    requestAnimationFrame(() => {
+                        nav.scrollTop = savedScrollTop;
+                    });
+                };
+
+                const bindDashboardShell = () => {
+                    const nav = sidebarNav();
+
+                    if (nav && nav.dataset.dashboardScrollBound !== 'true') {
+                        nav.dataset.dashboardScrollBound = 'true';
+                        nav.addEventListener('scroll', saveSidebarScroll, { passive: true });
+                    }
+
+                    document.querySelectorAll('[data-dashboard-sidebar-open]').forEach((button) => {
+                        if (button.dataset.dashboardBound === 'true') {
+                            return;
+                        }
+
+                        button.dataset.dashboardBound = 'true';
+                        button.addEventListener('click', () => setSidebar(true));
+                    });
+
+                    document.querySelectorAll('[data-dashboard-sidebar-close], [data-dashboard-sidebar-overlay]').forEach((button) => {
+                        if (button.dataset.dashboardBound === 'true') {
+                            return;
+                        }
+
+                        button.dataset.dashboardBound = 'true';
+                        button.addEventListener('click', () => setSidebar(false));
+                    });
+
+                    document.querySelectorAll('[data-dashboard-theme-toggle]').forEach((button) => {
+                        if (button.dataset.dashboardBound === 'true') {
+                            return;
+                        }
+
+                        button.dataset.dashboardBound = 'true';
+                        button.addEventListener('click', () => {
+                            document.documentElement.classList.toggle('dark');
+                            localStorage.setItem('dashboard-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+                        });
+                    });
+
+                    restoreSidebarScroll();
+                };
+
+                bindDashboardShell();
+
+                if (window.__purnamaDashboardShellBound !== true) {
+                    window.__purnamaDashboardShellBound = true;
+
+                    document.addEventListener('livewire:navigate', saveSidebarScroll);
+                    document.addEventListener('livewire:navigated', bindDashboardShell);
+                    document.addEventListener('keydown', (event) => {
+                        if (event.key === 'Escape') {
+                            setSidebar(false);
+                        }
+                    });
+                }
             })();
         </script>
     </body>

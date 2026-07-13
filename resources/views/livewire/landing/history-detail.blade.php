@@ -8,6 +8,11 @@
     $heroImage = $imageUrl($media[0] ?? ($history['thumbnail'] ?? null), asset('landing/assets/Rectangle 17.png'));
     $secondaryMedia = array_slice($media, 1);
     $galleryImages = count($gallery) > 0 ? $gallery : $secondaryMedia;
+    $storyContent = trim((string) ($history['content'] ?? $history['summary']));
+    $storyHasHtml = $storyContent !== strip_tags($storyContent);
+    $safeStoryContent = strip_tags($storyContent, '<p><br><strong><b><em><i><u><ul><ol><li><a><h2><h3><blockquote>');
+    $safeStoryContent = preg_replace('/\s+on[a-z]+\s*=\s*(["\']).*?\1/i', '', $safeStoryContent) ?? $safeStoryContent;
+    $safeStoryContent = preg_replace('/javascript\s*:/i', '', $safeStoryContent) ?? $safeStoryContent;
 @endphp
 
 <div class="relative overflow-x-hidden">
@@ -71,12 +76,16 @@
                         <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
                             Story
                         </p>
-                        <div class="mt-5 space-y-4 text-base leading-relaxed text-white/72">
-                            @foreach (preg_split('/\R+/', trim($history['content'] ?? $history['summary'])) as $paragraph)
-                                @if (filled($paragraph))
-                                    <p>{{ $paragraph }}</p>
-                                @endif
-                            @endforeach
+                        <div class="history-story-content mt-5 space-y-4 text-base leading-relaxed text-white/72">
+                            @if ($storyHasHtml)
+                                {!! $safeStoryContent !!}
+                            @else
+                                @foreach (preg_split('/\R+/', $storyContent) as $paragraph)
+                                    @if (filled($paragraph))
+                                        <p>{{ $paragraph }}</p>
+                                    @endif
+                                @endforeach
+                            @endif
                         </div>
                     </article>
 

@@ -6,11 +6,13 @@ use App\Models\ContactChannel;
 use App\Models\CountdownSetting;
 use App\Models\GalleryMoment;
 use App\Models\LandingHeroImage;
+use App\Models\LandingMarquee;
 use App\Models\LandingSetting;
 use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
 use App\Models\SponsorPartner;
 use App\Models\Ticket;
+use App\Models\YoutubeVideo;
 
 trait LoadsLandingContent
 {
@@ -42,7 +44,6 @@ trait LoadsLandingContent
             'merchandiseProducts' => MerchandiseProduct::query()
                 ->with([
                     'images' => fn ($query) => $query->where('is_active', true),
-                    'features' => fn ($query) => $query->where('is_active', true),
                 ])
                 ->where('is_active', true)
                 ->ordered()
@@ -59,6 +60,15 @@ trait LoadsLandingContent
                 ->where('is_active', true)
                 ->ordered()
                 ->get(),
+            'landingMarquees' => LandingMarquee::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->get()
+                ->keyBy('placement'),
+            'youtubeVideo' => YoutubeVideo::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->first(),
         ];
     }
 }

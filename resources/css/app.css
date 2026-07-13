@@ -116,6 +116,35 @@ select:focus[data-flux-control] {
     animation: dashboardToastIn 0.28s ease-out;
 }
 
+.dashboard-rich-editor:empty::before {
+    content: attr(data-placeholder);
+    color: rgb(148 163 184);
+    pointer-events: none;
+}
+
+.dashboard-rich-editor p {
+    margin: 0.5rem 0;
+}
+
+.dashboard-rich-editor ul,
+.dashboard-rich-editor ol {
+    margin: 0.75rem 0;
+    padding-left: 1.4rem;
+}
+
+.dashboard-rich-editor ul {
+    list-style: disc;
+}
+
+.dashboard-rich-editor ol {
+    list-style: decimal;
+}
+
+.dashboard-rich-editor a {
+    color: rgb(79 70 229);
+    text-decoration: underline;
+}
+
 @keyframes dashboardFadeIn {
     from {
         opacity: 0;
