@@ -28,6 +28,7 @@ Route::livewire('/lineup', Lineup::class)->name('landing.lineup');
 Route::livewire('/ticket', Tickets::class)->name('landing.ticket');
 Route::livewire('/tickets', Tickets::class)->name('landing.tickets');
 Route::livewire('/merchandise', Merch::class)->name('landing.merch');
+Route::livewire('/merchandise/{productSlug}', Merch::class)->name('landing.merch.show');
 Route::livewire('/gallery', Gallery::class)->name('landing.gallery');
 Route::livewire('/playlist', Playlist::class)->name('landing.playlist');
 Route::livewire('/rundown-map', RundownMap::class)->name('landing.rundown-map');

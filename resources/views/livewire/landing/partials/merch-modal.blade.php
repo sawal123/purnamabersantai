@@ -39,7 +39,9 @@
 
         return [
             $product->slug => [
-                'kicker' => $product->kicker ?: 'Official Merch',
+                'kicker' => $product->category?->name ?: ($product->kicker ?: 'Official Merch'),
+                'slug' => $product->slug,
+                'url' => route('landing.merch.show', ['productSlug' => $product->slug]),
                 'title' => $product->name,
                 'price' => $formatPrice($product),
                 'description' => $safeDescription($product->description, 'Merchandise resmi Purnama Bersantai.'),
@@ -53,7 +55,12 @@
     });
 @endphp
 
-<script type="application/json" id="merchandise-products-json">@json($modalProducts)</script>
+<script
+    type="application/json"
+    id="merchandise-products-json"
+    data-base-url="{{ route('landing.merch') }}"
+    data-initial-slug="{{ $initialProductSlug ?? '' }}"
+>@json($modalProducts)</script>
 
 <div id="merch-modal" class="merch-modal" aria-hidden="true">
     <div class="merch-modal-backdrop" data-merch-close></div>

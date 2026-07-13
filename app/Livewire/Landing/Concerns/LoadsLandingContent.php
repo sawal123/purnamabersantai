@@ -69,6 +69,7 @@ trait LoadsLandingContent
             'merchandiseProducts' => MerchandiseProduct::query()
                 ->with([
                     'images' => fn ($query) => $query->where('is_active', true),
+                    'category',
                 ])
                 ->where('is_active', true)
                 ->ordered()

@@ -11,6 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
@@ -72,6 +73,28 @@ class ResourcePage extends Component
         }
 
         $this->resetPage();
+    }
+
+    public function updatedFormName(mixed $value): void
+    {
+        if (($this->resourceConfig['auto_slug_from_name'] ?? false) !== true || ! array_key_exists('slug', $this->form)) {
+            return;
+        }
+
+        $this->form['slug'] = Str::slug((string) $value);
+    }
+
+    protected function applyAutoSlugFromName(): void
+    {
+        if (($this->resourceConfig['auto_slug_from_name'] ?? false) !== true || ! array_key_exists('slug', $this->form)) {
+            return;
+        }
+
+        if (filled($this->form['slug'] ?? null) || blank($this->form['name'] ?? null)) {
+            return;
+        }
+
+        $this->form['slug'] = Str::slug((string) $this->form['name']);
     }
 
     public function updatedImageUploads(mixed $value, string $name): void
@@ -166,6 +189,7 @@ class ResourcePage extends Component
 
     public function save(): void
     {
+        $this->applyAutoSlugFromName();
         $this->prepareHiddenSeoFields();
 
         $validated = $this->validate($this->rules(), [], $this->validationAttributes());
@@ -547,15 +571,17 @@ class ResourcePage extends Component
     public function imageGalleryItems(string $fieldName): array
     {
         $uploads = $this->keyedImageGalleryUploads($fieldName);
+        $uploadKeys = array_keys($uploads);
 
         return collect($this->form[$fieldName] ?? [])
             ->filter(fn ($item) => is_array($item))
-            ->map(function (array $item) use ($uploads) {
+            ->map(function (array $item) use ($uploads, $uploadKeys) {
                 $path = $item['path'] ?? null;
                 $uploadKey = $item['upload_key'] ?? null;
 
                 if ($uploadKey && isset($uploads[$uploadKey])) {
                     $temporaryUrl = $this->temporaryUploadUrl($uploads[$uploadKey]);
+                    $uploadIndex = array_search($uploadKey, $uploadKeys, true);
 
                     return [
                         'item_key' => $item['item_key'] ?? ('upload-'.$uploadKey),
@@ -563,6 +589,8 @@ class ResourcePage extends Component
                         'title' => $item['title'] ?? '',
                         'alt' => $item['alt'] ?? '',
                         'is_new' => true,
+                        'upload_index' => $uploadIndex === false ? null : $uploadIndex,
+                        'upload_signature' => $uploads[$uploadKey]->getClientOriginalName().'-'.$uploads[$uploadKey]->getSize(),
                     ];
                 }
 
@@ -578,6 +606,8 @@ class ResourcePage extends Component
                     'title' => $item['title'] ?? '',
                     'alt' => $item['alt'] ?? '',
                     'is_new' => false,
+                    'upload_index' => null,
+                    'upload_signature' => null,
                 ];
             })
             ->filter()

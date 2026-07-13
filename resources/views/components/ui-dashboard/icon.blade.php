@@ -16,6 +16,7 @@
         'play' => '<circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4V8Z" />',
         'ticket' => '<path d="M2 9a3 3 0 0 0 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 0 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v3Z" /><path d="M13 5v2M13 11v2M13 17v2" />',
         'shopping-bag' => '<path d="M6 8h12l1 13H5L6 8Z" /><path d="M9 8a3 3 0 0 1 6 0" />',
+        'tag' => '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z" /><path d="M7.5 7.5h.01" />',
         'rectangle-stack' => '<path d="M4 6h16v12H4z" /><path d="M8 2h8M8 22h8" />',
         'list-bullet' => '<path d="M8 6h13M8 12h13M8 18h13" /><path d="M3 6h.01M3 12h.01M3 18h.01" />',
         'document-text' => '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6M8 13h8M8 17h6" />',

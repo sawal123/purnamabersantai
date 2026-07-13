@@ -56,6 +56,7 @@
     <x-ui-dashboard.table :columns="[
         ['label' => 'Image'],
         ['label' => 'Product'],
+        ['label' => 'Category'],
         ['label' => 'Slug'],
         ['label' => 'Price'],
         ['label' => 'Stock'],
@@ -73,6 +74,7 @@
                     @endif
                 </td>
                 <td class="px-4 py-4 text-sm text-zinc-700 dark:text-zinc-200">{{ $record->name }}</td>
+                <td class="px-4 py-4 text-sm text-zinc-700 dark:text-zinc-200">{{ $record->category?->name ?: ($record->kicker ?: '-') }}</td>
                 <td class="px-4 py-4 text-sm text-zinc-700 dark:text-zinc-200">{{ $record->slug }}</td>
                 <td class="px-4 py-4 text-sm text-zinc-700 dark:text-zinc-200">
                     {{ $record->currency }} {{ number_format((int) $record->price, 0, ',', '.') }}
@@ -97,7 +99,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="7" class="px-4 py-12 text-center text-sm text-zinc-500 dark:text-zinc-400">
+                <td colspan="8" class="px-4 py-12 text-center text-sm text-zinc-500 dark:text-zinc-400">
                     Belum ada produk merchandise.
                 </td>
             </tr>
@@ -173,9 +175,24 @@
         description="Form khusus untuk produk merchandise." closeAction="closeFormModal" maxWidth="max-w-5xl"
         wire:key="merchandise-product-form-modal">
         <form wire:submit="save" class="grid gap-4 md:grid-cols-2">
-            <x-ui-dashboard.text-input label="Slug" name="slug" error="form.slug" wire:model="form.slug" />
-            <x-ui-dashboard.text-input label="Kicker" name="kicker" error="form.kicker" wire:model="form.kicker" />
-            <x-ui-dashboard.text-input label="Product Name" name="name" error="form.name" wire:model="form.name" />
+            <x-ui-dashboard.text-input label="Product Name" name="name" error="form.name" wire:model.live.debounce.250ms="form.name" />
+            <x-ui-dashboard.text-input label="Slug" name="slug" error="form.slug" wire:model="form.slug" readonly />
+
+            <label class="block">
+                <span class="mb-2 block text-sm font-bold text-slate-800 dark:text-slate-100">Category</span>
+                <select name="merchandise_product_category_id" wire:model="form.merchandise_product_category_id"
+                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-950 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:ring-indigo-500/10">
+                    <option value="">Pilih Category</option>
+                    @foreach ($this->optionsFor('merchandise_product_category_id') as $option)
+                        <option value="{{ $option['value'] }}">{{ $option['label'] }}</option>
+                    @endforeach
+                </select>
+
+                @error('form.merchandise_product_category_id')
+                    <span class="mt-2 block text-sm font-semibold text-rose-500">{{ $message }}</span>
+                @enderror
+            </label>
+
             <x-ui-dashboard.text-input label="Price" name="price" type="number" error="form.price" wire:model="form.price" />
 
             <label class="block">
@@ -196,8 +213,19 @@
             <x-ui-dashboard.text-input label="Stock Product" name="stock_quantity" type="number"
                 error="form.stock_quantity" wire:model="form.stock_quantity" />
 
-            <div class="md:col-span-2">
-                <x-ui-dashboard.rich-text-editor label="Description" name="description" error="form.description"
+            <div class="md:col-span-2 space-y-2">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <span class="block text-sm font-bold text-slate-800 dark:text-slate-100">Description</span>
+                    <x-ui-dashboard.button type="button" size="sm" variant="secondary"
+                        wire:click="generateMerchandiseDescriptionWithAi"
+                        wire:loading.attr="disabled"
+                        wire:target="generateMerchandiseDescriptionWithAi">
+                        <span wire:loading.remove wire:target="generateMerchandiseDescriptionWithAi">Generate AI</span>
+                        <span wire:loading wire:target="generateMerchandiseDescriptionWithAi">Generating...</span>
+                    </x-ui-dashboard.button>
+                </div>
+
+                <x-ui-dashboard.rich-text-editor name="description" error="form.description"
                     wire:model="form.description" />
             </div>
 
@@ -217,10 +245,8 @@
                 </p>
             </div>
 
-            <x-ui-dashboard.text-input label="Thumbnail Alt" name="thumbnail_alt" error="form.thumbnail_alt"
-                wire:model="form.thumbnail_alt" />
-            <x-ui-dashboard.text-input label="Thumbnail Class" name="thumbnail_class" error="form.thumbnail_class"
-                wire:model="form.thumbnail_class" />
+            <input type="hidden" wire:model="form.thumbnail_alt">
+            <input type="hidden" wire:model="form.thumbnail_class">
 
             <div class="md:col-span-2">
                 <div class="space-y-4">
@@ -247,11 +273,20 @@
                                         class="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900/60">
                                         @if (filled($image['url']))
                                             <img src="{{ $image['url'] }}" alt="{{ $image['alt'] }}"
-                                                class="h-40 w-full object-cover">
+                                                class="h-40 w-full object-cover"
+                                                @if ($image['is_new'])
+                                                    data-dashboard-local-preview="true"
+                                                    data-dashboard-preview-field="gallery_images"
+                                                    data-dashboard-preview-index="{{ $image['upload_index'] }}"
+                                                    data-dashboard-preview-signature="{{ $image['upload_signature'] }}"
+                                                @endif>
                                         @else
-                                            <div class="grid h-40 place-items-center bg-zinc-100 text-center text-xs font-semibold text-zinc-500 dark:bg-zinc-950 dark:text-zinc-400">
-                                                Preview sedang diproses
-                                            </div>
+                                            <img src="" alt="{{ $image['alt'] }}"
+                                                class="h-40 w-full object-cover"
+                                                data-dashboard-local-preview="true"
+                                                data-dashboard-preview-field="gallery_images"
+                                                data-dashboard-preview-index="{{ $image['upload_index'] }}"
+                                                data-dashboard-preview-signature="{{ $image['upload_signature'] }}">
                                         @endif
 
                                         <div class="flex items-center justify-between gap-3 border-t border-zinc-200 px-3 py-3 dark:border-zinc-700">
@@ -289,7 +324,10 @@
                         <span class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">PNG, JPG, JPEG, atau WEBP maksimal 4MB per file</span>
 
                         <input name="gallery_images" type="file" accept="image/png,image/jpeg,image/jpg,image/webp"
-                            multiple class="absolute inset-0 h-full w-full cursor-pointer opacity-0" wire:model="imageUploads.gallery_images">
+                            multiple class="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                            data-dashboard-gallery-file-input="true"
+                            data-dashboard-preview-field="gallery_images"
+                            wire:model="imageUploads.gallery_images">
                     </label>
 
                     @error('imageUploads.gallery_images')
@@ -406,6 +444,68 @@
                     ?.find(activeGalleryDrag.componentId)
                     ?.call('moveImageGalleryItem', activeGalleryDrag.fieldName, activeGalleryDrag.itemKey, item.dataset.itemKey);
             });
+        }
+
+        if (!window.dashboardGalleryLocalPreviewInitialized) {
+            window.dashboardGalleryLocalPreviewInitialized = true;
+            window.dashboardGalleryLocalPreviewUrls = window.dashboardGalleryLocalPreviewUrls || {};
+            window.dashboardGalleryLocalPreviewMap = window.dashboardGalleryLocalPreviewMap || {};
+
+            const revokePreviewUrls = (fieldName) => {
+                (window.dashboardGalleryLocalPreviewUrls[fieldName] || []).forEach((url) => URL.revokeObjectURL(url));
+                window.dashboardGalleryLocalPreviewUrls[fieldName] = [];
+                window.dashboardGalleryLocalPreviewMap[fieldName] = {};
+            };
+
+            const applyLocalPreviews = () => {
+                document.querySelectorAll('[data-dashboard-local-preview="true"]').forEach((image) => {
+                    const fieldName = image.dataset.dashboardPreviewField;
+                    const previewIndex = Number(image.dataset.dashboardPreviewIndex);
+                    const previewSignature = image.dataset.dashboardPreviewSignature;
+                    const previewUrl = window.dashboardGalleryLocalPreviewMap[fieldName]?.[previewSignature]
+                        || window.dashboardGalleryLocalPreviewUrls[fieldName]?.[previewIndex];
+
+                    if (!fieldName || Number.isNaN(previewIndex) || !previewUrl) {
+                        return;
+                    }
+
+                    if (image.src !== previewUrl) {
+                        image.src = previewUrl;
+                    }
+                });
+            };
+
+            document.addEventListener('change', (event) => {
+                const input = event.target.closest('[data-dashboard-gallery-file-input="true"]');
+
+                if (!input) {
+                    return;
+                }
+
+                const fieldName = input.dataset.dashboardPreviewField;
+                const files = Array.from(input.files || []);
+
+                if (!fieldName) {
+                    return;
+                }
+
+                revokePreviewUrls(fieldName);
+                window.dashboardGalleryLocalPreviewUrls[fieldName] = files.map((file) => URL.createObjectURL(file));
+                window.dashboardGalleryLocalPreviewMap[fieldName] = files.reduce((previews, file, index) => {
+                    previews[`${file.name}-${file.size}`] = window.dashboardGalleryLocalPreviewUrls[fieldName][index];
+
+                    return previews;
+                }, {});
+                applyLocalPreviews();
+            });
+
+            new MutationObserver(applyLocalPreviews).observe(document.body, {
+                childList: true,
+                subtree: true,
+            });
+
+            document.addEventListener('livewire:navigated', applyLocalPreviews);
+            applyLocalPreviews();
         }
     </script>
 @endonce

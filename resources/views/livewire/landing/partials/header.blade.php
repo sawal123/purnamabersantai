@@ -1,7 +1,7 @@
 @php
     $navItems = [
         ['label' => 'Home', 'href' => route('home'), 'active' => request()->routeIs('home')],
-        ['label' => 'Merchandise', 'href' => route('landing.merch'), 'active' => request()->routeIs('landing.merch')],
+        ['label' => 'Merchandise', 'href' => route('landing.merch'), 'active' => request()->routeIs('landing.merch*')],
         ['label' => 'Lineup', 'href' => route('landing.lineup'), 'active' => request()->routeIs('landing.lineup')],
         ['label' => 'Ticket', 'href' => route('landing.ticket'), 'active' => request()->routeIs('landing.ticket', 'landing.tickets')],
         ['label' => 'Gallery', 'href' => route('landing.gallery'), 'active' => request()->routeIs('landing.gallery')],

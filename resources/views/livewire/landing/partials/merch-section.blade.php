@@ -29,7 +29,7 @@
                         <article class="h-full">
                             <button type="button" class="merch-card-button" data-merch-trigger="{{ $product->slug }}">
                                 <div class="merch-card-media">
-                                    <span class="merch-card-tag">{{ $product->kicker ?: 'Official Merch' }}</span>
+                                    <span class="merch-card-tag">{{ $product->category?->name ?: ($product->kicker ?: 'Official Merch') }}</span>
                                     <img
                                         src="{{ $imageUrl($product->thumbnail_path, asset('landing/assets/Rectangle 17.png')) }}"
                                         alt="{{ $product->thumbnail_alt ?: $product->name }}"
@@ -96,7 +96,7 @@
                             <article class="h-full">
                                 <button type="button" class="merch-card-button" data-merch-trigger="{{ $product->slug }}">
                                     <div class="merch-card-media">
-                                        <span class="merch-card-tag">{{ $product->kicker ?: 'Official Merch' }}</span>
+                                        <span class="merch-card-tag">{{ $product->category?->name ?: ($product->kicker ?: 'Official Merch') }}</span>
                                         <img
                                             src="{{ $imageUrl($product->thumbnail_path, asset('landing/assets/Rectangle 17.png')) }}"
                                             alt="{{ $product->thumbnail_alt ?: $product->name }}"

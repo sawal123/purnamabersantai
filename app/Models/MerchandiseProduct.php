@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
+    'merchandise_product_category_id',
     'slug',
     'kicker',
     'name',
@@ -35,6 +37,11 @@ class MerchandiseProduct extends Model
             'color_options' => 'array',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(MerchandiseProductCategory::class, 'merchandise_product_category_id');
     }
 
     public function images(): HasMany

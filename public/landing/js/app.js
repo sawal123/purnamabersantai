@@ -576,7 +576,58 @@ const initMerchModal = (assetBase, contactUrl) => {
     }
   };
 
+  const merchandiseProductsElement = document.getElementById(
+    "merchandise-products-json",
+  );
+  const merchBaseUrl = merchandiseProductsElement?.dataset.baseUrl || "/merchandise";
+  const merchInitialSlug = merchandiseProductsElement?.dataset.initialSlug || "";
+  const merchBasePath = new URL(merchBaseUrl, window.location.href).pathname.replace(/\/$/, "");
+
   let merchActiveIndex = 0;
+
+  const isMerchandisePath = () => {
+    const currentPath = window.location.pathname.replace(/\/$/, "");
+
+    return currentPath === merchBasePath || currentPath.startsWith(`${merchBasePath}/`);
+  };
+
+  const productKeyFromCurrentPath = () => {
+    const currentPath = decodeURIComponent(window.location.pathname).replace(/\/$/, "");
+
+    if (!currentPath.startsWith(`${merchBasePath}/`)) {
+      return "";
+    }
+
+    return currentPath.slice(merchBasePath.length + 1).split("/")[0] || "";
+  };
+
+  const productUrl = (productKey, product) => {
+    if (product?.url) {
+      return product.url;
+    }
+
+    return `${merchBaseUrl.replace(/\/$/, "")}/${encodeURIComponent(productKey)}`;
+  };
+
+  const syncMerchUrl = (productKey, product) => {
+    if (!isMerchandisePath()) {
+      return;
+    }
+
+    const nextUrl = productUrl(productKey, product);
+
+    if (window.location.href !== new URL(nextUrl, window.location.href).href) {
+      window.history.pushState({ merchProduct: productKey }, "", nextUrl);
+    }
+  };
+
+  const resetMerchUrl = () => {
+    if (!isMerchandisePath()) {
+      return;
+    }
+
+    window.history.pushState({}, "", merchBaseUrl);
+  };
 
   const scrollMerchThumbIntoView = (activeIndex) => {
     const activeThumb = merchModalGallery.querySelector(
@@ -775,13 +826,17 @@ const initMerchModal = (assetBase, contactUrl) => {
     merchModalOrder.setAttribute("href", hasStock ? buildMerchOrderUrl(product) : "#");
   };
 
-  const closeMerchModal = () => {
+  const closeMerchModal = ({ syncUrl = true } = {}) => {
     merchModal.classList.remove("is-open");
     merchModal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("modal-open");
+
+    if (syncUrl) {
+      resetMerchUrl();
+    }
   };
 
-  const openMerchModal = (productKey) => {
+  const openMerchModal = (productKey, { syncUrl = true } = {}) => {
     const merchandiseProducts = getMerchandiseProducts();
     const product = merchandiseProducts[productKey];
     if (!product) {
@@ -807,6 +862,10 @@ const initMerchModal = (assetBase, contactUrl) => {
     merchModal.classList.add("is-open");
     merchModal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
+
+    if (syncUrl) {
+      syncMerchUrl(productKey, product);
+    }
 
     [merchModalSize, merchModalColor, merchModalQty].forEach((control) => {
       if (!control) {
@@ -843,6 +902,26 @@ const initMerchModal = (assetBase, contactUrl) => {
       closeMerchModal();
     }
   });
+
+  bindEvent(window, "popstate", () => {
+    const productKey = productKeyFromCurrentPath();
+
+    if (productKey) {
+      openMerchModal(productKey, { syncUrl: false });
+
+      return;
+    }
+
+    if (merchModal.classList.contains("is-open")) {
+      closeMerchModal({ syncUrl: false });
+    }
+  });
+
+  const initialProductKey = merchInitialSlug || productKeyFromCurrentPath();
+
+  if (initialProductKey) {
+    requestAnimationFrame(() => openMerchModal(initialProductKey, { syncUrl: false }));
+  }
 };
 
 const initHeroRotation = (assetBase) => {

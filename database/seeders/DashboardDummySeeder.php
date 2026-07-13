@@ -11,6 +11,7 @@ use App\Models\LandingHeroImage;
 use App\Models\LandingSetting;
 use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
+use App\Models\MerchandiseProductCategory;
 use App\Models\MerchandiseProductImage;
 use App\Models\RundownMap;
 use App\Models\RundownMapImage;
@@ -182,6 +183,15 @@ class DashboardDummySeeder extends Seeder
         ];
 
         foreach ($products as $index => $productData) {
+            $category = MerchandiseProductCategory::query()->firstOrCreate(
+                ['name' => $productData['kicker']],
+                [
+                    'slug' => str($productData['kicker'])->slug()->toString(),
+                    'sort_order' => $index + 1,
+                    'is_active' => true,
+                ],
+            );
+
             $sizeOptions = str_contains($productData['slug'], 'tee') || str_contains($productData['slug'], 'hoodie')
                 ? ['S', 'M', 'L', 'XL', 'XXL']
                 : [];
@@ -196,6 +206,7 @@ class DashboardDummySeeder extends Seeder
             $product = MerchandiseProduct::query()->updateOrCreate(
                 ['slug' => $productData['slug']],
                 [
+                    'merchandise_product_category_id' => $category->id,
                     'currency' => 'IDR',
                     'stock_quantity' => 25,
                     'description' => 'Merchandise resmi festival dengan material nyaman dan desain bertema bulan.',

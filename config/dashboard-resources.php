@@ -9,6 +9,7 @@ use App\Models\LandingHeroImage;
 use App\Models\LandingSetting;
 use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
+use App\Models\MerchandiseProductCategory;
 use App\Models\MerchandiseProductImage;
 use App\Models\RundownMap;
 use App\Models\RundownMapImage;
@@ -335,9 +336,9 @@ return [
         'navigation_icon' => 'shopping-bag',
         'model' => MerchandiseProduct::class,
         'page_title' => 'Merchandise Products',
-        'description' => 'Kelola produk merchandise utama beserta harga, thumbnail, dan order link.',
-        'searchable' => ['name', 'slug', 'kicker', 'description'],
-        'with' => ['images'],
+        'description' => 'Kelola produk merchandise utama beserta harga, thumbnail, kategori, dan order link.',
+        'searchable' => ['name', 'slug', 'description'],
+        'with' => ['images', 'category'],
         'default_sort' => [
             ['column' => 'sort_order', 'direction' => 'asc'],
             ['column' => 'id', 'direction' => 'asc'],
@@ -345,15 +346,16 @@ return [
         'table_columns' => [
             ['key' => 'thumbnail_path', 'label' => 'Image', 'type' => 'image'],
             ['key' => 'name', 'label' => 'Product'],
+            ['key' => 'category.name', 'label' => 'Category'],
             ['key' => 'slug', 'label' => 'Slug'],
             ['key' => 'price', 'label' => 'Price', 'type' => 'money', 'currency_field' => 'currency'],
             ['key' => 'stock_quantity', 'label' => 'Stock'],
             ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
         ],
         'form_fields' => [
-            ['name' => 'slug', 'label' => 'Slug', 'type' => 'text', 'required' => true, 'unique' => true],
-            ['name' => 'kicker', 'label' => 'Kicker', 'type' => 'text'],
             ['name' => 'name', 'label' => 'Product Name', 'type' => 'text', 'required' => true],
+            ['name' => 'slug', 'label' => 'Slug', 'type' => 'text', 'required' => true, 'unique' => true],
+            ['name' => 'merchandise_product_category_id', 'label' => 'Category', 'type' => 'select', 'required' => true, 'options_model' => MerchandiseProductCategory::class, 'option_label' => 'name'],
             ['name' => 'price', 'label' => 'Price', 'type' => 'number', 'required' => true, 'default' => 0],
             ['name' => 'currency', 'label' => 'Currency', 'type' => 'select', 'required' => true, 'default' => 'IDR', 'options' => [
                 ['value' => 'IDR', 'label' => 'IDR'],
@@ -380,6 +382,36 @@ return [
                 'default_class' => 'object-cover',
                 'auto_fill_thumbnail' => true,
             ],
+            ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
+            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
+        ],
+    ],
+    'merchandise-product-category' => [
+        'label' => 'Merchandise Categories',
+        'navigation_label' => 'Categories',
+        'navigation_group' => 'Merchandise',
+        'navigation_icon' => 'tag',
+        'model' => MerchandiseProductCategory::class,
+        'page_title' => 'Merchandise Categories',
+        'description' => 'Kelola kategori untuk produk merchandise.',
+        'searchable' => ['name', 'slug', 'description'],
+        'auto_slug_from_name' => true,
+        'default_sort' => [
+            ['column' => 'sort_order', 'direction' => 'asc'],
+            ['column' => 'name', 'direction' => 'asc'],
+        ],
+        'reorderable' => true,
+        'reorder_field' => 'sort_order',
+        'table_columns' => [
+            ['key' => 'name', 'label' => 'Category'],
+            ['key' => 'slug', 'label' => 'Slug'],
+            ['key' => 'sort_order', 'label' => 'Order'],
+            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
+        ],
+        'form_fields' => [
+            ['name' => 'name', 'label' => 'Category Name', 'type' => 'text', 'required' => true],
+            ['name' => 'slug', 'label' => 'Slug', 'type' => 'text', 'required' => true, 'unique' => true],
+            ['name' => 'description', 'label' => 'Description', 'type' => 'textarea', 'full_width' => true],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
