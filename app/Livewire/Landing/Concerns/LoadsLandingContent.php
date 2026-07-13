@@ -14,6 +14,7 @@ use App\Models\MerchandiseProduct;
 use App\Models\SponsorPartner;
 use App\Models\Ticket;
 use App\Models\YoutubeVideo;
+use Illuminate\Support\Facades\Schema;
 
 trait LoadsLandingContent
 {
@@ -23,6 +24,29 @@ trait LoadsLandingContent
             ->where('is_active', true)
             ->latest('id')
             ->first();
+
+        $landingMarquees = Schema::hasTable('landing_marquees')
+            ? LandingMarquee::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->get()
+                ->keyBy('placement')
+            : collect();
+
+        $landingSectionHeadings = Schema::hasTable('landing_section_headings')
+            ? LandingSectionHeading::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->get()
+                ->keyBy('placement')
+            : collect();
+
+        $youtubeVideo = Schema::hasTable('youtube_videos')
+            ? YoutubeVideo::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->first()
+            : null;
 
         return [
             'landingSetting' => $setting,
@@ -61,20 +85,9 @@ trait LoadsLandingContent
                 ->where('is_active', true)
                 ->ordered()
                 ->get(),
-            'landingMarquees' => LandingMarquee::query()
-                ->where('is_active', true)
-                ->ordered()
-                ->get()
-                ->keyBy('placement'),
-            'landingSectionHeadings' => LandingSectionHeading::query()
-                ->where('is_active', true)
-                ->ordered()
-                ->get()
-                ->keyBy('placement'),
-            'youtubeVideo' => YoutubeVideo::query()
-                ->where('is_active', true)
-                ->ordered()
-                ->first(),
+            'landingMarquees' => $landingMarquees,
+            'landingSectionHeadings' => $landingSectionHeadings,
+            'youtubeVideo' => $youtubeVideo,
         ];
     }
 }
