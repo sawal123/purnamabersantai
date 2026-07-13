@@ -2,6 +2,7 @@
     $logoUrl = fn (?string $path, string $fallback = '') => $path
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
+    $heading = ($landingSectionHeadings ?? collect())->get('sponsors');
 @endphp
 
 <div class="relative overflow-x-hidden">
@@ -13,14 +14,14 @@
         <section class="relative z-10 pb-12 pt-32">
             <div class="mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
-                        Sponsor & Partner
+                    <p class="landing-heading-kicker">
+                        {{ $heading?->kicker ?: 'Sponsor & Partner' }}
                     </p>
                     <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
-                        Collaboration Opportunities
+                        @include('livewire.landing.partials.heading-title', ['heading' => $heading, 'fallbackTitle' => 'Collaboration Opportunities'])
                     </h1>
                     <p class="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-white/72">
-                        {{ $landingSetting?->sponsor_text ?? 'Purnama Bersantai membuka slot sponsor dan partner untuk brand activation, booth experience, serta campaign kolaboratif.' }}
+                        {{ $heading?->subtitle ?: ($landingSetting?->sponsor_text ?? 'Purnama Bersantai membuka slot sponsor dan partner untuk brand activation, booth experience, serta campaign kolaboratif.') }}
                     </p>
                 </div>
             </div>

@@ -6,25 +6,61 @@
     'preview' => null,
 ])
 
-<div class="space-y-2">
+<div
+    class="space-y-2"
+    x-data="{
+        defaultPreview: @js($preview ?: $current ?: ''),
+        localPreview: null,
+        hasImage: @js(filled($preview) || filled($current)),
+        updatePreview(event) {
+            const file = event.target.files?.[0];
+
+            if (! file) {
+                return;
+            }
+
+            if (this.localPreview) {
+                URL.revokeObjectURL(this.localPreview);
+            }
+
+            this.localPreview = URL.createObjectURL(file);
+            this.hasImage = true;
+        },
+        destroy() {
+            if (this.localPreview) {
+                URL.revokeObjectURL(this.localPreview);
+            }
+        },
+    }"
+>
     @if ($label)
         <span class="block text-sm font-bold text-slate-800 dark:text-slate-100">{{ $label }}</span>
     @endif
 
     <label class="group relative flex min-h-56 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-3xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 text-center transition hover:border-indigo-400 hover:bg-indigo-50 dark:border-slate-700 dark:bg-slate-800/60 dark:hover:border-indigo-500 dark:hover:bg-indigo-500/5">
-        @if ($preview || $current)
-            <img src="{{ $preview ?: $current }}" alt="Preview {{ $label }}" class="absolute inset-0 h-full w-full object-cover">
-            <div class="absolute inset-0 bg-slate-950/45"></div>
-        @endif
+        <img
+            src="{{ $preview ?: $current ?: '' }}"
+            alt="Preview {{ $label }}"
+            class="absolute inset-0 h-full w-full object-cover"
+            x-bind:src="localPreview || defaultPreview"
+            x-show="hasImage"
+        >
+        <div class="absolute inset-0 bg-slate-950/45" x-show="hasImage"></div>
 
         <div class="relative z-10">
             <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-white text-indigo-600 shadow-lg transition group-hover:-translate-y-1 dark:bg-slate-900 dark:text-indigo-400">
                 <x-ui-dashboard.icon name="upload" class="h-8 w-8" />
             </div>
-            <p class="mt-4 font-extrabold {{ ($preview || $current) ? 'text-white' : 'text-slate-900 dark:text-white' }}">
-                {{ ($preview || $current) ? 'Ganti gambar' : 'Klik untuk upload gambar' }}
+            <p
+                class="mt-4 font-extrabold"
+                x-bind:class="hasImage ? 'text-white' : 'text-slate-900 dark:text-white'"
+            >
+                <span x-text="hasImage ? 'Ganti gambar' : 'Klik untuk upload gambar'"></span>
             </p>
-            <p class="mt-1 text-sm {{ ($preview || $current) ? 'text-white/80' : 'text-slate-500 dark:text-slate-400' }}">
+            <p
+                class="mt-1 text-sm"
+                x-bind:class="hasImage ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'"
+            >
                 PNG, JPG, JPEG, atau WEBP maksimal 4MB
             </p>
             <span class="mt-4 inline-flex rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white">Pilih Gambar</span>
@@ -35,6 +71,7 @@
             type="file"
             accept="image/png,image/jpeg,image/jpg,image/webp"
             {{ $attributes->merge(['class' => 'absolute inset-0 h-full w-full cursor-pointer opacity-0']) }}
+            x-on:change="updatePreview($event)"
         >
     </label>
 

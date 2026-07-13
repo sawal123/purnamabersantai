@@ -3,16 +3,22 @@
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
     $formatPrice = fn ($product) => $product->currency.' '.number_format($product->price, 0, ',', '.');
+    $heading = ($landingSectionHeadings ?? collect())->get('merchandise');
 @endphp
 
 <section id="merch" class="relative z-10 pb-24 pt-32">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="reveal {{ ($staticLayout ?? false) === true ? 'is-visible' : '' }} text-center">
+            @if (filled($heading?->kicker))
+                <p class="landing-heading-kicker mb-3">
+                    {{ $heading->kicker }}
+                </p>
+            @endif
             <h2 class="font-display text-5xl uppercase tracking-[0.12em] text-white sm:text-6xl">
-                Merchandise Drop
+                @include('livewire.landing.partials.heading-title', ['heading' => $heading, 'fallbackTitle' => 'Merchandise Drop'])
             </h2>
             <p class="mx-auto mt-2 max-w-2xl text-lg text-white/70">
-                Pilih koleksi favoritmu lalu buka detail produknya untuk lihat gallery, deskripsi, dan langsung order.
+                {{ $heading?->subtitle ?: 'Pilih koleksi favoritmu lalu buka detail produknya untuk lihat gallery, deskripsi, dan langsung order.' }}
             </p>
         </div>
 

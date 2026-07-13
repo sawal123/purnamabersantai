@@ -2,6 +2,7 @@
     $imageUrl = fn (?string $path, string $fallback) => $path
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
+    $heading = ($landingSectionHeadings ?? collect())->get('history');
 @endphp
 
 <div class="relative overflow-x-hidden">
@@ -13,14 +14,14 @@
         <section class="relative z-10 pb-12 pt-32">
             <div class="mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
-                        Festival History
+                    <p class="landing-heading-kicker">
+                        {{ $heading?->kicker ?: 'Festival History' }}
                     </p>
                     <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
-                        Semua Perjalanan Purnama Bersantai
+                        @include('livewire.landing.partials.heading-title', ['heading' => $heading, 'fallbackTitle' => 'Semua Perjalanan Purnama Bersantai'])
                     </h1>
                     <p class="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-white/72">
-                        Telusuri rangkaian acara, momen, dan perkembangan Purnama Bersantai dari tahun ke tahun.
+                        {{ $heading?->subtitle ?: 'Telusuri rangkaian acara, momen, dan perkembangan Purnama Bersantai dari tahun ke tahun.' }}
                     </p>
                 </div>
             </div>

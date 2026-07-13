@@ -1,6 +1,7 @@
 @php
     $formatPrice = fn ($ticket) => $ticket->currency.' '.number_format($ticket->price, 0, ',', '.');
     $isInternalUrl = fn (?string $url) => is_string($url) && ($url !== '') && (str_starts_with($url, url('/')) || str_starts_with($url, '/'));
+    $heading = ($landingSectionHeadings ?? collect())->get('tickets');
     $ticketModalData = $tickets
         ->mapWithKeys(function ($ticket) use ($formatPrice) {
             $links = collect($ticket->purchaseOptions())
@@ -27,15 +28,19 @@
     <div class="mx-auto w-full max-w-7xl px-5 lg:px-8">
         <div class="ticket-section-heading reveal text-center">
             <p class="ticket-section-kicker">
-                Official Event Pass
+                {{ $heading?->kicker ?: 'Official Event Pass' }}
             </p>
             <h2 class="ticket-section-title font-display uppercase">
-                <span>Get</span>
-                <span class="ticket-section-title-pass">Your Ticket</span>
-                <span>Now</span>
+                @include('livewire.landing.partials.heading-title', [
+                    'heading' => $heading,
+                    'fallbackTitle' => 'Get',
+                    'fallbackHighlight' => 'Your Ticket',
+                    'fallbackAfter' => 'Now',
+                    'highlightClass' => 'ticket-section-title-pass',
+                ])
             </h2>
             <p class="mx-auto mt-4 max-w-2xl text-lg text-white/78">
-                Pilih pass resmi Purnama Bersantai dan amankan aksesmu sebelum kuota habis.
+                {{ $heading?->subtitle ?: 'Pilih pass resmi Purnama Bersantai dan amankan aksesmu sebelum kuota habis.' }}
             </p>
         </div>
 

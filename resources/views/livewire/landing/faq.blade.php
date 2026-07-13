@@ -1,3 +1,7 @@
+@php
+    $heading = ($landingSectionHeadings ?? collect())->get('faq');
+@endphp
+
 <div class="relative overflow-x-hidden">
     <div class="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-haze"></div>
 
@@ -7,14 +11,14 @@
         <section class="relative z-10 pb-12 pt-32">
             <div class="mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
-                        Frequently Asked Questions
+                    <p class="landing-heading-kicker">
+                        {{ $heading?->kicker ?: 'Frequently Asked Questions' }}
                     </p>
                     <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
-                        Yang Sering Ditanyakan
+                        @include('livewire.landing.partials.heading-title', ['heading' => $heading, 'fallbackTitle' => 'Yang Sering Ditanyakan'])
                     </h1>
                     <p class="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-white/72">
-                        Temukan jawaban cepat seputar festival, tiket, merchandise, dan pengalaman Purnama Bersantai.
+                        {{ $heading?->subtitle ?: 'Temukan jawaban cepat seputar festival, tiket, merchandise, dan pengalaman Purnama Bersantai.' }}
                     </p>
                 </div>
             </div>
@@ -64,11 +68,12 @@
                     </div>
 
                     @php
-                        [$leftFaqs, $rightFaqs] = $faqs->values()->partition(fn ($faq, $index) => $index % 2 === 0);
+                        $partitionedFaqs = $faqs->values()->partition(fn ($faq, $index) => $index % 2 === 0);
+                        $faqColumns = [$partitionedFaqs[0], $partitionedFaqs[1]];
                     @endphp
 
                     <div class="hidden gap-8 lg:grid lg:grid-cols-2 lg:items-start">
-                        @foreach ([$leftFaqs, $rightFaqs] as $columnIndex => $columnFaqs)
+                        @foreach ($faqColumns as $columnIndex => $columnFaqs)
                             <div class="space-y-8">
                                 @foreach ($columnFaqs as $faq)
                                     @php

@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SongSeeder::class);
         $this->call(LandingMarqueeSeeder::class);
         $this->call(YoutubeVideoSeeder::class);
+        $this->call(LandingSectionHeadingSeeder::class);
     }
 }

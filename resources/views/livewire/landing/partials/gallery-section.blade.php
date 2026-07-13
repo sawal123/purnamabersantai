@@ -2,6 +2,7 @@
     $imageUrl = fn (?string $path, string $fallback) => $path
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
+    $heading = ($landingSectionHeadings ?? collect())->get('gallery');
 @endphp
 
 <div
@@ -12,11 +13,16 @@
 <section id="gallery" class="relative z-10 pb-24 pt-32">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="reveal text-center">
+            @if (filled($heading?->kicker))
+                <p class="landing-heading-kicker mb-3">
+                    {{ $heading->kicker }}
+                </p>
+            @endif
             <h2 class="font-display text-5xl uppercase tracking-[0.12em] sm:text-6xl">
-                Beautiful Moments
+                @include('livewire.landing.partials.heading-title', ['heading' => $heading, 'fallbackTitle' => 'Beautiful Moments'])
             </h2>
             <p class="mt-2 text-lg text-white/70">
-                Relive the night, one moment at a time.
+                {{ $heading?->subtitle ?: 'Relive the night, one moment at a time.' }}
             </p>
         </div>
 

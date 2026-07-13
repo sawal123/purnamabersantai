@@ -2,6 +2,7 @@
 
 use App\Livewire\Dashboard\Overview as DashboardOverview;
 use App\Livewire\Dashboard\LandingMarqueePage as DashboardLandingMarqueePage;
+use App\Livewire\Dashboard\LandingSectionHeadingPage as DashboardLandingSectionHeadingPage;
 use App\Livewire\Dashboard\MerchandiseProductPage as DashboardMerchandiseProductPage;
 use App\Livewire\Dashboard\ResourcePage as DashboardResourcePage;
 use App\Livewire\Dashboard\SongPage as DashboardSongPage;
@@ -48,6 +49,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('dashboard/landing-marquee', DashboardLandingMarqueePage::class)
         ->defaults('resource', 'landing-marquee')
         ->name('dashboard.landing-marquee');
+    Route::livewire('dashboard/landing-section-heading', DashboardLandingSectionHeadingPage::class)
+        ->defaults('resource', 'landing-section-heading')
+        ->name('dashboard.landing-section-heading');
     Route::livewire('dashboard/youtube', DashboardYoutubePage::class)
         ->defaults('resource', 'youtube')
         ->name('dashboard.youtube');

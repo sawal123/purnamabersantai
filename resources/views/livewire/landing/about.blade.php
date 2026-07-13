@@ -1,3 +1,7 @@
+@php
+    $heading = ($landingSectionHeadings ?? collect())->get('about');
+@endphp
+
     <div class="relative overflow-x-hidden">
         <div class="pointer-events-none absolute inset-x-0 top-0 h-[32rem] bg-haze"></div>
 
@@ -7,14 +11,14 @@
             <section class="relative z-10 pb-12 pt-32">
                 <div class="mx-auto max-w-6xl px-5 lg:px-8">
                     <div class="reveal text-center">
-                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
-                            About the Festival
+                        <p class="landing-heading-kicker">
+                            {{ $heading?->kicker ?: 'About the Festival' }}
                         </p>
                         <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
-                            {{ $landingSetting?->hero_tagline ?? 'Warm Nights, Loud Choruses, Shared Memories' }}
+                            @include('livewire.landing.partials.heading-title', ['heading' => $heading, 'fallbackTitle' => $landingSetting?->hero_tagline ?? 'Warm Nights, Loud Choruses, Shared Memories'])
                         </h1>
                         <p class="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-white/72">
-                            {{ $landingSetting?->hero_description ?? 'Purnama Bersantai adalah festival musik malam yang menggabungkan performer pilihan, merchandise eksklusif, suasana komunitas, dan pengalaman event yang hangat dalam satu panggung.' }}
+                            {{ $heading?->subtitle ?: ($landingSetting?->hero_description ?? 'Purnama Bersantai adalah festival musik malam yang menggabungkan performer pilihan, merchandise eksklusif, suasana komunitas, dan pengalaman event yang hangat dalam satu panggung.') }}
                         </p>
                     </div>
                 </div>

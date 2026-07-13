@@ -128,9 +128,10 @@
         <script type="application/ld+json">@json($schemaJson, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)</script>
     @endif
 
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="icon" href="{{ asset('favicon.svg') }}?v=20260713" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v=20260713" sizes="any">
+    <link rel="icon" href="{{ asset('favicon-32x32.png') }}?v=20260713" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v=20260713">
 
     <script>
         document.documentElement.classList.add('js');

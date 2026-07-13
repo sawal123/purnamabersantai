@@ -2,6 +2,7 @@
     $imageUrl = fn (?string $path, string $fallback) => $path
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
+    $heading = ($landingSectionHeadings ?? collect())->get('rundown_map');
 
     $mapSource = static function (?string $map): ?string {
         if (! is_string($map) || trim($map) === '') {
@@ -43,14 +44,14 @@
     <main class="relative z-10 pb-24 pt-32">
         <section class="mx-auto max-w-7xl px-5 lg:px-8">
             <div class="mx-auto max-w-4xl text-center">
-                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
-                    Event Guide
+                <p class="landing-heading-kicker">
+                    {{ $heading?->kicker ?: 'Event Guide' }}
                 </p>
                 <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
-                    Rundown & Map
+                    @include('livewire.landing.partials.heading-title', ['heading' => $heading, 'fallbackTitle' => 'Rundown & Map'])
                 </h1>
                 <p class="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-white/72">
-                    Lihat susunan acara, area festival, dan lokasi resmi Purnama Bersantai.
+                    {{ $heading?->subtitle ?: 'Lihat susunan acara, area festival, dan lokasi resmi Purnama Bersantai.' }}
                 </p>
             </div>
 
@@ -168,7 +169,9 @@
                             @if ($yearMaps->isNotEmpty())
                                 <div class="grid gap-6">
                                     @foreach ($yearMaps as $rundown)
-                                        @php($mapSrc = $mapSource($rundown->google_map))
+                                        @php
+                                            $mapSrc = $mapSource($rundown->google_map);
+                                        @endphp
 
                                         <article wire:key="rundown-map-frame-{{ $rundown->id }}" class="overflow-hidden rounded-[1.75rem] border border-white/12 bg-[#2f2e2e]/72">
                                             <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">

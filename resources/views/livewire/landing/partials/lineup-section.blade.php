@@ -8,6 +8,7 @@
     $lineupFrame = fn (mixed $seed) => $lineupFrames->isNotEmpty()
         ? $lineupFrames[abs(crc32((string) $seed)) % $lineupFrames->count()]
         : asset('landing/assets/frame/frame1.png');
+    $heading = ($landingSectionHeadings ?? collect())->get('lineup');
 @endphp
 
 @include('livewire.landing.partials.lineup-marquee')
@@ -15,11 +16,16 @@
 <section id="lineup" class="relative z-10 pb-20 {{ ($compactTop ?? false) ? 'pt-8' : 'pt-32' }}">
     <div class="mx-auto max-w-7xl px-5 lg:px-8">
         <div class="reveal text-center">
+            @if (filled($heading?->kicker))
+                <p class="landing-heading-kicker mb-3">
+                    {{ $heading->kicker }}
+                </p>
+            @endif
             <h2 class="font-display text-5xl uppercase tracking-[0.12em] text-white sm:text-6xl">
-                Lineup
+                @include('livewire.landing.partials.heading-title', ['heading' => $heading, 'fallbackTitle' => 'Lineup'])
             </h2>
             <p class="mt-2 text-lg text-white/70">
-                Meet the artists taking the stage.
+                {{ $heading?->subtitle ?: 'Meet the artists taking the stage.' }}
             </p>
         </div>
 

@@ -33,6 +33,12 @@
                             'route' => route('dashboard.landing-marquee'),
                         ];
                         $group['items'][] = [
+                            'key' => 'landing-section-heading',
+                            'label' => 'Section Headings',
+                            'icon' => 'document-text',
+                            'route' => route('dashboard.landing-section-heading'),
+                        ];
+                        $group['items'][] = [
                             'key' => 'song',
                             'label' => 'Songs',
                             'icon' => 'music-note',

@@ -8,6 +8,7 @@ use App\Models\GalleryMoment;
 use App\Models\LandingHeroImage;
 use App\Models\LandingMarquee;
 use App\Models\LandingSetting;
+use App\Models\LandingSectionHeading;
 use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
 use App\Models\SponsorPartner;
@@ -61,6 +62,11 @@ trait LoadsLandingContent
                 ->ordered()
                 ->get(),
             'landingMarquees' => LandingMarquee::query()
+                ->where('is_active', true)
+                ->ordered()
+                ->get()
+                ->keyBy('placement'),
+            'landingSectionHeadings' => LandingSectionHeading::query()
                 ->where('is_active', true)
                 ->ordered()
                 ->get()

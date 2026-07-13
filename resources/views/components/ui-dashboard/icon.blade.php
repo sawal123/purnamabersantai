@@ -18,6 +18,7 @@
         'shopping-bag' => '<path d="M6 8h12l1 13H5L6 8Z" /><path d="M9 8a3 3 0 0 1 6 0" />',
         'rectangle-stack' => '<path d="M4 6h16v12H4z" /><path d="M8 2h8M8 22h8" />',
         'list-bullet' => '<path d="M8 6h13M8 12h13M8 18h13" /><path d="M3 6h.01M3 12h.01M3 18h.01" />',
+        'document-text' => '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><path d="M14 2v6h6M8 13h8M8 17h6" />',
         'camera' => '<path d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z" /><circle cx="12" cy="13" r="4" />',
         'building-storefront' => '<path d="M4 10h16l-1-6H5l-1 6Z" /><path d="M5 10v10h14V10M9 20v-6h6v6" />',
         'chat-bubble-left-right' => '<path d="M7 8h8M7 12h5" /><path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-7a8 8 0 1 1 18-4Z" />',

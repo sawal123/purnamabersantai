@@ -1,3 +1,7 @@
+@php
+    $heading = ($landingSectionHeadings ?? collect())->get('playlist');
+@endphp
+
 <div class="relative overflow-x-hidden">
     <div class="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-haze"></div>
 
@@ -7,14 +11,14 @@
         <section class="relative z-10 pb-12 pt-32">
             <div class="mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">
-                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
-                        Official Playlist
+                    <p class="landing-heading-kicker">
+                        {{ $heading?->kicker ?: 'Official Playlist' }}
                     </p>
                     <h1 class="mt-4 font-display text-5xl uppercase tracking-[0.08em] text-white sm:text-6xl">
-                        Purnama Bersantai Sounds
+                        @include('livewire.landing.partials.heading-title', ['heading' => $heading, 'fallbackTitle' => 'Purnama Bersantai Sounds'])
                     </h1>
                     <p class="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-white/72">
-                        Putar pilihan lagu untuk masuk ke suasana festival sebelum panggung dimulai.
+                        {{ $heading?->subtitle ?: 'Putar pilihan lagu untuk masuk ke suasana festival sebelum panggung dimulai.' }}
                     </p>
                 </div>
             </div>
