@@ -16,6 +16,7 @@ use App\Models\RundownMapImage;
 use App\Models\SeoSetting;
 use App\Models\SponsorPartner;
 use App\Models\Ticket;
+use App\Models\TicketCardElement;
 
 return [
     'seo-setting' => [
@@ -325,6 +326,37 @@ return [
                 'allow_relative' => true,
                 'sync_first_url_to' => 'purchase_url',
             ],
+            ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
+            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
+        ],
+    ],
+    'ticket-card-element' => [
+        'label' => 'Ticket Card Elements',
+        'navigation_label' => 'Ticket Elements',
+        'navigation_group' => 'Landing Content',
+        'navigation_icon' => 'photo',
+        'model' => TicketCardElement::class,
+        'page_title' => 'Ticket Card Elements',
+        'description' => 'Kelola gambar elemen dekoratif pada card ticket. Jika ada lebih dari satu elemen aktif, elemen akan diacak pada setiap card ticket.',
+        'searchable' => ['name', 'alt_text'],
+        'with' => [],
+        'reorderable' => true,
+        'reorder_field' => 'sort_order',
+        'default_sort' => [
+            ['column' => 'sort_order', 'direction' => 'asc'],
+            ['column' => 'id', 'direction' => 'asc'],
+        ],
+        'table_columns' => [
+            ['key' => 'image_path', 'label' => 'Element', 'type' => 'image'],
+            ['key' => 'name', 'label' => 'Name'],
+            ['key' => 'alt_text', 'label' => 'Alt Text', 'truncate' => 40],
+            ['key' => 'sort_order', 'label' => 'Order'],
+            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
+        ],
+        'form_fields' => [
+            ['name' => 'name', 'label' => 'Element Name', 'type' => 'text', 'required' => true],
+            ['name' => 'image_path', 'label' => 'Element Image', 'type' => 'image', 'required' => true],
+            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text'],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],

@@ -2,6 +2,17 @@
     $formatPrice = fn ($ticket) => $ticket->currency.' '.number_format($ticket->price, 0, ',', '.');
     $isInternalUrl = fn (?string $url) => is_string($url) && ($url !== '') && (str_starts_with($url, url('/')) || str_starts_with($url, '/'));
     $heading = ($landingSectionHeadings ?? collect())->get('tickets');
+    $ticketCardElements = collect($ticketCardElements ?? [])
+        ->filter(fn ($element) => filled($element->image_path ?? null))
+        ->values();
+    $ticketElementPool = $ticketCardElements->count() > 1
+        ? $ticketCardElements->shuffle()->values()
+        : $ticketCardElements;
+    $ticketElementFor = function (int $index) use ($ticketElementPool) {
+        $count = $ticketElementPool->count();
+
+        return $count > 0 ? $ticketElementPool->get($index % $count) : null;
+    };
     $ticketModalData = $tickets
         ->mapWithKeys(function ($ticket) use ($formatPrice) {
             $links = collect($ticket->purchaseOptions())
@@ -51,10 +62,15 @@
                         $purchaseOptions = $ticket->purchaseOptions();
                         $hasMultiplePurchaseOptions = count($purchaseOptions) > 1;
                         $primaryPurchaseUrl = $purchaseOptions[0]['url'] ?? route('landing.contact');
+                        $ticketElement = $ticketElementFor($loop->index);
                     @endphp
-                    <div class="w-full px-2 lg:w-1/2">
-                        <article class="ticket-shell">
-                            <span class="ticket-shell-notch" aria-hidden="true"></span>
+                    <div class="w-full px-2 sm:w-1/2 xl:w-1/3">
+                        <article class="ticket-shell {{ $ticketElement ? 'ticket-shell-has-element' : '' }}">
+                            <span class="ticket-shell-notch {{ $ticketElement ? 'ticket-shell-notch-image' : '' }}" aria-hidden="true">
+                                @if ($ticketElement)
+                                    <img src="{{ $ticketElement->image_path }}" alt="" loading="lazy">
+                                @endif
+                            </span>
                             <div class="ticket-shell-content">
                                 <div class="ticket-shell-head">
                                     <p class="ticket-shell-title">{{ $ticket->name }}</p>
@@ -62,10 +78,13 @@
                                 </div>
                                 <div class="ticket-shell-meta">
                                     <p class="ticket-shell-label">
-                                        Starts From
                                         <span class="ticket-shell-availability">{{ $ticket->availability_label }}</span>
+                                        <span class="ticket-shell-label-text">Price</span>
                                     </p>
-                                    <p class="ticket-shell-price">{{ $formatPrice($ticket) }}</p>
+                                    <p class="ticket-shell-price">
+                                        <span class="ticket-shell-currency">{{ strtoupper($ticket->currency) === 'IDR' ? 'Rp' : $ticket->currency }}</span>
+                                        <span>{{ number_format($ticket->price, 0, ',', '.') }}</span>
+                                    </p>
                                 </div>
                                 <div class="ticket-shell-footer">
                                     @if ($ticket->status === 'sold_out')
@@ -78,7 +97,7 @@
                                             class="ticket-shell-action ticket-shell-action-buy"
                                             data-ticket-trigger="{{ $ticket->id }}"
                                         >
-                                            Buy Tickets
+                                            Buy Ticket
                                         </button>
                                     @else
                                         <a
@@ -86,7 +105,7 @@
                                             class="ticket-shell-action ticket-shell-action-buy"
                                             @if ($isInternalUrl($primaryPurchaseUrl)) wire:navigate @endif
                                         >
-                                            Buy Tickets
+                                            Buy Ticket
                                         </a>
                                     @endif
                                 </div>
@@ -95,9 +114,16 @@
                         </article>
                     </div>
                 @empty
-                    <div class="w-full max-w-2xl px-2">
-                        <article class="ticket-shell">
-                            <span class="ticket-shell-notch" aria-hidden="true"></span>
+                    @php
+                        $ticketElement = $ticketElementFor(0);
+                    @endphp
+                    <div class="w-full max-w-md px-2">
+                        <article class="ticket-shell {{ $ticketElement ? 'ticket-shell-has-element' : '' }}">
+                            <span class="ticket-shell-notch {{ $ticketElement ? 'ticket-shell-notch-image' : '' }}" aria-hidden="true">
+                                @if ($ticketElement)
+                                    <img src="{{ $ticketElement->image_path }}" alt="" loading="lazy">
+                                @endif
+                            </span>
                             <div class="ticket-shell-content">
                                 <div class="ticket-shell-head">
                                     <p class="ticket-shell-title">Ticket Coming Soon</p>
@@ -105,10 +131,13 @@
                                 </div>
                                 <div class="ticket-shell-meta">
                                     <p class="ticket-shell-label">
-                                        Status
                                         <span class="ticket-shell-availability">Coming Soon</span>
+                                        <span class="ticket-shell-label-text">Price</span>
                                     </p>
-                                    <p class="ticket-shell-price">IDR 0</p>
+                                    <p class="ticket-shell-price">
+                                        <span class="ticket-shell-currency">Rp</span>
+                                        <span>0</span>
+                                    </p>
                                 </div>
                                 <div class="ticket-shell-footer">
                                     <a href="{{ route('landing.contact') }}" class="ticket-shell-action ticket-shell-action-buy" wire:navigate>
@@ -147,10 +176,15 @@
                             $purchaseOptions = $ticket->purchaseOptions();
                             $hasMultiplePurchaseOptions = count($purchaseOptions) > 1;
                             $primaryPurchaseUrl = $purchaseOptions[0]['url'] ?? route('landing.contact');
+                            $ticketElement = $ticketElementFor($loop->index);
                         @endphp
                         <div class="swiper-slide">
-                            <article class="ticket-shell">
-                                <span class="ticket-shell-notch" aria-hidden="true"></span>
+                            <article class="ticket-shell {{ $ticketElement ? 'ticket-shell-has-element' : '' }}">
+                                <span class="ticket-shell-notch {{ $ticketElement ? 'ticket-shell-notch-image' : '' }}" aria-hidden="true">
+                                    @if ($ticketElement)
+                                        <img src="{{ $ticketElement->image_path }}" alt="" loading="lazy">
+                                    @endif
+                                </span>
                                 <div class="ticket-shell-content">
                                     <div class="ticket-shell-head">
                                         <p class="ticket-shell-title">{{ $ticket->name }}</p>
@@ -158,10 +192,13 @@
                                     </div>
                                     <div class="ticket-shell-meta">
                                         <p class="ticket-shell-label">
-                                            Starts From
                                             <span class="ticket-shell-availability">{{ $ticket->availability_label }}</span>
+                                            <span class="ticket-shell-label-text">Price</span>
                                         </p>
-                                        <p class="ticket-shell-price">{{ $formatPrice($ticket) }}</p>
+                                        <p class="ticket-shell-price">
+                                            <span class="ticket-shell-currency">{{ strtoupper($ticket->currency) === 'IDR' ? 'Rp' : $ticket->currency }}</span>
+                                            <span>{{ number_format($ticket->price, 0, ',', '.') }}</span>
+                                        </p>
                                     </div>
                                     <div class="ticket-shell-footer">
                                         @if ($ticket->status === 'sold_out')
@@ -174,7 +211,7 @@
                                                 class="ticket-shell-action ticket-shell-action-buy"
                                                 data-ticket-trigger="{{ $ticket->id }}"
                                             >
-                                                Buy Tickets
+                                                Buy Ticket
                                             </button>
                                         @else
                                             <a
@@ -182,7 +219,7 @@
                                                 class="ticket-shell-action ticket-shell-action-buy"
                                                 @if ($isInternalUrl($primaryPurchaseUrl)) wire:navigate @endif
                                             >
-                                                Buy Tickets
+                                                Buy Ticket
                                             </a>
                                         @endif
                                     </div>
@@ -191,9 +228,16 @@
                             </article>
                         </div>
                     @empty
+                        @php
+                            $ticketElement = $ticketElementFor(0);
+                        @endphp
                         <div class="swiper-slide">
-                            <article class="ticket-shell">
-                                <span class="ticket-shell-notch" aria-hidden="true"></span>
+                            <article class="ticket-shell {{ $ticketElement ? 'ticket-shell-has-element' : '' }}">
+                                <span class="ticket-shell-notch {{ $ticketElement ? 'ticket-shell-notch-image' : '' }}" aria-hidden="true">
+                                    @if ($ticketElement)
+                                        <img src="{{ $ticketElement->image_path }}" alt="" loading="lazy">
+                                    @endif
+                                </span>
                                 <div class="ticket-shell-content">
                                     <div class="ticket-shell-head">
                                         <p class="ticket-shell-title">Ticket Coming Soon</p>
@@ -201,10 +245,13 @@
                                     </div>
                                     <div class="ticket-shell-meta">
                                         <p class="ticket-shell-label">
-                                            Status
                                             <span class="ticket-shell-availability">Coming Soon</span>
+                                            <span class="ticket-shell-label-text">Price</span>
                                         </p>
-                                        <p class="ticket-shell-price">IDR 0</p>
+                                        <p class="ticket-shell-price">
+                                            <span class="ticket-shell-currency">Rp</span>
+                                            <span>0</span>
+                                        </p>
                                     </div>
                                     <div class="ticket-shell-footer">
                                         <a href="{{ route('landing.contact') }}" class="ticket-shell-action ticket-shell-action-buy" wire:navigate>

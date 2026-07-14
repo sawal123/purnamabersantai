@@ -13,6 +13,7 @@ use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
 use App\Models\SponsorPartner;
 use App\Models\Ticket;
+use App\Models\TicketCardElement;
 use App\Models\YoutubeVideo;
 use Illuminate\Support\Facades\Schema;
 
@@ -48,6 +49,14 @@ trait LoadsLandingContent
                 ->first()
             : null;
 
+        $ticketCardElements = Schema::hasTable('ticket_card_elements')
+            ? TicketCardElement::query()
+                ->where('is_active', true)
+                ->whereNotNull('image_path')
+                ->ordered()
+                ->get()
+            : collect();
+
         return [
             'landingSetting' => $setting,
             'countdownSetting' => CountdownSetting::query()
@@ -66,6 +75,7 @@ trait LoadsLandingContent
                 ->where('is_active', true)
                 ->ordered()
                 ->get(),
+            'ticketCardElements' => $ticketCardElements,
             'merchandiseProducts' => MerchandiseProduct::query()
                 ->with([
                     'images' => fn ($query) => $query->where('is_active', true),

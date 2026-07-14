@@ -1036,10 +1036,10 @@ const initLandingPage = () => {
     ".ticket-prev",
     ".ticket-next",
     {
-      0: { slidesPerView: 1.1, spaceBetween: 18 },
+      0: { slidesPerView: 1.08, spaceBetween: 18 },
       640: { slidesPerView: 2, spaceBetween: 20 },
-      1024: { slidesPerView: 2.6, spaceBetween: 22 },
-      1280: { slidesPerView: 3.55, spaceBetween: 22 },
+      1024: { slidesPerView: 3, spaceBetween: 24 },
+      1280: { slidesPerView: 3.25, spaceBetween: 26 },
     },
   );
 
