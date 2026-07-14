@@ -52,7 +52,7 @@
                         $hasMultiplePurchaseOptions = count($purchaseOptions) > 1;
                         $primaryPurchaseUrl = $purchaseOptions[0]['url'] ?? route('landing.contact');
                     @endphp
-                    <div class="w-full px-2 md:w-1/2 xl:w-1/3">
+                    <div class="w-full px-2 lg:w-1/2">
                         <article class="ticket-shell">
                             <span class="ticket-shell-notch" aria-hidden="true"></span>
                             <div class="ticket-shell-content">
@@ -95,7 +95,7 @@
                         </article>
                     </div>
                 @empty
-                    <div class="w-full max-w-lg px-2">
+                    <div class="w-full max-w-2xl px-2">
                         <article class="ticket-shell">
                             <span class="ticket-shell-notch" aria-hidden="true"></span>
                             <div class="ticket-shell-content">
