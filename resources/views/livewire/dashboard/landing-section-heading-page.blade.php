@@ -1,33 +1,33 @@
-@once
-    <style>
-        @font-face {
-            font-family: "Landing Slackey Preview";
-            src: url("/landing/fonts/Slackey-Regular.ttf") format("truetype");
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: "Landing Barlow Preview";
-            src: url("/landing/fonts/Barlow-Medium.ttf") format("truetype");
-            font-weight: 500;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        .landing-section-heading-preview {
-            font-family: "Landing Barlow Preview", ui-sans-serif, system-ui, sans-serif;
-        }
-
-        .landing-section-heading-preview .font-display {
-            font-family: "Landing Slackey Preview", ui-serif, Georgia, serif !important;
-            font-weight: 400 !important;
-        }
-    </style>
-@endonce
-
 <section class="w-full space-y-6">
+    @once
+        <style>
+            @font-face {
+                font-family: "Landing Slackey Preview";
+                src: url("/landing/fonts/Slackey-Regular.ttf") format("truetype");
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+            }
+
+            @font-face {
+                font-family: "Landing Barlow Preview";
+                src: url("/landing/fonts/Barlow-Medium.ttf") format("truetype");
+                font-weight: 500;
+                font-style: normal;
+                font-display: swap;
+            }
+
+            .landing-section-heading-preview {
+                font-family: "Landing Barlow Preview", ui-sans-serif, system-ui, sans-serif;
+            }
+
+            .landing-section-heading-preview .font-display {
+                font-family: "Landing Slackey Preview", ui-serif, Georgia, serif !important;
+                font-weight: 400 !important;
+            }
+        </style>
+    @endonce
+
     <div class="overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-orange-700 to-amber-500 p-6 text-white shadow-xl shadow-orange-500/15 sm:p-8">
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div class="max-w-3xl">
