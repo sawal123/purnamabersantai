@@ -266,28 +266,24 @@
                             </p>
                             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                                 @foreach ($galleryItems as $galleryIndex => $image)
+                                    @php
+                                        $previewPlaceholder = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22 viewBox=%220 0 640 360%22%3E%3Crect width=%22640%22 height=%22360%22 fill=%22%23111827%22/%3E%3Ctext x=%22320%22 y=%22180%22 fill=%22%2394a3b8%22 font-family=%22Arial%2C sans-serif%22 font-size=%2220%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3EPreview upload%3C/text%3E%3C/svg%3E';
+                                    @endphp
                                     <div wire:key="merchandise-gallery-{{ $image['item_key'] }}"
                                         data-gallery-item data-gallery-field="gallery_images"
                                         data-item-key="{{ $image['item_key'] }}"
                                         data-component-id="{{ $this->getId() }}" draggable="true"
                                         class="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900/60">
-                                        @if (filled($image['url']))
-                                            <img src="{{ $image['url'] }}" alt="{{ $image['alt'] }}"
-                                                class="h-40 w-full object-cover"
-                                                @if ($image['is_new'])
-                                                    data-dashboard-local-preview="true"
-                                                    data-dashboard-preview-field="gallery_images"
-                                                    data-dashboard-preview-index="{{ $image['upload_index'] }}"
-                                                    data-dashboard-preview-signature="{{ $image['upload_signature'] }}"
-                                                @endif>
-                                        @else
-                                            <img src="" alt="{{ $image['alt'] }}"
-                                                class="h-40 w-full object-cover"
+                                        <img src="{{ $image['is_new'] ? $previewPlaceholder : ($image['url'] ?: $previewPlaceholder) }}"
+                                            alt="{{ $image['alt'] }}"
+                                            class="h-40 w-full object-cover"
+                                            @if ($image['is_new'])
                                                 data-dashboard-local-preview="true"
                                                 data-dashboard-preview-field="gallery_images"
                                                 data-dashboard-preview-index="{{ $image['upload_index'] }}"
-                                                data-dashboard-preview-signature="{{ $image['upload_signature'] }}">
-                                        @endif
+                                                data-dashboard-preview-signature="{{ $image['upload_signature'] }}"
+                                                onerror="window.applyDashboardGalleryLocalPreviews?.()"
+                                            @endif>
 
                                         <div class="flex items-center justify-between gap-3 border-t border-zinc-200 px-3 py-3 dark:border-zinc-700">
                                             <div class="min-w-0">
@@ -367,9 +363,8 @@
         cancelLabel="Batal"
         confirmLabel="Ya, Hapus"
     />
-</section>
 
-@once
+    @once
     <script>
         if (!window.dashboardGallerySortInitialized) {
             window.dashboardGallerySortInitialized = true;
@@ -446,7 +441,10 @@
             });
         }
 
-        if (!window.dashboardGalleryLocalPreviewInitialized) {
+        const dashboardGalleryLocalPreviewVersion = 'merchandise-product-preview-v2';
+
+        if (window.dashboardGalleryLocalPreviewVersion !== dashboardGalleryLocalPreviewVersion) {
+            window.dashboardGalleryLocalPreviewVersion = dashboardGalleryLocalPreviewVersion;
             window.dashboardGalleryLocalPreviewInitialized = true;
             window.dashboardGalleryLocalPreviewUrls = window.dashboardGalleryLocalPreviewUrls || {};
             window.dashboardGalleryLocalPreviewMap = window.dashboardGalleryLocalPreviewMap || {};
@@ -465,7 +463,7 @@
                     const previewUrl = window.dashboardGalleryLocalPreviewMap[fieldName]?.[previewSignature]
                         || window.dashboardGalleryLocalPreviewUrls[fieldName]?.[previewIndex];
 
-                    if (!fieldName || Number.isNaN(previewIndex) || !previewUrl) {
+                    if (!fieldName || !previewUrl) {
                         return;
                     }
 
@@ -496,7 +494,10 @@
 
                     return previews;
                 }, {});
-                applyLocalPreviews();
+
+                [0, 50, 150, 350, 700].forEach((delay) => {
+                    window.setTimeout(applyLocalPreviews, delay);
+                });
             });
 
             new MutationObserver(applyLocalPreviews).observe(document.body, {
@@ -504,8 +505,10 @@
                 subtree: true,
             });
 
+            window.applyDashboardGalleryLocalPreviews = applyLocalPreviews;
             document.addEventListener('livewire:navigated', applyLocalPreviews);
             applyLocalPreviews();
         }
     </script>
-@endonce
+    @endonce
+</section>
