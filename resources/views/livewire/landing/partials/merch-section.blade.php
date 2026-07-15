@@ -2,7 +2,7 @@
     $imageUrl = fn (?string $path, string $fallback) => $path
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
-    $formatPrice = fn ($product) => $product->currency.' '.number_format($product->price, 0, ',', '.');
+    $formatPrice = fn ($product, ?int $price = null) => $product->currency.' '.number_format($price ?? $product->price, 0, ',', '.');
     $heading = ($landingSectionHeadings ?? collect())->get('merchandise');
 @endphp
 
@@ -43,7 +43,17 @@
                                         </p>
                                     </div>
                                     <div class="merch-card-meta">
-                                        <span class="merch-card-price">{{ $formatPrice($product) }}</span>
+                                        <span class="merch-card-price">
+                                            @if ($product->hasDiscount())
+                                                <span class="merch-price-original">{{ $formatPrice($product, (int) $product->price) }}</span>
+                                                <span class="merch-price-row">
+                                                    <span class="merch-price-current">{{ $formatPrice($product, (int) $product->discount_price) }}</span>
+                                                    <span class="merch-discount-badge">-{{ $product->discountPercent() }}%</span>
+                                                </span>
+                                            @else
+                                                <span class="merch-price-current">{{ $formatPrice($product) }}</span>
+                                            @endif
+                                        </span>
                                         <span class="merch-card-cta">Detail</span>
                                     </div>
                                 </div>
@@ -110,7 +120,17 @@
                                             </p>
                                         </div>
                                         <div class="merch-card-meta">
-                                            <span class="merch-card-price">{{ $formatPrice($product) }}</span>
+                                            <span class="merch-card-price">
+                                                @if ($product->hasDiscount())
+                                                    <span class="merch-price-original">{{ $formatPrice($product, (int) $product->price) }}</span>
+                                                    <span class="merch-price-row">
+                                                        <span class="merch-price-current">{{ $formatPrice($product, (int) $product->discount_price) }}</span>
+                                                        <span class="merch-discount-badge">-{{ $product->discountPercent() }}%</span>
+                                                    </span>
+                                                @else
+                                                    <span class="merch-price-current">{{ $formatPrice($product) }}</span>
+                                                @endif
+                                            </span>
                                             <span class="merch-card-cta">Detail</span>
                                         </div>
                                     </div>

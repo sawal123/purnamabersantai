@@ -2,7 +2,7 @@
     $imageUrl = fn (?string $path, string $fallback) => $path
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
-    $formatPrice = fn ($product) => $product->currency.' '.number_format($product->price, 0, ',', '.');
+    $formatPrice = fn ($product, ?int $price = null) => $product->currency.' '.number_format($price ?? $product->price, 0, ',', '.');
     $safeDescription = function (?string $description, string $fallback): string {
         $content = trim((string) $description) ?: $fallback;
         $content = strip_tags($content, '<p><br><strong><b><em><i><u><ul><ol><li><a><h2><h3><blockquote>');
@@ -43,7 +43,11 @@
                 'slug' => $product->slug,
                 'url' => route('landing.merch.show', ['productSlug' => $product->slug]),
                 'title' => $product->name,
-                'price' => $formatPrice($product),
+                'price' => $formatPrice($product, $product->effectivePrice()),
+                'originalPrice' => $formatPrice($product, (int) $product->price),
+                'discountPrice' => $product->hasDiscount() ? $formatPrice($product, (int) $product->discount_price) : null,
+                'discountPercent' => $product->discountPercent(),
+                'hasDiscount' => $product->hasDiscount(),
                 'description' => $safeDescription($product->description, 'Merchandise resmi Purnama Bersantai.'),
                 'stockQuantity' => (int) ($product->stock_quantity ?? 0),
                 'sizes' => collect($product->size_options ?? [])->filter()->values(),
@@ -108,12 +112,12 @@
                 >
                     Merchandise
                 </h3>
-                <p
+                <div
                     id="merch-modal-price"
-                    class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-[#fff700]"
+                    class="merch-modal-price-stack mt-4"
                 >
-                    Rp0
-                </p>
+                    <p class="merch-modal-price-current">Rp0</p>
+                </div>
                 <div
                     id="merch-modal-description"
                     class="merch-modal-description mt-5 text-base leading-relaxed text-white/72"

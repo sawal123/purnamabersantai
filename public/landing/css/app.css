@@ -1076,11 +1076,52 @@ button:not(:disabled) {
 }
 
 .merch-card-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.28rem;
+    min-width: 0;
     font-family: var(--landing-font);
-    font-size: 1.55rem;
     line-height: 1;
     letter-spacing: 0.06em;
     color: #fff700;
+}
+
+.merch-price-original {
+    font-family: var(--landing-body-font);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: line-through;
+    text-decoration-thickness: 0.12em;
+}
+
+.merch-price-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.merch-price-current {
+    font-family: var(--landing-font);
+    font-size: 1.55rem;
+    line-height: 1;
+    color: #fff700;
+}
+
+.merch-discount-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: #fff700;
+    padding: 0.18rem 0.42rem;
+    font-family: var(--landing-body-font);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0;
+    color: #2f2e2e;
 }
 
 .merch-card-cta {
@@ -1301,6 +1342,49 @@ button:not(:disabled) {
     flex-direction: column;
     justify-content: center;
     padding: 0.25rem 0.15rem 0.35rem;
+}
+
+.merch-modal-price-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+}
+
+.merch-modal-price-original {
+    font-family: var(--landing-body-font);
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.52);
+    text-decoration: line-through;
+    text-decoration-thickness: 0.12em;
+}
+
+.merch-modal-price-current {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    font-family: var(--landing-font);
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff700;
+}
+
+.merch-modal-discount-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: #fff700;
+    padding: 0.28rem 0.62rem;
+    font-family: var(--landing-body-font);
+    font-size: 0.82rem;
+    font-weight: 900;
+    letter-spacing: 0;
+    color: #2f2e2e;
 }
 
 .merch-modal-description p + p,

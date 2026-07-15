@@ -414,6 +414,7 @@ return [
             ['key' => 'category.name', 'label' => 'Category'],
             ['key' => 'slug', 'label' => 'Slug'],
             ['key' => 'price', 'label' => 'Price', 'type' => 'money', 'currency_field' => 'currency'],
+            ['key' => 'discount_price', 'label' => 'Discount', 'type' => 'money', 'currency_field' => 'currency'],
             ['key' => 'stock_quantity', 'label' => 'Stock'],
             ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
         ],
@@ -422,6 +423,7 @@ return [
             ['name' => 'slug', 'label' => 'Slug', 'type' => 'text', 'required' => true, 'unique' => true],
             ['name' => 'merchandise_product_category_id', 'label' => 'Category', 'type' => 'select', 'required' => true, 'options_model' => MerchandiseProductCategory::class, 'option_label' => 'name'],
             ['name' => 'price', 'label' => 'Price', 'type' => 'number', 'required' => true, 'default' => 0],
+            ['name' => 'discount_price', 'label' => 'Discount Price', 'type' => 'number'],
             ['name' => 'currency', 'label' => 'Currency', 'type' => 'select', 'required' => true, 'default' => 'IDR', 'options' => [
                 ['value' => 'IDR', 'label' => 'IDR'],
                 ['value' => 'USD', 'label' => 'USD'],

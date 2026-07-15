@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
     'kicker',
     'name',
     'price',
+    'discount_price',
     'currency',
     'stock_quantity',
     'description',
@@ -40,6 +41,7 @@ class MerchandiseProduct extends Model
     {
         return [
             'price' => 'integer',
+            'discount_price' => 'integer',
             'stock_quantity' => 'integer',
             'size_options' => 'array',
             'color_options' => 'array',
@@ -65,6 +67,27 @@ class MerchandiseProduct extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function hasDiscount(): bool
+    {
+        return (int) $this->price > 0
+            && (int) $this->discount_price > 0
+            && (int) $this->discount_price < (int) $this->price;
+    }
+
+    public function effectivePrice(): int
+    {
+        return $this->hasDiscount() ? (int) $this->discount_price : (int) $this->price;
+    }
+
+    public function discountPercent(): ?int
+    {
+        if (! $this->hasDiscount()) {
+            return null;
+        }
+
+        return (int) round((((int) $this->price - (int) $this->discount_price) / (int) $this->price) * 100);
     }
 
     protected function automaticThumbnailAlt(): string

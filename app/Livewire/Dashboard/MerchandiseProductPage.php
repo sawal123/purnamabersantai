@@ -155,6 +155,25 @@ class MerchandiseProductPage extends ResourcePage
             : Str::title(str_replace('-', ' ', (string) ($this->form['slug'] ?? '')));
     }
 
+    protected function rules(): array
+    {
+        $rules = parent::rules();
+
+        $rules['form.discount_price'][] = function (string $attribute, mixed $value, \Closure $fail): void {
+            $discountPrice = (int) $value;
+
+            if ($discountPrice <= 0) {
+                return;
+            }
+
+            if ($discountPrice >= (int) ($this->form['price'] ?? 0)) {
+                $fail('Discount Price harus lebih kecil dari Price.');
+            }
+        };
+
+        return $rules;
+    }
+
     protected function sanitizeGeneratedDescription(mixed $description): string
     {
         if (! is_string($description)) {

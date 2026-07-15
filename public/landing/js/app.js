@@ -585,6 +585,41 @@ const initMerchModal = (assetBase, contactUrl) => {
 
   let merchActiveIndex = 0;
 
+  const escapeMerchText = (value) =>
+    String(value ?? "").replace(/[&<>"']/g, (character) => {
+      const replacements = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+      };
+
+      return replacements[character] || character;
+    });
+
+  const renderMerchPrice = (product) => {
+    if (!merchModalPrice) {
+      return;
+    }
+
+    if (product.hasDiscount && product.discountPrice) {
+      merchModalPrice.innerHTML = `
+        <p class="merch-modal-price-original">${escapeMerchText(product.originalPrice)}</p>
+        <p class="merch-modal-price-current">
+          ${escapeMerchText(product.discountPrice)}
+          <span class="merch-modal-discount-badge">-${escapeMerchText(product.discountPercent)}%</span>
+        </p>
+      `;
+
+      return;
+    }
+
+    merchModalPrice.innerHTML = `
+      <p class="merch-modal-price-current">${escapeMerchText(product.price)}</p>
+    `;
+  };
+
   const isMerchandisePath = () => {
     const currentPath = window.location.pathname.replace(/\/$/, "");
 
@@ -845,7 +880,7 @@ const initMerchModal = (assetBase, contactUrl) => {
 
     merchModalKicker.textContent = product.kicker;
     merchModalTitle.textContent = product.title;
-    merchModalPrice.textContent = product.price;
+    renderMerchPrice(product);
     merchModalDescription.innerHTML = product.description;
     fillMerchOptions(merchModalSize, merchModalSizeField, product.sizes);
     fillMerchOptions(merchModalColor, merchModalColorField, product.colors);
