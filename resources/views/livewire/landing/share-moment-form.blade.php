@@ -1,7 +1,31 @@
+@php($serverPreviewUrl = $this->shareMomentPreviewUrl())
+
 <div
-    x-data="{ open: @js($errors->isNotEmpty() || filled($shareMomentTitle) || filled($shareMomentUsername) || filled($shareMomentAltText) || $shareMomentImage !== null) }"
+    x-data="{
+        open: @js($errors->isNotEmpty() || filled($shareMomentTitle) || filled($shareMomentUsername) || $shareMomentImage !== null),
+        localPreviewUrl: window.shareMomentLocalPreviewUrl || null,
+        clearLocalPreview() {
+            if (this.localPreviewUrl) {
+                URL.revokeObjectURL(this.localPreviewUrl);
+            }
+
+            this.localPreviewUrl = null;
+            window.shareMomentLocalPreviewUrl = null;
+        },
+        setLocalPreview(event) {
+            this.clearLocalPreview();
+
+            const file = event.target.files?.[0];
+
+            if (file) {
+                this.localPreviewUrl = URL.createObjectURL(file);
+                window.shareMomentLocalPreviewUrl = this.localPreviewUrl;
+            }
+        },
+    }"
     x-effect="document.body.classList.toggle('modal-open', open)"
-    x-on:share-moment-saved.window="open = false"
+    x-on:share-moment-saved.window="open = false; clearLocalPreview()"
+    x-on:beforeunload.window="clearLocalPreview()"
     class="relative -mt-8 pb-24"
 >
     <div class="relative z-10 mx-auto max-w-7xl px-5 text-center lg:px-8">
@@ -65,35 +89,22 @@
                                     type="text"
                                     class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-[#fff700]/60 focus:bg-white/8"
                                     placeholder="Acoustic Sunset"
-                                    wire:model="shareMomentTitle"
+                                    wire:model.live.debounce.300ms="shareMomentTitle"
                                 />
                                 @error('shareMomentTitle')
                                     <span class="mt-2 block text-sm text-[#fff700]">{{ $message }}</span>
                                 @enderror
                             </label>
 
-                            <label class="block">
+                            <label class="block sm:col-span-2">
                                 <span class="mb-2 block text-sm font-semibold uppercase tracking-[0.18em] text-white/70">Username</span>
                                 <input
                                     type="text"
                                     class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-[#fff700]/60 focus:bg-white/8"
                                     placeholder="@namakamu"
-                                    wire:model="shareMomentUsername"
+                                    wire:model.live.debounce.300ms="shareMomentUsername"
                                 />
                                 @error('shareMomentUsername')
-                                    <span class="mt-2 block text-sm text-[#fff700]">{{ $message }}</span>
-                                @enderror
-                            </label>
-
-                            <label class="block">
-                                <span class="mb-2 block text-sm font-semibold uppercase tracking-[0.18em] text-white/70">Alt Text</span>
-                                <input
-                                    type="text"
-                                    class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-[#fff700]/60 focus:bg-white/8"
-                                    placeholder="Teman-teman menikmati musik saat sunset"
-                                    wire:model="shareMomentAltText"
-                                />
-                                @error('shareMomentAltText')
                                     <span class="mt-2 block text-sm text-[#fff700]">{{ $message }}</span>
                                 @enderror
                             </label>
@@ -101,10 +112,11 @@
                             <div class="block sm:col-span-2">
                                 <div class="mb-2 flex items-center justify-between gap-3">
                                     <span class="block text-sm font-semibold uppercase tracking-[0.18em] text-white/70">Upload Image</span>
-                                    @if ($this->shareMomentPreviewUrl())
+                                    @if ($serverPreviewUrl || $shareMomentImage !== null)
                                         <button
                                             type="button"
                                             class="text-xs font-semibold uppercase tracking-[0.16em] text-[#fff700]/80 transition hover:text-white"
+                                            x-on:click="clearLocalPreview(); $refs.shareMomentImageInput.value = null"
                                             wire:click="removeShareMomentImage"
                                         >
                                             Remove
@@ -112,15 +124,15 @@
                                     @endif
                                 </div>
 
-                                @if ($this->shareMomentPreviewUrl())
+                                <template x-if="localPreviewUrl || @js($serverPreviewUrl)">
                                     <div class="mb-4 overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/5">
                                         <img
-                                            src="{{ $this->shareMomentPreviewUrl() }}"
+                                            x-bind:src="localPreviewUrl || @js($serverPreviewUrl)"
                                             alt="Preview uploaded moment image"
                                             class="h-64 w-full object-cover"
                                         />
                                     </div>
-                                @endif
+                                </template>
 
                                 <label class="group flex cursor-pointer flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-white/20 bg-white/5 px-4 py-8 text-center transition hover:border-[#fff700]/60 hover:bg-white/8">
                                     <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/6 text-white/80">
@@ -133,9 +145,11 @@
                                     <span class="mt-1 text-sm text-white/55">PNG, JPG, JPEG, atau WEBP maksimal 4MB</span>
 
                                     <input
+                                        x-ref="shareMomentImageInput"
                                         type="file"
                                         accept="image/png,image/jpeg,image/jpg,image/webp"
                                         class="sr-only"
+                                        x-on:change="setLocalPreview($event)"
                                         wire:model="shareMomentImage"
                                     >
                                 </label>

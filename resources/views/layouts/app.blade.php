@@ -25,6 +25,15 @@
             $resourceGroups = \App\Support\DashboardResourceRegistry::navigation();
             $resourceGroups = collect($resourceGroups)
                 ->map(function (array $group) {
+                    if (($group['heading'] ?? null) === 'Website') {
+                        $group['items'][] = [
+                            'key' => 'user',
+                            'label' => 'Users',
+                            'icon' => 'user',
+                            'route' => route('dashboard.user'),
+                        ];
+                    }
+
                     if (($group['heading'] ?? null) === 'Media & Partnership') {
                         $group['items'][] = [
                             'key' => 'landing-marquee',
@@ -159,10 +168,9 @@
                             </svg>
                         </button>
 
-                        <a href="{{ route('profile.edit') }}" wire:navigate class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-1.5 pr-3 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+                        <div class="flex items-center rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
                             <img src="{{ $avatarUrl }}" class="h-8 w-8 rounded-lg" alt="Avatar" />
-                            <span class="hidden text-sm font-bold md:inline">{{ $user?->initials() ?? 'A' }}</span>
-                        </a>
+                        </div>
                     </div>
                 </div>
             </header>

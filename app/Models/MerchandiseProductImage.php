@@ -17,6 +17,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class MerchandiseProductImage extends Model
 {
+    protected static function booted(): void
+    {
+        static::saving(function (self $image): void {
+            $image->alt_text = $image->automaticAltText();
+        });
+    }
+
     protected function casts(): array
     {
         return [
@@ -32,5 +39,20 @@ class MerchandiseProductImage extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order')->orderBy('id');
+    }
+
+    protected function automaticAltText(): string
+    {
+        $productName = $this->product?->name;
+
+        if (blank($productName) && filled($this->merchandise_product_id)) {
+            $productName = MerchandiseProduct::query()
+                ->whereKey($this->merchandise_product_id)
+                ->value('name');
+        }
+
+        return filled($productName)
+            ? $productName
+            : 'Merchandise product image';
     }
 }

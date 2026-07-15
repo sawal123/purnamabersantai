@@ -16,6 +16,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class LandingHeroImage extends Model
 {
+    protected static function booted(): void
+    {
+        static::saving(function (self $heroImage): void {
+            $heroImage->alt_text = $heroImage->automaticAltText();
+        });
+    }
+
     protected function casts(): array
     {
         return [
@@ -31,5 +38,20 @@ class LandingHeroImage extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order')->orderBy('id');
+    }
+
+    protected function automaticAltText(): string
+    {
+        $siteName = $this->landingSetting?->site_name;
+
+        if (blank($siteName) && filled($this->landing_setting_id)) {
+            $siteName = LandingSetting::query()
+                ->whereKey($this->landing_setting_id)
+                ->value('site_name');
+        }
+
+        return filled($siteName)
+            ? "{$siteName} hero image"
+            : 'Purnama Bersantai hero image';
     }
 }

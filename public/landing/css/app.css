@@ -1,3 +1,28 @@
+@font-face {
+    font-family: "Slackey";
+    src: url("../fonts/Slackey-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Barlow Landing";
+    src: url("../fonts/Barlow-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --landing-display-font: "Slackey", ui-serif, Georgia, serif;
+    --landing-body-font: "Barlow Landing", ui-sans-serif, system-ui, sans-serif;
+    --landing-font: var(--landing-display-font);
+    --font-display: var(--landing-display-font);
+    --font-body: var(--landing-body-font);
+    --font-sans: var(--landing-body-font);
+}
+
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 6.25rem;
@@ -5,6 +30,21 @@ html {
 
 body {
     background: #ec5b00;
+    font-family: var(--landing-body-font);
+}
+
+p {
+    font-family: var(--landing-body-font);
+}
+
+.font-display,
+.hero-title,
+.ticket-shell-title,
+.ticket-shell-price,
+.merch-card-price,
+.gallery-detail-title,
+.music-disc-player-head h2 {
+    font-family: var(--landing-display-font);
 }
 
 body.mobile-nav-open,
@@ -51,7 +91,7 @@ button:not(:disabled) {
     border-radius: 9999px;
     background: rgba(47, 46, 46, 0.9);
     padding: 0.55rem 1rem 0.45rem;
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: 0.78rem;
     font-weight: 800;
     line-height: 1;
@@ -111,7 +151,7 @@ button:not(:disabled) {
 .lineup-marquee span {
     flex: 0 0 auto;
     padding-inline: 2rem;
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: clamp(1.7rem, 3vw, 2.35rem);
     line-height: 1;
     letter-spacing: 0.12em;
@@ -159,7 +199,7 @@ button:not(:disabled) {
 .tickets-merch-marquee span {
     flex: 0 0 auto;
     padding-inline: 2rem;
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: clamp(1.65rem, 3vw, 2.5rem);
     line-height: 1;
     letter-spacing: 0.12em;
@@ -223,7 +263,7 @@ button:not(:disabled) {
 }
 
 .hero-countdown-value {
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: clamp(1.8rem, 5vw, 3.15rem);
     line-height: 0.9;
     letter-spacing: 0.06em;
@@ -342,7 +382,7 @@ button:not(:disabled) {
 
       .history-story-content h2,
       .history-story-content h3 {
-        font-family: "Squada One", cursive;
+        font-family: var(--landing-font);
         text-transform: uppercase;
         letter-spacing: 0.08em;
         color: #fff;
@@ -640,7 +680,7 @@ button:not(:disabled) {
 
 .ticket-shell-title {
     max-width: min(15.5rem, 72%);
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: clamp(2.45rem, 4.8vw, 3.35rem);
     line-height: 0.96;
     letter-spacing: 0.01em;
@@ -730,7 +770,7 @@ button:not(:disabled) {
     align-items: baseline;
     gap: 0.05em;
     margin-top: 1.1rem;
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: clamp(2.45rem, 4.8vw, 3.35rem);
     line-height: 0.9;
     letter-spacing: 0;
@@ -932,7 +972,7 @@ button:not(:disabled) {
     border-radius: 9999px;
     background: rgba(236, 91, 0, 0.12);
     color: #fff700;
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: 1.35rem;
     line-height: 1;
 }
@@ -1010,7 +1050,7 @@ button:not(:disabled) {
     border: 1px solid rgba(255, 255, 255, 0.18);
     background: rgba(47, 46, 46, 0.7);
     padding: 0.4rem 0.8rem;
-    font-family: "Rajdhani", sans-serif;
+    font-family: var(--landing-font);
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.18em;
@@ -1036,7 +1076,7 @@ button:not(:disabled) {
 }
 
 .merch-card-price {
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: 1.55rem;
     line-height: 1;
     letter-spacing: 0.06em;
@@ -1596,7 +1636,7 @@ button:not(:disabled) {
 
 .gallery-detail-title {
     margin-top: 0.35rem;
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: clamp(2rem, 4vw, 3rem);
     line-height: 0.92;
     letter-spacing: 0.06em;
@@ -1789,7 +1829,7 @@ button:not(:disabled) {
     display: block;
     border-radius: 0.9rem;
     padding: 0.95rem 1rem;
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: 1.5rem;
     line-height: 1;
     letter-spacing: 0.1em;
@@ -2201,7 +2241,7 @@ button:not(:disabled) {
 
 .music-disc-player-head h2 {
     margin-top: 0.25rem;
-    font-family: "Squada One", cursive;
+    font-family: var(--landing-font);
     font-size: 1.18rem;
     line-height: 1;
     letter-spacing: 0.06em;
@@ -2487,4 +2527,8 @@ button:not(:disabled) {
         transform: translateY(8px);
         filter: brightness(1.08);
     }
+}
+
+p:not(.font-display):not(.hero-title):not(.ticket-shell-title):not(.ticket-shell-label):not(.ticket-shell-price):not(.landing-heading-kicker):not(.ticket-section-kicker):not(.gallery-detail-kicker) {
+    font-family: var(--landing-body-font);
 }

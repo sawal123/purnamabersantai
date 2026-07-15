@@ -17,6 +17,15 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class GalleryMoment extends Model
 {
+    protected static function booted(): void
+    {
+        static::saving(function (self $moment): void {
+            if (blank($moment->alt_text)) {
+                $moment->alt_text = filled($moment->title) ? $moment->title : 'Gallery moment';
+            }
+        });
+    }
+
     protected function casts(): array
     {
         return [

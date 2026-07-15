@@ -15,6 +15,13 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class TicketCardElement extends Model
 {
+    protected static function booted(): void
+    {
+        static::saving(function (self $element): void {
+            $element->alt_text = filled($element->name) ? $element->name : 'Ticket card element';
+        });
+    }
+
     protected function casts(): array
     {
         return [

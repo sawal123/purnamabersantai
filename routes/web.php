@@ -6,6 +6,7 @@ use App\Livewire\Dashboard\LandingSectionHeadingPage as DashboardLandingSectionH
 use App\Livewire\Dashboard\MerchandiseProductPage as DashboardMerchandiseProductPage;
 use App\Livewire\Dashboard\ResourcePage as DashboardResourcePage;
 use App\Livewire\Dashboard\SongPage as DashboardSongPage;
+use App\Livewire\Dashboard\UserPage as DashboardUserPage;
 use App\Livewire\Dashboard\YoutubePage as DashboardYoutubePage;
 use App\Livewire\Landing\About;
 use App\Livewire\Landing\Contact;
@@ -56,6 +57,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('dashboard/youtube', DashboardYoutubePage::class)
         ->defaults('resource', 'youtube')
         ->name('dashboard.youtube');
+    Route::livewire('dashboard/user', DashboardUserPage::class)
+        ->defaults('resource', 'user')
+        ->name('dashboard.user');
 
     Route::livewire('dashboard/{resource}', DashboardResourcePage::class)
         ->whereIn('resource', DashboardResourceRegistry::keys())

@@ -14,6 +14,7 @@ use App\Models\MerchandiseProductImage;
 use App\Models\RundownMap;
 use App\Models\RundownMapImage;
 use App\Models\SeoSetting;
+use App\Models\SpotifyPlaylist;
 use App\Models\SponsorPartner;
 use App\Models\Ticket;
 use App\Models\TicketCardElement;
@@ -193,14 +194,13 @@ return [
         'table_columns' => [
             ['key' => 'landingSetting.site_name', 'label' => 'Landing Setting'],
             ['key' => 'image_path', 'label' => 'Image', 'type' => 'image'],
-            ['key' => 'alt_text', 'label' => 'Alt Text', 'truncate' => 32],
             ['key' => 'sort_order', 'label' => 'Order'],
             ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
         ],
         'form_fields' => [
             ['name' => 'landing_setting_id', 'label' => 'Landing Setting', 'type' => 'select', 'required' => true, 'options_model' => LandingSetting::class, 'option_label' => 'site_name'],
             ['name' => 'image_path', 'label' => 'Image', 'type' => 'image', 'required' => true],
-            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text'],
+            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text', 'hidden_from_form' => true],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
@@ -270,7 +270,7 @@ return [
         'form_fields' => [
             ['name' => 'name', 'label' => 'Artist Name', 'type' => 'text', 'required' => true],
             ['name' => 'image_path', 'label' => 'Image', 'type' => 'image'],
-            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text'],
+            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text', 'hidden_from_form' => true],
             ['name' => 'image_class', 'label' => 'Image Class', 'type' => 'text'],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
             ['name' => 'is_featured', 'label' => 'Featured', 'type' => 'checkbox', 'default' => false, 'full_width' => true],
@@ -287,6 +287,8 @@ return [
         'description' => 'Kelola batch tiket, harga, status penjualan, dan link pembelian.',
         'searchable' => ['name', 'batch_label', 'availability_label', 'status'],
         'with' => [],
+        'reorderable' => true,
+        'reorder_field' => 'sort_order',
         'default_sort' => [
             ['column' => 'sort_order', 'direction' => 'asc'],
             ['column' => 'id', 'direction' => 'asc'],
@@ -296,6 +298,7 @@ return [
             ['key' => 'batch_label', 'label' => 'Batch'],
             ['key' => 'price', 'label' => 'Price', 'type' => 'money', 'currency_field' => 'currency'],
             ['key' => 'purchase_links', 'label' => 'Links', 'type' => 'count'],
+            ['key' => 'sort_order', 'label' => 'Order'],
             ['key' => 'status', 'label' => 'Status', 'type' => 'badge'],
             ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
         ],
@@ -307,7 +310,6 @@ return [
                 ['value' => 'IDR', 'label' => 'IDR'],
                 ['value' => 'USD', 'label' => 'USD'],
             ]],
-            ['name' => 'availability_label', 'label' => 'Availability Label', 'type' => 'text', 'default' => 'Available'],
             ['name' => 'status', 'label' => 'Status', 'type' => 'select', 'required' => true, 'default' => 'available', 'options' => [
                 ['value' => 'available', 'label' => 'Available'],
                 ['value' => 'limited', 'label' => 'Limited'],
@@ -349,14 +351,45 @@ return [
         'table_columns' => [
             ['key' => 'image_path', 'label' => 'Element', 'type' => 'image'],
             ['key' => 'name', 'label' => 'Name'],
-            ['key' => 'alt_text', 'label' => 'Alt Text', 'truncate' => 40],
             ['key' => 'sort_order', 'label' => 'Order'],
             ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
         ],
         'form_fields' => [
             ['name' => 'name', 'label' => 'Element Name', 'type' => 'text', 'required' => true],
             ['name' => 'image_path', 'label' => 'Element Image', 'type' => 'image', 'required' => true],
-            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text'],
+            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text', 'hidden_from_form' => true],
+            ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
+            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
+        ],
+    ],
+    'spotify-playlist' => [
+        'label' => 'Spotify Playlists',
+        'navigation_label' => 'Spotify Playlists',
+        'navigation_group' => 'Media & Partnership',
+        'navigation_icon' => 'music-note',
+        'model' => SpotifyPlaylist::class,
+        'page_title' => 'Spotify Playlists',
+        'description' => 'Kelola embed playlist Spotify yang tampil pada halaman Playlist.',
+        'searchable' => ['label', 'title', 'embed_url', 'open_url'],
+        'with' => [],
+        'reorderable' => true,
+        'reorder_field' => 'sort_order',
+        'default_sort' => [
+            ['column' => 'sort_order', 'direction' => 'asc'],
+            ['column' => 'id', 'direction' => 'asc'],
+        ],
+        'table_columns' => [
+            ['key' => 'label', 'label' => 'Label'],
+            ['key' => 'title', 'label' => 'Title'],
+            ['key' => 'embed_url', 'label' => 'Embed URL', 'truncate' => 70],
+            ['key' => 'sort_order', 'label' => 'Order'],
+            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
+        ],
+        'form_fields' => [
+            ['name' => 'label', 'label' => 'Label', 'type' => 'text', 'required' => true, 'default' => 'Spotify'],
+            ['name' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true, 'default' => 'Festival Warm Up'],
+            ['name' => 'embed_url', 'label' => 'Embed URL / Iframe', 'type' => 'textarea', 'required' => true, 'full_width' => true],
+            ['name' => 'open_url', 'label' => 'Open Spotify URL', 'type' => 'textarea', 'full_width' => true],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
@@ -397,8 +430,8 @@ return [
             ['name' => 'description', 'label' => 'Description', 'type' => 'rich_text', 'full_width' => true],
             ['name' => 'size_options', 'label' => 'Size Options', 'type' => 'option_list', 'full_width' => true, 'placeholder' => "S\nM\nL\nXL"],
             ['name' => 'color_options', 'label' => 'Color Options', 'type' => 'option_list', 'full_width' => true, 'placeholder' => "Hitam\nPutih\nCream"],
-            ['name' => 'thumbnail_alt', 'label' => 'Thumbnail Alt', 'type' => 'text'],
-            ['name' => 'thumbnail_class', 'label' => 'Thumbnail Class', 'type' => 'text'],
+            ['name' => 'thumbnail_alt', 'label' => 'Thumbnail Alt', 'type' => 'text', 'hidden_from_form' => true],
+            ['name' => 'thumbnail_class', 'label' => 'Thumbnail Class', 'type' => 'text', 'hidden_from_form' => true],
             [
                 'name' => 'gallery_images',
                 'label' => 'Gallery Images',
@@ -466,14 +499,13 @@ return [
         'table_columns' => [
             ['key' => 'product.name', 'label' => 'Product'],
             ['key' => 'image_path', 'label' => 'Image', 'type' => 'image'],
-            ['key' => 'alt_text', 'label' => 'Alt Text', 'truncate' => 30],
             ['key' => 'sort_order', 'label' => 'Order'],
             ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
         ],
         'form_fields' => [
             ['name' => 'merchandise_product_id', 'label' => 'Product', 'type' => 'select', 'required' => true, 'options_model' => MerchandiseProduct::class, 'option_label' => 'name'],
             ['name' => 'image_path', 'label' => 'Image', 'type' => 'image', 'required' => true],
-            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text'],
+            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text', 'hidden_from_form' => true],
             ['name' => 'image_class', 'label' => 'Image Class', 'type' => 'text'],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
@@ -506,7 +538,7 @@ return [
             ['name' => 'username', 'label' => 'Username', 'type' => 'text'],
             ['name' => 'description', 'label' => 'Description', 'type' => 'textarea', 'full_width' => true],
             ['name' => 'image_path', 'label' => 'Image', 'type' => 'image'],
-            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text'],
+            ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text', 'hidden_from_form' => true],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],

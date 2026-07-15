@@ -20,6 +20,13 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class Ticket extends Model
 {
+    protected static function booted(): void
+    {
+        static::saving(function (Ticket $ticket): void {
+            $ticket->availability_label = self::availabilityLabelForStatus((string) $ticket->status);
+        });
+    }
+
     protected function casts(): array
     {
         return [
@@ -27,6 +34,16 @@ class Ticket extends Model
             'is_active' => 'boolean',
             'purchase_links' => 'array',
         ];
+    }
+
+    public static function availabilityLabelForStatus(string $status): string
+    {
+        return match ($status) {
+            'limited' => 'Limited Seat',
+            'sold_out' => 'Sold Out',
+            'coming_soon' => 'Coming Soon',
+            default => 'Available',
+        };
     }
 
     public function scopeOrdered(Builder $query): Builder

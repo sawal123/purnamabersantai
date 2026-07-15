@@ -738,6 +738,40 @@ class ResourcePage extends Component
         return $payload;
     }
 
+    protected function applyAutomaticHiddenAltText(array $payload): array
+    {
+        foreach ($this->resourceConfig['form_fields'] as $field) {
+            if (($field['hidden_from_form'] ?? false) !== true) {
+                continue;
+            }
+
+            $name = $field['name'] ?? null;
+
+            if (! is_string($name) || ! in_array($name, ['alt_text', 'thumbnail_alt'], true)) {
+                continue;
+            }
+
+            $payload[$name] = $this->automaticPayloadAltText($payload);
+        }
+
+        return $payload;
+    }
+
+    protected function automaticPayloadAltText(array $payload): string
+    {
+        foreach (['title', 'name', 'site_name', 'meta_title', 'question'] as $key) {
+            if (filled($payload[$key] ?? null)) {
+                return (string) $payload[$key];
+            }
+        }
+
+        if (filled($payload['slug'] ?? null)) {
+            return Str::title(str_replace('-', ' ', (string) $payload['slug']));
+        }
+
+        return (string) ($this->resourceConfig['label'] ?? 'Image');
+    }
+
     protected function loadFieldOptions(): void
     {
         $this->fieldOptions = [];
@@ -1012,7 +1046,7 @@ class ResourcePage extends Component
             $payload[$name] = blank($value) ? null : $value;
         }
 
-        return $payload;
+        return $this->applyAutomaticHiddenAltText($payload);
     }
 
     protected function storeImageUploads(array $payload): array
@@ -1551,6 +1585,10 @@ PROMPT;
                         $updates[$titleField] = $item['title'] ?? '';
                     }
 
+                    if ($altField && $altField !== $titleField) {
+                        $updates[$altField] = $this->automaticGalleryAltText($item, $record);
+                    }
+
                     $image->forceFill($updates)->save();
 
                     $firstStoredPath ??= (string) $image->getAttribute($pathField);
@@ -1569,7 +1607,7 @@ PROMPT;
 
                 $imagePayload = [
                     $pathField => $storedPath,
-                    $altField => $item['title'] ?? ($record->getAttribute('name') ?? $record->getKey()),
+                    $altField => $this->automaticGalleryAltText($item, $record),
                     $sortField => $sortOrder,
                     $activeField => true,
                 ];
@@ -1590,11 +1628,39 @@ PROMPT;
             if (($field['auto_fill_thumbnail'] ?? false) === true) {
                 $record->forceFill([
                     'thumbnail_path' => $firstStoredPath,
-                    'thumbnail_alt' => $record->getAttribute('thumbnail_alt') ?: ($record->getAttribute('name') ?? null),
+                    'thumbnail_alt' => $this->automaticRecordAltText($record),
                     'thumbnail_class' => $record->getAttribute('thumbnail_class') ?: $defaultClass,
                 ])->save();
             }
         }
+    }
+
+    protected function automaticGalleryAltText(array $item, Model $record): string
+    {
+        if (filled($item['title'] ?? null)) {
+            return (string) $item['title'];
+        }
+
+        return $this->automaticRecordAltText($record);
+    }
+
+    protected function automaticRecordAltText(Model $record): string
+    {
+        foreach (['title', 'name', 'site_name', 'meta_title', 'question'] as $attribute) {
+            $value = $record->getAttribute($attribute);
+
+            if (filled($value)) {
+                return (string) $value;
+            }
+        }
+
+        $slug = $record->getAttribute('slug');
+
+        if (filled($slug)) {
+            return Str::title(str_replace('-', ' ', (string) $slug));
+        }
+
+        return (string) ($record->getKey() ?? $this->resourceConfig['label'] ?? 'Image');
     }
 
     protected function keyedImageGalleryUploads(string $fieldName): array

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 #[Fillable([
     'merchandise_product_category_id',
@@ -28,6 +29,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class MerchandiseProduct extends Model
 {
+    protected static function booted(): void
+    {
+        static::saving(function (self $product): void {
+            $product->thumbnail_alt = $product->automaticThumbnailAlt();
+        });
+    }
+
     protected function casts(): array
     {
         return [
@@ -57,5 +65,18 @@ class MerchandiseProduct extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order')->orderBy('id');
+    }
+
+    protected function automaticThumbnailAlt(): string
+    {
+        if (filled($this->name)) {
+            return $this->name;
+        }
+
+        if (filled($this->slug)) {
+            return Str::title(str_replace('-', ' ', $this->slug));
+        }
+
+        return 'Merchandise product';
     }
 }

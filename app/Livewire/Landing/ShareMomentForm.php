@@ -6,6 +6,7 @@ use App\Models\GalleryMoment;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
+use Throwable;
 
 class ShareMomentForm extends Component
 {
@@ -15,8 +16,6 @@ class ShareMomentForm extends Component
 
     public string $shareMomentUsername = '';
 
-    public string $shareMomentAltText = '';
-
     public mixed $shareMomentImage = null;
 
     public function submitShareMoment(): void
@@ -24,12 +23,10 @@ class ShareMomentForm extends Component
         $validated = $this->validate([
             'shareMomentTitle' => ['required', 'string', 'max:255'],
             'shareMomentUsername' => ['nullable', 'string', 'max:255'],
-            'shareMomentAltText' => ['nullable', 'string', 'max:255'],
             'shareMomentImage' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ], [], [
             'shareMomentTitle' => 'moment title',
             'shareMomentUsername' => 'username',
-            'shareMomentAltText' => 'alt text',
             'shareMomentImage' => 'image',
         ]);
 
@@ -43,14 +40,13 @@ class ShareMomentForm extends Component
                 ? '@'.ltrim($validated['shareMomentUsername'], '@')
                 : null,
             'image_path' => '/storage/'.$path,
-            'alt_text' => $validated['shareMomentAltText'] ?: $validated['shareMomentTitle'],
+            'alt_text' => $validated['shareMomentTitle'],
             'is_active' => false,
         ]);
 
         $this->reset(
             'shareMomentTitle',
             'shareMomentUsername',
-            'shareMomentAltText',
             'shareMomentImage',
         );
         $this->resetValidation();
@@ -71,9 +67,17 @@ class ShareMomentForm extends Component
 
     public function shareMomentPreviewUrl(): ?string
     {
-        return $this->shareMomentImage instanceof TemporaryUploadedFile
-            ? $this->shareMomentImage->temporaryUrl()
-            : null;
+        if (! $this->shareMomentImage instanceof TemporaryUploadedFile) {
+            return null;
+        }
+
+        try {
+            return $this->shareMomentImage->temporaryUrl();
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return null;
+        }
     }
 
     public function render()

@@ -148,7 +148,11 @@ class MerchandiseProductPage extends ResourcePage
 
     protected function syncThumbnailAltFromSlug(): void
     {
-        $this->form['thumbnail_alt'] = (string) ($this->form['slug'] ?? '');
+        $name = trim((string) ($this->form['name'] ?? ''));
+
+        $this->form['thumbnail_alt'] = $name !== ''
+            ? $name
+            : Str::title(str_replace('-', ' ', (string) ($this->form['slug'] ?? '')));
     }
 
     protected function sanitizeGeneratedDescription(mixed $description): string

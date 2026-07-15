@@ -17,6 +17,13 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class LineupArtist extends Model
 {
+    protected static function booted(): void
+    {
+        static::saving(function (self $artist): void {
+            $artist->alt_text = filled($artist->name) ? $artist->name : 'Lineup artist';
+        });
+    }
+
     protected function casts(): array
     {
         return [

@@ -5,6 +5,7 @@
 @php
     $paths = [
         'home' => '<path d="M3 12 12 3l9 9" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" />',
+        'user' => '<path d="M20 21a8 8 0 0 0-16 0" /><circle cx="12" cy="7" r="4" />',
         'magnifying-glass' => '<path d="m21 21-4.3-4.3" /><circle cx="11" cy="11" r="7" />',
         'adjustments-horizontal' => '<path d="M3 6h12M19 6h2M15 6a2 2 0 1 0 4 0 2 2 0 0 0-4 0ZM3 18h2M9 18h12M5 18a2 2 0 1 0 4 0 2 2 0 0 0-4 0ZM3 12h7M14 12h7M10 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z" />',
         'clock' => '<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />',

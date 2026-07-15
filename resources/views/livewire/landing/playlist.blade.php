@@ -1,5 +1,9 @@
 @php
     $heading = ($landingSectionHeadings ?? collect())->get('playlist');
+    $playlistTitle = $spotifyPlaylist?->title ?: 'Festival Warm Up';
+    $playlistLabel = $spotifyPlaylist?->label ?: 'Spotify';
+    $playlistEmbedUrl = $spotifyPlaylist?->embed_url ?: 'https://open.spotify.com/embed/playlist/3ijdciOT0zodS2QVoUS0n3?utm_source=generator&theme=0&si=51050317e5c34125';
+    $playlistOpenUrl = $spotifyPlaylist?->resolvedOpenUrl() ?: 'https://open.spotify.com/playlist/3ijdciOT0zodS2QVoUS0n3?si=26a07152a7914027';
 @endphp
 
 <div class="relative overflow-x-hidden">
@@ -29,13 +33,13 @@
                 <article class="overflow-hidden rounded-[2rem] border border-white/10 bg-[#2f2e2e]/95 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-6">
                     <div class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                         <div>
-                            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff700]/80">Spotify</p>
+                            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[#fff700]/80">{{ $playlistLabel }}</p>
                             <h2 class="mt-2 font-display text-4xl uppercase tracking-[0.08em] text-white">
-                                Festival Warm Up
+                                {{ $playlistTitle }}
                             </h2>
                         </div>
                         <a
-                            href="https://open.spotify.com/playlist/3ijdciOT0zodS2QVoUS0n3?si=26a07152a7914027"
+                            href="{{ $playlistOpenUrl }}"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="inline-flex rounded-2xl border-2 border-ember px-5 py-2.5 font-display text-2xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-white/10"
@@ -46,9 +50,9 @@
 
                     <iframe
                         data-testid="embed-iframe"
-                        title="Spotify playlist Purnama Bersantai"
+                        title="Spotify playlist {{ $playlistTitle }}"
                         class="h-[352px] w-full rounded-2xl"
-                        src="https://open.spotify.com/embed/playlist/3ijdciOT0zodS2QVoUS0n3?utm_source=generator&theme=0&si=51050317e5c34125"
+                        src="{{ $playlistEmbedUrl }}"
                         width="100%"
                         height="352"
                         frameborder="0"

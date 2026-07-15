@@ -1,3 +1,32 @@
+@once
+    <style>
+        @font-face {
+            font-family: "Landing Slackey Preview";
+            src: url("/landing/fonts/Slackey-Regular.ttf") format("truetype");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Landing Barlow Preview";
+            src: url("/landing/fonts/Barlow-Medium.ttf") format("truetype");
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        .landing-section-heading-preview {
+            font-family: "Landing Barlow Preview", ui-sans-serif, system-ui, sans-serif;
+        }
+
+        .landing-section-heading-preview .font-display {
+            font-family: "Landing Slackey Preview", ui-serif, Georgia, serif !important;
+            font-weight: 400 !important;
+        }
+    </style>
+@endonce
+
 <section class="w-full space-y-6">
     <div class="overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-orange-700 to-amber-500 p-6 text-white shadow-xl shadow-orange-500/15 sm:p-8">
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -65,7 +94,7 @@
                     <p class="mt-1 text-xs text-slate-400">{{ $heading->kicker ?: 'No kicker' }}</p>
                 </td>
                 <td class="min-w-96 px-4 py-4 text-sm text-zinc-700 dark:text-zinc-200">
-                    <div class="rounded-3xl bg-[#ff4a20] p-5 text-center text-white">
+                    <div class="landing-section-heading-preview rounded-3xl bg-[#ff4a20] p-5 text-center text-white">
                         @if (filled($heading->kicker))
                             <p class="mx-auto mb-3 inline-flex rounded-full border border-[#2f2e2e]/25 bg-[#2f2e2e]/90 px-4 py-1 font-display text-sm font-extrabold uppercase leading-none tracking-[0.22em] text-[#fff700] shadow-[0_12px_28px_rgba(0,0,0,0.16)]">
                                 {{ $heading->kicker }}
@@ -178,7 +207,7 @@
             @php
                 $formUsesTicketKicker = ($form['placement'] ?? '') === 'tickets';
             @endphp
-            <div class="md:col-span-2 rounded-3xl bg-[#ff4a20] p-6 text-center text-white">
+            <div class="landing-section-heading-preview md:col-span-2 rounded-3xl bg-[#ff4a20] p-6 text-center text-white">
                 @if (filled($form['kicker'] ?? ''))
                     <p class="mx-auto mb-4 inline-flex rounded-full border border-[#2f2e2e]/25 bg-[#2f2e2e]/90 px-4 py-1 font-display text-sm font-extrabold uppercase leading-none tracking-[0.22em] text-[#fff700] shadow-[0_12px_28px_rgba(0,0,0,0.16)]">
                         {{ $form['kicker'] }}
