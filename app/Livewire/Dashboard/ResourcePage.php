@@ -131,6 +131,7 @@ class ResourcePage extends Component
 
                 return $uploadKey === null || isset($uploads[$uploadKey]);
             })
+            ->unique(fn (array $item) => $item['upload_key'] ?? $item['item_key'] ?? spl_object_id((object) $item))
             ->values()
             ->all();
     }
@@ -575,6 +576,7 @@ class ResourcePage extends Component
 
         return collect($this->form[$fieldName] ?? [])
             ->filter(fn ($item) => is_array($item))
+            ->unique(fn (array $item) => $item['upload_key'] ?? $item['item_key'] ?? spl_object_id((object) $item))
             ->map(function (array $item) use ($uploads, $uploadKeys) {
                 $path = $item['path'] ?? null;
                 $uploadKey = $item['upload_key'] ?? null;
@@ -1676,9 +1678,9 @@ PROMPT;
     protected function temporaryUploadKey(TemporaryUploadedFile $upload): string
     {
         return sha1(implode('|', [
-            $upload->getFilename(),
             $upload->getClientOriginalName(),
             (string) $upload->getSize(),
+            (string) $upload->getMimeType(),
         ]));
     }
 

@@ -7,6 +7,7 @@
         @include('livewire.landing.partials.hero')
         @include('livewire.landing.partials.lineup-section', ['compactTop' => true])
         @include('livewire.landing.partials.about-video')
+        @include('livewire.landing.partials.lineup-ticket-marquee')
         @include('livewire.landing.partials.tickets-section')
         @include('livewire.landing.partials.tickets-merch-marquee')
         @include('livewire.landing.partials.merch-section')

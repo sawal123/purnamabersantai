@@ -215,6 +215,42 @@ button:not(:disabled) {
     transform: rotate(10deg);
 }
 
+.lineup-ticket-marquee {
+    position: relative;
+    z-index: 12;
+    display: flex;
+    width: 118%;
+    height: 68px;
+    margin: clamp(1.5rem, 4vw, 3rem) 0 clamp(-2.6rem, -3vw, -1.4rem) -9%;
+    align-items: center;
+    overflow: hidden;
+    transform: rotate(-4deg);
+    background: #2f2e2e;
+    color: #ffffff;
+    box-shadow: 0 18px 42px rgba(47, 46, 46, 0.28);
+}
+
+.lineup-ticket-marquee-track {
+    display: flex;
+    min-width: max-content;
+    animation: ticketsMerchMarquee 24s linear infinite;
+}
+
+.lineup-ticket-marquee span {
+    flex: 0 0 auto;
+    padding-inline: 2rem;
+    font-family: var(--landing-font);
+    font-size: clamp(1.65rem, 3vw, 2.5rem);
+    line-height: 1;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.lineup-ticket-marquee span:nth-child(2n) {
+    color: #fff700;
+}
+
 @keyframes ticketsMerchMarquee {
     from {
         transform: translateX(0);
@@ -226,7 +262,8 @@ button:not(:disabled) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .tickets-merch-marquee-track {
+    .tickets-merch-marquee-track,
+    .lineup-ticket-marquee-track {
         animation: none;
     }
 }
@@ -1525,6 +1562,19 @@ button:not(:disabled) {
     transform: translate(-50%, 0);
 }
 
+.gallery-card-description {
+    display: -webkit-box;
+    min-height: 3em;
+    max-height: 3em;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.98rem;
+    font-weight: 800;
+    line-height: 1.5;
+    color: #2f2e2e;
+}
+
 .footer-simple {
     background:
         radial-gradient(
@@ -1647,7 +1697,7 @@ button:not(:disabled) {
 .gallery-detail-panel {
     position: relative;
     z-index: 1;
-    width: fit-content;
+    width: min(94vw, 48rem);
     max-width: 94vw;
     max-height: none;
     overflow: hidden;
@@ -1684,20 +1734,25 @@ button:not(:disabled) {
 
 .gallery-detail-grid {
     display: grid;
+    width: 100%;
     max-height: none;
     overflow: hidden;
 }
 
 .gallery-detail-image-shell {
-    min-height: 0;
+    display: flex;
+    width: 100%;
+    height: clamp(18rem, 62dvh, 42rem);
+    justify-content: center;
+    overflow: hidden;
     background: #2f2e2e;
 }
 
 .gallery-detail-image {
     display: block;
-    max-height: min(74dvh, 46rem);
-    max-width: 94vw;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .gallery-detail-copy {
@@ -1708,6 +1763,8 @@ button:not(:disabled) {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
     text-align: center;
+    width: 100%;
+    min-width: 0;
 }
 
 .gallery-detail-kicker {
@@ -1725,6 +1782,7 @@ button:not(:disabled) {
     line-height: 0.92;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+    overflow-wrap: anywhere;
 }
 
 .gallery-detail-user {
@@ -1753,10 +1811,11 @@ button:not(:disabled) {
 
 .gallery-detail-description {
     margin: 0.8rem auto 0;
-    max-width: 44rem;
+    max-width: min(100%, 44rem);
     font-size: 0.98rem;
     line-height: 1.55;
     color: rgba(255, 255, 255, 0.72);
+    white-space: normal;
 }
 
 @media (min-width: 1024px) {
@@ -1765,11 +1824,12 @@ button:not(:disabled) {
     }
 
     .gallery-detail-image-shell {
-        min-height: 0;
+        height: clamp(22rem, 62dvh, 42rem);
     }
 
     .gallery-detail-image {
-        max-height: min(74dvh, 46rem);
+        width: 100%;
+        height: 100%;
     }
 }
 

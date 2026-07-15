@@ -31,6 +31,16 @@ class LandingMarqueeSeeder extends Seeder
                 'is_active' => true,
             ],
             [
+                'placement' => 'lineup_ticket',
+                'label' => 'Lineup to Ticket Marquee',
+                'aria_label' => 'Official event ticket marquee',
+                'primary_text' => 'Get Your Ticket',
+                'secondary_text' => 'Official Event Pass',
+                'repeat_count' => 10,
+                'highlight_secondary' => true,
+                'is_active' => true,
+            ],
+            [
                 'placement' => 'tickets_merch',
                 'label' => 'Tickets & Merchandise Marquee',
                 'aria_label' => 'Official merchandise and tickets',

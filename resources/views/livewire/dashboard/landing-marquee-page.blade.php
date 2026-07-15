@@ -5,7 +5,7 @@
                 <span class="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-bold ring-1 ring-white/20">Landing Motion Text</span>
                 <h1 class="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">Landing Marquees</h1>
                 <p class="mt-3 text-sm leading-6 text-indigo-100 md:text-base">
-                    Kelola 3 teks berjalan di landing page: lineup, tickets/merchandise, dan gallery moments.
+                    Kelola teks berjalan di landing page: lineup, lineup/ticket, tickets/merchandise, dan gallery moments.
                 </p>
             </div>
 
@@ -127,7 +127,7 @@
         description="Placement harus sesuai dengan partial landing yang memakai marquee." closeAction="closeFormModal" maxWidth="max-w-3xl"
         wire:key="landing-marquee-form-modal">
         <form wire:submit="save" class="grid gap-4 md:grid-cols-2">
-            <x-ui-dashboard.text-input label="Placement" name="placement" placeholder="lineup, tickets_merch, gallery"
+            <x-ui-dashboard.text-input label="Placement" name="placement" placeholder="lineup, lineup_ticket, tickets_merch, gallery"
                 error="form.placement" wire:model="form.placement" />
             <x-ui-dashboard.text-input label="Label" name="label" error="form.label" wire:model="form.label" />
 

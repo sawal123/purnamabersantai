@@ -35,6 +35,8 @@
                         $momentUsername = ltrim($moment->username ?: 'purnamabersantai', '@');
                         $momentDescription = $moment->description
                             ?: ($moment->alt_text ?: 'Dokumentasi momen Purnama Bersantai yang menangkap suasana festival, energi penonton, dan cerita hangat dari malam acara.');
+                        $momentModalDescription = trim(strip_tags($momentDescription));
+                        $momentCardDescription = \Illuminate\Support\Str::limit($momentModalDescription, 74, '....');
                     @endphp
                     <div class="w-full px-2 sm:w-1/2 lg:w-1/3 xl:w-1/4">
                         <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 transition hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
@@ -47,7 +49,7 @@
                                     alt: @js($momentAlt),
                                     title: @js($moment->title),
                                     username: @js($momentUsername),
-                                    description: @js($momentDescription)
+                                    description: @js($momentModalDescription)
                                 }"
                             >
                                 <img
@@ -58,7 +60,7 @@
                                 <span class="gallery-card-image-overlay">View Moment</span>
                             </button>
                             <div class="space-y-4 p-4">
-                                <p class="text-base font-semibold">{{ $moment->title }}</p>
+                                <p class="gallery-card-description">{{ $momentCardDescription }}</p>
                                 <div class="flex items-center gap-2 text-sm font-semibold text-zinc-700">
                                     <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-zinc-400 text-xs">@</span>
                                     <span>{{ $momentUsername }}</span>
@@ -89,7 +91,7 @@
                                 <span class="gallery-card-image-overlay">View Moment</span>
                             </button>
                             <div class="space-y-4 p-4">
-                                <p class="text-base font-semibold">Moment Coming Soon</p>
+                                <p class="gallery-card-description">{{ \Illuminate\Support\Str::limit($fallbackDescription, 92, '....') }}</p>
                                 <div class="flex items-center gap-2 text-sm font-semibold text-zinc-700">
                                     <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-zinc-400 text-xs">@</span>
                                     <span>purnamabersantai</span>
@@ -127,6 +129,8 @@
                             $momentUsername = ltrim($moment->username ?: 'purnamabersantai', '@');
                             $momentDescription = $moment->description
                                 ?: ($moment->alt_text ?: 'Dokumentasi momen Purnama Bersantai yang menangkap suasana festival, energi penonton, dan cerita hangat dari malam acara.');
+                            $momentModalDescription = trim(strip_tags($momentDescription));
+                            $momentCardDescription = \Illuminate\Support\Str::limit($momentModalDescription, 74, '....');
                         @endphp
                         <div class="swiper-slide">
                             <article class="overflow-hidden rounded-[1.5rem] bg-white text-zinc-900 transition hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)]">
@@ -139,7 +143,7 @@
                                         alt: @js($momentAlt),
                                         title: @js($moment->title),
                                         username: @js($momentUsername),
-                                        description: @js($momentDescription)
+                                        description: @js($momentModalDescription)
                                     }"
                                 >
                                     <img
@@ -150,7 +154,7 @@
                                     <span class="gallery-card-image-overlay">View Moment</span>
                                 </button>
                                 <div class="space-y-4 p-4">
-                                    <p class="text-base font-semibold">{{ $moment->title }}</p>
+                                    <p class="gallery-card-description">{{ $momentCardDescription }}</p>
                                     <div class="flex items-center gap-2 text-sm font-semibold text-zinc-700">
                                         <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-zinc-400 text-xs">@</span>
                                         <span>{{ $momentUsername }}</span>
@@ -181,7 +185,7 @@
                                     <span class="gallery-card-image-overlay">View Moment</span>
                                 </button>
                                 <div class="space-y-4 p-4">
-                                    <p class="text-base font-semibold">Moment Coming Soon</p>
+                                    <p class="gallery-card-description">{{ \Illuminate\Support\Str::limit($fallbackDescription, 92, '....') }}</p>
                                     <div class="flex items-center gap-2 text-sm font-semibold text-zinc-700">
                                         <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-zinc-400 text-xs">@</span>
                                         <span>purnamabersantai</span>
