@@ -876,6 +876,87 @@ button:not(:disabled) {
     display: none;
 }
 
+.ticket-static-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+.ticket-static-item {
+    min-width: 0;
+}
+
+@media (min-width: 1280px) {
+    .ticket-static-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ticket-shell-static {
+        min-height: 29rem;
+        max-width: 26rem;
+        border-radius: 3rem 3rem 2.4rem 2.4rem;
+    }
+
+    .ticket-shell-static .ticket-shell-content {
+        padding: 2.2rem 1.7rem 1.7rem;
+    }
+
+    .ticket-shell-static .ticket-shell-title {
+        max-width: min(13rem, 70%);
+        font-size: clamp(2.15rem, 3.2vw, 2.75rem);
+    }
+
+    .ticket-shell-static .ticket-shell-pill {
+        padding: 0.48rem 1.2rem 0.42rem;
+        font-size: 1.12rem;
+    }
+
+    .ticket-shell-static .ticket-shell-notch {
+        right: -5.1rem;
+        width: 14.5rem;
+        height: 20rem;
+    }
+
+    .ticket-shell-static .ticket-shell-notch-image {
+        right: -3.7rem;
+        width: 13.5rem;
+        height: 13.5rem;
+    }
+
+    .ticket-shell-static .ticket-shell-meta {
+        margin-top: 1.5rem;
+    }
+
+    .ticket-shell-static .ticket-shell-label {
+        gap: 2.2rem;
+        font-size: 1.25rem;
+    }
+
+    .ticket-shell-static .ticket-shell-availability {
+        font-size: 1.22rem;
+    }
+
+    .ticket-shell-static .ticket-shell-price {
+        font-size: clamp(2.05rem, 3.2vw, 2.75rem);
+    }
+
+    .ticket-shell-static .ticket-shell-footer {
+        margin-top: 1.6rem;
+    }
+
+    .ticket-shell-static .ticket-shell-action {
+        padding: 1rem 1.2rem 0.95rem;
+        font-size: 1.65rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+    .ticket-static-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 @media (max-width: 760px) {
     .ticket-shell {
         min-height: 32rem;
@@ -1180,11 +1261,17 @@ button:not(:disabled) {
     position: fixed;
     inset: 0;
     z-index: 60;
+    width: 100vw;
+    height: 100dvh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 1rem;
-    overflow-y: auto;
+    padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+    overflow-x: hidden;
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    min-height: 100dvh;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -1200,7 +1287,7 @@ button:not(:disabled) {
 }
 
 .merch-modal-backdrop {
-    position: absolute;
+    position: fixed;
     inset: 0;
     background: rgba(47, 46, 46, 0.78);
     backdrop-filter: blur(16px);
@@ -1211,8 +1298,9 @@ button:not(:disabled) {
     position: relative;
     z-index: 1;
     width: min(100%, 56rem);
-    max-height: calc(100dvh - 2rem);
-    overflow: hidden;
+    max-height: none;
+    overflow: visible;
+    margin-block: auto;
     border-radius: 2rem;
     border: 1px solid rgba(255, 255, 255, 0.12);
     background:
@@ -1229,6 +1317,16 @@ button:not(:disabled) {
     box-shadow: 0 24px 90px rgba(0, 0, 0, 0.45);
 }
 
+.merch-modal.is-open .merch-modal-panel {
+    margin-block: auto;
+}
+
+@media (max-height: 760px) {
+    .merch-modal.is-open .merch-modal-panel {
+        margin-block: 0;
+    }
+}
+
 .merch-modal-close {
     position: absolute;
     right: 1rem;
@@ -1239,12 +1337,13 @@ button:not(:disabled) {
 .merch-modal-grid {
     display: grid;
     gap: 1rem;
+    max-height: none;
+    overflow: visible;
     padding: 1.2rem;
-    max-height: calc(100dvh - 2rem);
-    overflow-y: auto;
 }
 
 .merch-modal-gallery-shell {
+    align-self: start;
     overflow: hidden;
     border-radius: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.09);
@@ -1377,8 +1476,15 @@ button:not(:disabled) {
 .merch-modal-copy {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    max-height: none;
+    overflow: visible;
     padding: 0.25rem 0.15rem 0.35rem;
+}
+
+.merch-modal-title {
+    font-size: clamp(1.85rem, 3.4vw, 2.8rem);
+    line-height: 0.94;
 }
 
 .merch-modal-price-stack {
@@ -1511,7 +1617,7 @@ button:not(:disabled) {
         grid-template-columns: minmax(22rem, 28rem) minmax(17rem, 22rem);
         gap: 1.25rem;
         padding: 1.2rem;
-        align-items: center;
+        align-items: start;
     }
 }
 
@@ -1742,17 +1848,19 @@ button:not(:disabled) {
 .gallery-detail-image-shell {
     display: flex;
     width: 100%;
-    height: clamp(18rem, 62dvh, 42rem);
+    max-height: min(72dvh, 44rem);
+    align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: #2f2e2e;
+    background: #1f1f1f;
 }
 
 .gallery-detail-image {
     display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    max-height: min(72dvh, 44rem);
+    object-fit: contain;
 }
 
 .gallery-detail-copy {
@@ -1824,12 +1932,13 @@ button:not(:disabled) {
     }
 
     .gallery-detail-image-shell {
-        height: clamp(22rem, 62dvh, 42rem);
+        max-height: min(76dvh, 46rem);
     }
 
     .gallery-detail-image {
         width: 100%;
-        height: 100%;
+        height: auto;
+        max-height: min(76dvh, 46rem);
     }
 }
 

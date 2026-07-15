@@ -108,7 +108,7 @@
                 </p>
                 <h3
                     id="merch-modal-title"
-                    class="mt-3 font-display text-5xl uppercase tracking-[0.08em] sm:text-6xl"
+                    class="merch-modal-title mt-3 font-display uppercase tracking-[0.08em]"
                 >
                     Merchandise
                 </h3>

@@ -15,6 +15,14 @@ class Home extends Component
 
     public function render()
     {
-        return view('livewire.landing.home', $this->landingContent());
+        $content = $this->landingContent();
+
+        foreach (['lineupArtists', 'tickets', 'merchandiseProducts', 'galleryMoments'] as $key) {
+            if (isset($content[$key]) && method_exists($content[$key], 'take')) {
+                $content[$key] = $content[$key]->take(10)->values();
+            }
+        }
+
+        return view('livewire.landing.home', $content);
     }
 }

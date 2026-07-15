@@ -56,7 +56,7 @@
         </div>
 
         @if (($staticLayout ?? false) === true)
-            <div class="mt-14 flex flex-wrap justify-center gap-y-6">
+            <div class="ticket-static-grid mt-14">
                 @forelse ($tickets as $ticket)
                     @php
                         $purchaseOptions = $ticket->purchaseOptions();
@@ -64,8 +64,8 @@
                         $primaryPurchaseUrl = $purchaseOptions[0]['url'] ?? route('landing.contact');
                         $ticketElement = $ticketElementFor($loop->index);
                     @endphp
-                    <div class="w-full px-2 sm:w-1/2 xl:w-1/3">
-                        <article class="ticket-shell {{ $ticketElement ? 'ticket-shell-has-element' : '' }}">
+                    <div class="ticket-static-item">
+                        <article class="ticket-shell {{ ($staticLayout ?? false) === true ? 'ticket-shell-static' : '' }} {{ $ticketElement ? 'ticket-shell-has-element' : '' }}">
                             <span class="ticket-shell-notch {{ $ticketElement ? 'ticket-shell-notch-image' : '' }}" aria-hidden="true">
                                 @if ($ticketElement)
                                     <img src="{{ $ticketElement->image_path }}" alt="" loading="lazy">
@@ -117,8 +117,8 @@
                     @php
                         $ticketElement = $ticketElementFor(0);
                     @endphp
-                    <div class="w-full max-w-md px-2">
-                        <article class="ticket-shell {{ $ticketElement ? 'ticket-shell-has-element' : '' }}">
+                    <div class="ticket-static-item">
+                        <article class="ticket-shell {{ ($staticLayout ?? false) === true ? 'ticket-shell-static' : '' }} {{ $ticketElement ? 'ticket-shell-has-element' : '' }}">
                             <span class="ticket-shell-notch {{ $ticketElement ? 'ticket-shell-notch-image' : '' }}" aria-hidden="true">
                                 @if ($ticketElement)
                                     <img src="{{ $ticketElement->image_path }}" alt="" loading="lazy">
