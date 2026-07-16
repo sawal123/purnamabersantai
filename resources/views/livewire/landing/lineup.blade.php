@@ -23,7 +23,9 @@
 
     <main>
         <section id="lineup" class="relative z-10 pb-20 pt-32">
-            <div class="mx-auto max-w-7xl px-5 lg:px-8">
+            @include('livewire.landing.partials.section-elements', ['offset' => 0, 'variant' => 'lineup'])
+
+            <div class="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
                 <div class="text-center">
                     @if (filled($heading?->kicker))
                         <p class="landing-heading-kicker mb-3">
@@ -94,7 +96,7 @@
                                     $artistImage = $imageUrl($artist->image_path, asset('landing/assets/Rectangle 17.png'));
                                     $artistAlt = $artist->alt_text ?: $artist->name;
                                 @endphp
-                                <div class="w-1/2 px-2.5 lg:w-1/4">
+                                <div class="w-full max-w-[21rem] px-2.5 sm:w-1/2 lg:w-1/4">
                                     <button
                                         type="button"
                                         wire:key="lineup-artist-{{ $artist->id }}"

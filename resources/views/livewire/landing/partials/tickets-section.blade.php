@@ -36,7 +36,9 @@
 @endphp
 
 <section id="tickets" class="ticket-section relative z-10 flex min-h-screen items-center pb-24 pt-32">
-    <div class="mx-auto w-full max-w-7xl px-5 lg:px-8">
+    @include('livewire.landing.partials.section-elements', ['offset' => 4])
+
+    <div class="relative z-10 mx-auto w-full max-w-7xl px-5 lg:px-8">
         <div class="ticket-section-heading reveal text-center">
             <p class="ticket-section-kicker">
                 {{ $heading?->kicker ?: 'Official Event Pass' }}

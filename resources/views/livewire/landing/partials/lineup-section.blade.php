@@ -14,7 +14,9 @@
 @include('livewire.landing.partials.lineup-marquee')
 
 <section id="lineup" class="relative z-10 pb-20 {{ ($compactTop ?? false) ? 'pt-8' : 'pt-32' }}">
-    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    @include('livewire.landing.partials.section-elements', ['offset' => 0, 'variant' => 'lineup'])
+
+    <div class="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
         <div class="reveal text-center">
             @if (filled($heading?->kicker))
                 <p class="landing-heading-kicker mb-3">

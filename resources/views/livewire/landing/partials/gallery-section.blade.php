@@ -11,7 +11,9 @@
     x-on:keydown.escape.window="selectedMoment = null"
 >
 <section id="gallery" class="relative z-10 pb-24 pt-32">
-    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    @include('livewire.landing.partials.section-elements', ['offset' => 3])
+
+    <div class="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
         <div class="reveal text-center">
             @if (filled($heading?->kicker))
                 <p class="landing-heading-kicker mb-3">

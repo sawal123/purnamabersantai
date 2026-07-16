@@ -11,6 +11,7 @@ use App\Models\LandingSetting;
 use App\Models\LandingSectionHeading;
 use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
+use App\Models\NotFoundImage;
 use App\Models\SponsorPartner;
 use App\Models\Ticket;
 use App\Models\TicketCardElement;
@@ -57,6 +58,15 @@ trait LoadsLandingContent
                 ->get()
             : collect();
 
+        $notFoundImages = Schema::hasTable('not_found_images')
+            ? NotFoundImage::query()
+                ->where('is_active', true)
+                ->whereNotNull('image_path')
+                ->latest('id')
+                ->get()
+                ->keyBy('page_section')
+            : collect();
+
         return [
             'landingSetting' => $setting,
             'countdownSetting' => CountdownSetting::query()
@@ -99,6 +109,7 @@ trait LoadsLandingContent
             'landingMarquees' => $landingMarquees,
             'landingSectionHeadings' => $landingSectionHeadings,
             'youtubeVideo' => $youtubeVideo,
+            'notFoundImages' => $notFoundImages,
         ];
     }
 }

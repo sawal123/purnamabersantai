@@ -12,7 +12,9 @@
 
     <main>
         <section class="relative z-10 pb-12 pt-32">
-            <div class="mx-auto max-w-6xl px-5 lg:px-8">
+            @include('livewire.landing.partials.section-elements', ['offset' => 8])
+
+            <div class="relative z-10 mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">
                     <p class="landing-heading-kicker">
                         {{ $heading?->kicker ?: 'Sponsor & Partner' }}
@@ -34,14 +36,14 @@
                         @foreach ($sponsorPartners as $partner)
                             <div class="w-1/2 px-2 sm:w-1/3 lg:w-1/4 xl:w-1/5">
                                 <div
-                                    class="flex h-28 items-center justify-center rounded-[1.5rem] border border-white bg-white p-3 transition duration-300 hover:-translate-y-1 hover:border-[#fff700] hover:bg-[#fff700]"
+                                    class="flex h-24 items-center justify-center rounded-[1.25rem] border border-white bg-white p-2 transition duration-300 hover:-translate-y-1 hover:border-[#fff700] hover:bg-[#fff700]"
                                     aria-label="{{ $partner->name }}"
                                 >
                                     @if ($partner->logo_path)
                                         <img
                                             src="{{ $logoUrl($partner->logo_path) }}"
                                             alt="{{ $partner->name }}"
-                                            class="max-h-12 w-auto max-w-full object-contain"
+                                            class="max-h-20 w-auto max-w-[92%] object-contain"
                                         />
                                     @else
                                         <span class="text-center text-sm font-semibold uppercase tracking-[0.18em] text-[#2f2e2e]">

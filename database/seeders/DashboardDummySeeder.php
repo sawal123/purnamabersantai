@@ -14,7 +14,7 @@ use App\Models\MerchandiseProduct;
 use App\Models\MerchandiseProductCategory;
 use App\Models\MerchandiseProductImage;
 use App\Models\RundownMap;
-use App\Models\RundownMapImage;
+use App\Models\RundownMapCategory;
 use App\Models\SponsorPartner;
 use App\Models\Ticket;
 use Illuminate\Database\Seeder;
@@ -62,24 +62,38 @@ class DashboardDummySeeder extends Seeder
             ],
         );
 
-        $rundownMap = RundownMap::query()->updateOrCreate(
-            ['tahun' => 2026],
-            [
-                'google_map' => 'https://www.google.com/maps?q=Bandung&output=embed',
-                'is_active' => true,
-            ],
+        $rundownCategory = RundownMapCategory::query()->updateOrCreate(
+            ['slug' => 'rundown'],
+            ['name' => 'Rundown', 'sort_order' => 10, 'is_active' => true],
+        );
+        $mapCategory = RundownMapCategory::query()->updateOrCreate(
+            ['slug' => 'map'],
+            ['name' => 'Map', 'sort_order' => 20, 'is_active' => true],
         );
 
         foreach ([
-            ['name' => 'Rundown Stage', 'image_path' => '/storage/dashboard/brand/hero-stage.png'],
-            ['name' => 'Festival Area Map', 'image_path' => '/storage/dashboard/brand/sponsor-board.png'],
-        ] as $index => $image) {
-            RundownMapImage::query()->updateOrCreate(
-                ['rundown_map_id' => $rundownMap->id, 'name' => $image['name']],
+            [
+                'title' => 'Rundown Stage',
+                'category_id' => $rundownCategory->id,
+                'image_path' => '/storage/dashboard/brand/hero-stage.png',
+                'date' => '2026-08-24',
+                'description' => 'Susunan acara utama Purnama Bersantai 2026.',
+            ],
+            [
+                'title' => 'Festival Area Map',
+                'category_id' => $mapCategory->id,
+                'image_path' => '/storage/dashboard/brand/sponsor-board.png',
+                'date' => '2026-08-24',
+                'description' => 'Denah area festival Purnama Bersantai 2026.',
+            ],
+        ] as $item) {
+            RundownMap::query()->updateOrCreate(
+                ['title' => $item['title'], 'date' => $item['date']],
                 [
-                    'sort_order' => $index + 1,
+                    'tahun' => (int) substr($item['date'], 0, 4),
+                    'google_map' => null,
                     'is_active' => true,
-                    ...$image,
+                    ...$item,
                 ],
             );
         }

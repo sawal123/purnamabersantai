@@ -276,7 +276,7 @@
                             wire:model="form.{{ $field['name'] }}" />
                     @elseif ($field['type'] === 'image')
                         <x-ui-dashboard.image-input :label="$field['label']" :name="$field['name']" :current="$this->currentImageUrl($field['name'])"
-                            :preview="$this->imagePreviewUrl($field['name'])" :error="'imageUploads.' . $field['name']" wire:model="imageUploads.{{ $field['name'] }}" />
+                            :preview="$this->imagePreviewUrl($field['name'])" :error="'imageUploads.' . $field['name']" :max-kb="$field['max_kb'] ?? 4096" :help="$field['help_text'] ?? null" wire:model="imageUploads.{{ $field['name'] }}" />
                     @elseif ($field['type'] === 'image_list')
                         <div class="space-y-4">
                             <div>

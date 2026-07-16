@@ -11,8 +11,7 @@ use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
 use App\Models\MerchandiseProductCategory;
 use App\Models\MerchandiseProductImage;
-use App\Models\RundownMap;
-use App\Models\RundownMapImage;
+use App\Models\NotFoundImage;
 use App\Models\SeoSetting;
 use App\Models\SpotifyPlaylist;
 use App\Models\SponsorPartner;
@@ -131,49 +130,6 @@ return [
             ['name' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true, 'default' => 'PURNAMA BERSANTAI 2026'],
             ['name' => 'target_at', 'label' => 'Target Date & Time', 'type' => 'datetime', 'required' => true],
             ['name' => 'description', 'label' => 'Description', 'type' => 'textarea', 'full_width' => true],
-            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
-        ],
-    ],
-    'rundown-map' => [
-        'label' => 'Rundown & Map',
-        'navigation_label' => 'Rundown & Map',
-        'navigation_group' => 'Landing Content',
-        'navigation_icon' => 'map',
-        'model' => RundownMap::class,
-        'page_title' => 'Rundown & Map',
-        'description' => 'Kelola halaman rundown dan map per tahun, termasuk banyak gambar rundown dengan nama masing-masing dan satu Google Map.',
-        'searchable' => ['tahun', 'google_map'],
-        'with' => ['images'],
-        'default_sort' => [
-            ['column' => 'tahun', 'direction' => 'desc'],
-            ['column' => 'id', 'direction' => 'desc'],
-        ],
-        'table_columns' => [
-            ['key' => 'tahun', 'label' => 'Tahun'],
-            ['key' => 'images', 'label' => 'Images', 'type' => 'count', 'suffix' => 'image'],
-            ['key' => 'google_map', 'label' => 'Google Map', 'truncate' => 60],
-            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
-        ],
-        'form_fields' => [
-            ['name' => 'tahun', 'label' => 'Tahun', 'type' => 'number', 'required' => true, 'default' => 2026],
-            [
-                'name' => 'images',
-                'label' => 'Rundown Images',
-                'type' => 'image_gallery',
-                'full_width' => true,
-                'relation' => 'images',
-                'item_model' => RundownMapImage::class,
-                'item_title_field' => 'name',
-                'item_title_label' => 'Nama Pasangan Image',
-                'item_title_placeholder' => 'Contoh: Rundown Day 1, Venue Map',
-                'item_title_required' => true,
-                'item_alt_field' => 'name',
-                'item_path_field' => 'image_path',
-                'item_class_field' => null,
-                'item_sort_field' => 'sort_order',
-                'item_active_field' => 'is_active',
-            ],
-            ['name' => 'google_map', 'label' => 'Google Map URL / Embed', 'type' => 'textarea', 'full_width' => true],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
     ],
@@ -359,6 +315,56 @@ return [
             ['name' => 'image_path', 'label' => 'Element Image', 'type' => 'image', 'required' => true],
             ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text', 'hidden_from_form' => true],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
+            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
+        ],
+    ],
+    'not-found-image' => [
+        'label' => 'Not Found Images',
+        'navigation_label' => 'Not Found Images',
+        'navigation_group' => 'Landing Content',
+        'navigation_icon' => 'photo',
+        'model' => NotFoundImage::class,
+        'page_title' => 'Not Found Images',
+        'description' => 'Kelola gambar fallback/not found untuk setiap halaman atau section landing. Ukuran ideal image 1858px x 585px, maksimal 1MB per gambar.',
+        'searchable' => ['title', 'page_section'],
+        'with' => [],
+        'default_sort' => [
+            ['column' => 'page_section', 'direction' => 'asc'],
+            ['column' => 'id', 'direction' => 'desc'],
+        ],
+        'table_columns' => [
+            ['key' => 'id', 'label' => 'ID'],
+            ['key' => 'image_path', 'label' => 'Image', 'type' => 'image'],
+            ['key' => 'title', 'label' => 'Title'],
+            ['key' => 'page_section', 'label' => 'Page Section', 'type' => 'badge'],
+            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
+        ],
+        'form_fields' => [
+            ['name' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true],
+            ['name' => 'page_section', 'label' => 'Page Section', 'type' => 'select', 'required' => true, 'options' => [
+                ['value' => 'home', 'label' => 'Home'],
+                ['value' => 'hero', 'label' => 'Hero'],
+                ['value' => 'lineup', 'label' => 'Lineup'],
+                ['value' => 'ticket', 'label' => 'Ticket'],
+                ['value' => 'merchandise', 'label' => 'Merchandise'],
+                ['value' => 'gallery', 'label' => 'Gallery'],
+                ['value' => 'rundown-map', 'label' => 'Rundown & Map'],
+                ['value' => 'playlist', 'label' => 'Playlist'],
+                ['value' => 'history', 'label' => 'History'],
+                ['value' => 'sponsor-partner', 'label' => 'Sponsor & Partner'],
+                ['value' => 'faq', 'label' => 'FAQ'],
+                ['value' => 'contact', 'label' => 'Contact'],
+                ['value' => 'about', 'label' => 'About'],
+                ['value' => 'footer', 'label' => 'Footer'],
+            ]],
+            [
+                'name' => 'image_path',
+                'label' => 'Image',
+                'type' => 'image',
+                'required' => true,
+                'max_kb' => 1024,
+                'help_text' => 'Ukuran ideal 1858px x 585px. Maksimal 1MB per gambar.',
+            ],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
     ],

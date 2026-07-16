@@ -5,41 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'tahun',
-    'google_map',
-    'title',
-    'category_id',
-    'image_path',
-    'date',
-    'description',
+    'name',
+    'slug',
+    'sort_order',
     'is_active',
 ])]
-class RundownMap extends Model
+class RundownMapCategory extends Model
 {
     use SoftDeletes;
 
     protected function casts(): array
     {
         return [
-            'tahun' => 'integer',
-            'date' => 'date',
+            'sort_order' => 'integer',
             'is_active' => 'boolean',
         ];
     }
 
-    public function category(): BelongsTo
+    public function rundownMaps(): HasMany
     {
-        return $this->belongsTo(RundownMapCategory::class, 'category_id');
-    }
-
-    public function images(): HasMany
-    {
-        return $this->hasMany(RundownMapImage::class)->ordered();
+        return $this->hasMany(RundownMap::class, 'category_id');
     }
 
     public function scopeActive(Builder $query): Builder
@@ -49,6 +38,6 @@ class RundownMap extends Model
 
     public function scopeOrdered(Builder $query): Builder
     {
-        return $query->orderByDesc('date')->orderByDesc('tahun')->orderByDesc('id');
+        return $query->orderBy('sort_order')->orderBy('name')->orderBy('id');
     }
 }

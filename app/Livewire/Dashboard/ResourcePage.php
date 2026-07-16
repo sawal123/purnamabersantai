@@ -1217,11 +1217,12 @@ class ResourcePage extends Component
             }
 
             if ($type === 'image') {
+                $maxKb = (int) ($field['max_kb'] ?? 4096);
                 $uploadRules = [
                     'nullable',
                     'image',
                     'mimes:jpg,jpeg,png,webp',
-                    'max:4096',
+                    'max:'.$maxKb,
                 ];
 
                 if (($field['required'] ?? false) === true) {

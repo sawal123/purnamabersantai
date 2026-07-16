@@ -61,6 +61,15 @@
                         ];
                     }
 
+                    if (($group['heading'] ?? null) === 'Landing Content') {
+                        $group['items'][] = [
+                            'key' => 'rundown-map',
+                            'label' => 'Rundown & Map',
+                            'icon' => 'map',
+                            'route' => route('dashboard.rundown-map'),
+                        ];
+                    }
+
                     return $group;
                 })
                 ->values()

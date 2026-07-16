@@ -3,7 +3,7 @@
 namespace App\Livewire\Landing;
 
 use App\Livewire\Landing\Concerns\LoadsLandingContent;
-use App\Models\RundownMap as RundownMapModel;
+use App\Models\RundownMapCategory;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -18,8 +18,11 @@ class RundownMap extends Component
     {
         return view('livewire.landing.rundown-map', [
             ...$this->landingContent(),
-            'rundownMaps' => RundownMapModel::query()
-                ->with(['images' => fn ($query) => $query->where('is_active', true)->ordered()])
+            'rundownMapCategories' => RundownMapCategory::query()
+                ->with(['rundownMaps' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->whereNotNull('image_path')
+                    ->ordered()])
                 ->active()
                 ->ordered()
                 ->get(),

@@ -4,7 +4,16 @@
     'error' => null,
     'current' => null,
     'preview' => null,
+    'maxKb' => 4096,
+    'help' => null,
 ])
+
+@php
+    $maxKb = (int) $maxKb;
+    $maxSizeLabel = $maxKb >= 1024 && $maxKb % 1024 === 0
+        ? ($maxKb / 1024).'MB'
+        : $maxKb.'KB';
+@endphp
 
 <div
     class="space-y-2"
@@ -61,8 +70,16 @@
                 class="mt-1 text-sm"
                 x-bind:class="hasImage ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'"
             >
-                PNG, JPG, JPEG, atau WEBP maksimal 4MB
+                PNG, JPG, JPEG, atau WEBP maksimal {{ $maxSizeLabel }}
             </p>
+            @if ($help)
+                <p
+                    class="mx-auto mt-1 max-w-md text-xs"
+                    x-bind:class="hasImage ? 'text-white/75' : 'text-slate-500 dark:text-slate-400'"
+                >
+                    {{ $help }}
+                </p>
+            @endif
             <span class="mt-4 inline-flex rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white">Pilih Gambar</span>
         </div>
 

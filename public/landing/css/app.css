@@ -56,6 +56,71 @@ button:not(:disabled) {
     cursor: pointer;
 }
 
+.landing-section-elements {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    overflow: hidden;
+}
+
+.landing-section-element {
+    position: absolute;
+    width: clamp(6.5rem, 18vw, 14rem);
+    height: auto;
+    opacity: 0.96;
+    filter: drop-shadow(0 1.1rem 1.6rem rgba(47, 46, 46, 0.2));
+    user-select: none;
+}
+
+.landing-section-element-1 {
+    left: max(-4.7rem, -8vw);
+    top: clamp(3.8rem, 9vw, 7.2rem);
+    transform: rotate(-10deg);
+}
+
+.landing-section-element-2 {
+    right: max(-4.7rem, -8vw);
+    top: clamp(3.8rem, 9vw, 7.2rem);
+    transform: rotate(10deg);
+}
+
+.landing-section-element-3 {
+    left: max(-5.3rem, -9vw);
+    bottom: clamp(-0.9rem, 1.8vw, 2.2rem);
+    width: clamp(7.5rem, 20vw, 15rem);
+    transform: rotate(9deg);
+}
+
+.landing-section-element-4 {
+    right: max(-5.3rem, -9vw);
+    bottom: clamp(-0.9rem, 1.8vw, 2.2rem);
+    width: clamp(7.5rem, 20vw, 15rem);
+    transform: rotate(-9deg);
+}
+
+.landing-section-elements--lineup {
+    z-index: 0;
+}
+
+.landing-section-elements--lineup .landing-section-element-1,
+.landing-section-elements--lineup .landing-section-element-2 {
+    top: clamp(1.8rem, 4vw, 3.8rem);
+}
+
+@media (min-width: 1536px) {
+    .landing-section-element-1,
+    .landing-section-element-3 {
+        left: -2.4rem;
+    }
+
+    .landing-section-element-2,
+    .landing-section-element-4 {
+        right: -2.4rem;
+    }
+}
+
 .minimal-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
