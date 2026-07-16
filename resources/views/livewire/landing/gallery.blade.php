@@ -5,6 +5,8 @@
 
         <main>
             @include('livewire.landing.partials.gallery-section', ['staticLayout' => true])
+
+            <livewire:landing.share-moment-form />
         </main>
 
         @include('livewire.landing.partials.footer')

@@ -23,7 +23,7 @@ class ShareMomentForm extends Component
         $validated = $this->validate([
             'shareMomentTitle' => ['required', 'string', 'max:255'],
             'shareMomentUsername' => ['nullable', 'string', 'max:255'],
-            'shareMomentImage' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'shareMomentImage' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'],
         ], [], [
             'shareMomentTitle' => 'moment title',
             'shareMomentUsername' => 'username',

@@ -942,22 +942,27 @@ button:not(:disabled) {
 }
 
 .ticket-static-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1.5rem;
     align-items: stretch;
 }
 
 .ticket-static-item {
+    display: flex;
     min-width: 0;
+    width: 100%;
+    justify-content: center;
 }
 
 @media (min-width: 1280px) {
-    .ticket-static-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+    .ticket-static-item {
+        width: calc((100% - 3rem) / 3);
     }
 
     .ticket-shell-static {
+        width: 100%;
         min-height: 29rem;
         max-width: 26rem;
         border-radius: 3rem 3rem 2.4rem 2.4rem;
@@ -1017,8 +1022,8 @@ button:not(:disabled) {
 }
 
 @media (min-width: 768px) and (max-width: 1279px) {
-    .ticket-static-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .ticket-static-item {
+        width: calc((100% - 1.5rem) / 2);
     }
 }
 

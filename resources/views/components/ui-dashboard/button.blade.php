@@ -4,6 +4,8 @@
     'size' => 'md',
     'type' => 'button',
     'navigate' => false,
+    'loading' => true,
+    'loadingLabel' => 'Loading',
 ])
 
 @php
@@ -19,6 +21,11 @@
         'md' => 'px-5 py-2.5 text-sm rounded-xl',
     ];
 
+    $wireClick = $attributes->wire('click')->value();
+    $wireTarget = $attributes->wire('target')->value();
+    $loadingTarget = $wireTarget ?: $wireClick;
+    $shouldShowLoading = ! $href && $loading && ($wireClick || $type === 'submit');
+
     $classes = 'inline-flex items-center justify-center gap-2 font-bold transition hover:-translate-y-0.5 focus:outline-none focus:ring-4 disabled:cursor-not-allowed disabled:translate-y-0 disabled:opacity-60 '.$variants[$variant].' '.$sizes[$size];
 @endphp
 
@@ -33,7 +40,40 @@
         </a>
     @endif
 @else
-    <button type="{{ $type }}" {{ $attributes->class($classes) }}>
-        {{ $slot }}
+    <button
+        type="{{ $type }}"
+        @if ($shouldShowLoading && ! $attributes->has('wire:loading.attr'))
+            wire:loading.attr="disabled"
+        @endif
+        @if ($shouldShowLoading && $loadingTarget && ! $attributes->has('wire:target'))
+            wire:target="{{ $loadingTarget }}"
+        @endif
+        {{ $attributes->class($classes) }}
+    >
+        @if ($shouldShowLoading)
+            <span
+                class="inline-flex items-center justify-center gap-2"
+                @if ($loadingTarget)
+                    wire:loading.remove wire:target="{{ $loadingTarget }}"
+                @else
+                    wire:loading.remove
+                @endif
+            >
+                {{ $slot }}
+            </span>
+            <span
+                class="hidden items-center justify-center"
+                @if ($loadingTarget)
+                    wire:loading.flex wire:target="{{ $loadingTarget }}"
+                @else
+                    wire:loading.flex
+                @endif
+            >
+                <span class="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent opacity-80" aria-hidden="true"></span>
+                <span class="sr-only">{{ $loadingLabel }}</span>
+            </span>
+        @else
+            {{ $slot }}
+        @endif
     </button>
 @endif

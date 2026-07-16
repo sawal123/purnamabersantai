@@ -142,7 +142,7 @@
                                     </div>
 
                                     <span class="text-base font-semibold text-white">Upload foto moment kamu</span>
-                                    <span class="mt-1 text-sm text-white/55">PNG, JPG, JPEG, atau WEBP maksimal 4MB</span>
+                                    <span class="mt-1 text-sm text-white/55">PNG, JPG, JPEG, atau WEBP maksimal 1MB</span>
 
                                     <input
                                         x-ref="shareMomentImageInput"
