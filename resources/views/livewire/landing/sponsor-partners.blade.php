@@ -12,7 +12,7 @@
 
     <main>
         <section class="relative z-10 pb-12 pt-32">
-            @include('livewire.landing.partials.section-elements', ['offset' => 8])
+            @include('livewire.landing.partials.section-elements', ['pageSection' => 'sponsor-partner', 'offset' => 8])
 
             <div class="relative z-10 mx-auto max-w-6xl px-5 lg:px-8">
                 <div class="text-center">

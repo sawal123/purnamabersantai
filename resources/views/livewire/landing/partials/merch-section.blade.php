@@ -7,7 +7,7 @@
 @endphp
 
 <section id="merch" class="relative z-10 pb-24 pt-32">
-    @include('livewire.landing.partials.section-elements', ['offset' => 8])
+    @include('livewire.landing.partials.section-elements', ['pageSection' => 'merchandise', 'offset' => 8])
 
     <div class="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
         <div class="reveal {{ ($staticLayout ?? false) === true ? 'is-visible' : '' }} text-center">

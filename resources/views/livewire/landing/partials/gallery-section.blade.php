@@ -11,7 +11,7 @@
     x-on:keydown.escape.window="selectedMoment = null"
 >
 <section id="gallery" class="relative z-10 pb-24 pt-32">
-    @include('livewire.landing.partials.section-elements', ['offset' => 3])
+    @include('livewire.landing.partials.section-elements', ['pageSection' => 'gallery', 'offset' => 3])
 
     <div class="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
         <div class="reveal text-center">

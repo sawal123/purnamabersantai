@@ -10,6 +10,7 @@
     <div class="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-haze"></div>
 
     @include('livewire.landing.partials.header')
+    @include('livewire.landing.partials.section-elements', ['pageSection' => 'playlist', 'offset' => 0, 'variant' => 'page'])
 
     <main>
         <section class="relative z-10 pb-12 pt-32">

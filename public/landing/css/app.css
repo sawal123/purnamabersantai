@@ -104,6 +104,11 @@ button:not(:disabled) {
     z-index: 0;
 }
 
+.landing-section-elements--page {
+    inset: 0 0 auto;
+    min-height: clamp(38rem, 74vh, 50rem);
+}
+
 .landing-section-elements--lineup .landing-section-element-1,
 .landing-section-elements--lineup .landing-section-element-2 {
     top: clamp(1.8rem, 4vw, 3.8rem);

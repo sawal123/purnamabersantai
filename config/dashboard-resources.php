@@ -5,6 +5,7 @@ use App\Models\CountdownSetting;
 use App\Models\FrequentlyAskedQuestion;
 use App\Models\GalleryMoment;
 use App\Models\History;
+use App\Models\LandingBodyElement;
 use App\Models\LandingHeroImage;
 use App\Models\LandingSetting;
 use App\Models\LineupArtist;
@@ -315,6 +316,53 @@ return [
             ['name' => 'image_path', 'label' => 'Element Image', 'type' => 'image', 'required' => true],
             ['name' => 'alt_text', 'label' => 'Alt Text', 'type' => 'text', 'hidden_from_form' => true],
             ['name' => 'sort_order', 'label' => 'Sort Order', 'type' => 'number', 'default' => 0],
+            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
+        ],
+    ],
+    'landing-body-element' => [
+        'label' => 'Body Elements',
+        'navigation_label' => 'Body Elements',
+        'navigation_group' => 'Landing Content',
+        'navigation_icon' => 'photo',
+        'model' => LandingBodyElement::class,
+        'page_title' => 'Body Elements',
+        'description' => 'Kelola elemen dekoratif di sisi kanan dan kiri body landing per halaman/section. Maksimal 1MB per gambar.',
+        'searchable' => ['title', 'page_section'],
+        'with' => [],
+        'default_sort' => [
+            ['column' => 'page_section', 'direction' => 'asc'],
+            ['column' => 'id', 'direction' => 'asc'],
+        ],
+        'table_columns' => [
+            ['key' => 'id', 'label' => 'ID'],
+            ['key' => 'image_path', 'label' => 'Image', 'type' => 'image'],
+            ['key' => 'title', 'label' => 'Title'],
+            ['key' => 'page_section', 'label' => 'Page Section', 'type' => 'badge'],
+            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
+        ],
+        'form_fields' => [
+            ['name' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true],
+            ['name' => 'page_section', 'label' => 'Page Section', 'type' => 'select', 'required' => true, 'options' => [
+                ['value' => 'lineup', 'label' => 'Lineup'],
+                ['value' => 'ticket', 'label' => 'Ticket'],
+                ['value' => 'merchandise', 'label' => 'Merchandise'],
+                ['value' => 'gallery', 'label' => 'Gallery'],
+                ['value' => 'rundown-map', 'label' => 'Rundown & Map'],
+                ['value' => 'playlist', 'label' => 'Playlist'],
+                ['value' => 'history', 'label' => 'History'],
+                ['value' => 'sponsor-partner', 'label' => 'Sponsor & Partner'],
+                ['value' => 'faq', 'label' => 'FAQ'],
+                ['value' => 'contact', 'label' => 'Contact'],
+                ['value' => 'about', 'label' => 'About'],
+            ]],
+            [
+                'name' => 'image_path',
+                'label' => 'Image',
+                'type' => 'image',
+                'required' => true,
+                'max_kb' => 1024,
+                'help_text' => 'Maksimal 1MB per gambar. Gunakan PNG/WebP transparan agar menyatu dengan background.',
+            ],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
     ],

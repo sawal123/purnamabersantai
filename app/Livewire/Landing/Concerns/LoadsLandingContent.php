@@ -5,6 +5,7 @@ namespace App\Livewire\Landing\Concerns;
 use App\Models\ContactChannel;
 use App\Models\CountdownSetting;
 use App\Models\GalleryMoment;
+use App\Models\LandingBodyElement;
 use App\Models\LandingHeroImage;
 use App\Models\LandingMarquee;
 use App\Models\LandingSetting;
@@ -67,6 +68,15 @@ trait LoadsLandingContent
                 ->keyBy('page_section')
             : collect();
 
+        $landingBodyElements = Schema::hasTable('landing_body_elements')
+            ? LandingBodyElement::query()
+                ->active()
+                ->whereNotNull('image_path')
+                ->ordered()
+                ->get()
+                ->groupBy('page_section')
+            : null;
+
         return [
             'landingSetting' => $setting,
             'countdownSetting' => CountdownSetting::query()
@@ -86,6 +96,7 @@ trait LoadsLandingContent
                 ->ordered()
                 ->get(),
             'ticketCardElements' => $ticketCardElements,
+            'landingBodyElements' => $landingBodyElements,
             'merchandiseProducts' => MerchandiseProduct::query()
                 ->with([
                     'images' => fn ($query) => $query->where('is_active', true),

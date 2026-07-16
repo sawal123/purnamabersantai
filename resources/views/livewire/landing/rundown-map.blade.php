@@ -15,6 +15,7 @@
     <div class="pointer-events-none absolute inset-x-0 top-0 h-[32rem] bg-haze"></div>
 
     @include('livewire.landing.partials.header')
+    @include('livewire.landing.partials.section-elements', ['pageSection' => 'rundown-map', 'offset' => 0, 'variant' => 'page'])
 
     <main class="relative z-10 pb-24 pt-32">
         <section class="mx-auto max-w-7xl px-5 lg:px-8">

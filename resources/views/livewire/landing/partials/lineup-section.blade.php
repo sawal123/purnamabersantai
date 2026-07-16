@@ -14,7 +14,7 @@
 @include('livewire.landing.partials.lineup-marquee')
 
 <section id="lineup" class="relative z-10 pb-20 {{ ($compactTop ?? false) ? 'pt-8' : 'pt-32' }}">
-    @include('livewire.landing.partials.section-elements', ['offset' => 0, 'variant' => 'lineup'])
+    @include('livewire.landing.partials.section-elements', ['pageSection' => 'lineup', 'offset' => 0, 'variant' => 'lineup'])
 
     <div class="relative z-10 mx-auto max-w-7xl px-5 lg:px-8">
         <div class="reveal text-center">
