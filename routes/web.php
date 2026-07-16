@@ -1,9 +1,10 @@
 <?php
 
-use App\Livewire\Dashboard\Overview as DashboardOverview;
+use App\Http\Controllers\SitemapController;
 use App\Livewire\Dashboard\LandingMarqueePage as DashboardLandingMarqueePage;
 use App\Livewire\Dashboard\LandingSectionHeadingPage as DashboardLandingSectionHeadingPage;
 use App\Livewire\Dashboard\MerchandiseProductPage as DashboardMerchandiseProductPage;
+use App\Livewire\Dashboard\Overview as DashboardOverview;
 use App\Livewire\Dashboard\ResourcePage as DashboardResourcePage;
 use App\Livewire\Dashboard\RundownMapPage as DashboardRundownMapPage;
 use App\Livewire\Dashboard\SongPage as DashboardSongPage;
@@ -24,6 +25,8 @@ use App\Livewire\Landing\SponsorPartners;
 use App\Livewire\Landing\Tickets;
 use App\Support\DashboardResourceRegistry;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::livewire('/', Home::class)->name('home');
 Route::livewire('/lineup', Lineup::class)->name('landing.lineup');
