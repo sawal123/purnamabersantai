@@ -1,3 +1,17 @@
+@php
+    $loginLandingSetting = \Illuminate\Support\Facades\Schema::hasTable('landing_settings')
+        ? \App\Models\LandingSetting::query()
+            ->where('is_active', true)
+            ->latest('id')
+            ->first()
+        : null;
+    $loginLogoPath = $loginLandingSetting?->logo_path;
+    $loginLogoUrl = $loginLogoPath
+        ? (str_starts_with($loginLogoPath, 'http') || str_starts_with($loginLogoPath, '/') ? $loginLogoPath : asset($loginLogoPath))
+        : asset('landing/assets/logo.png');
+    $loginSiteName = $loginLandingSetting?->site_name ?? 'Purnama Bersantai';
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -223,7 +237,7 @@
         <main class="login-page">
             <div class="login-shell">
                 <a href="{{ route('home') }}" wire:navigate aria-label="Kembali ke landing page">
-                    <img src="{{ asset('landing/assets/logo.png') }}" alt="Purnama Bersantai" class="login-logo">
+                    <img src="{{ $loginLogoUrl }}" alt="{{ $loginSiteName }}" class="login-logo">
                 </a>
 
                 <section class="login-card">
