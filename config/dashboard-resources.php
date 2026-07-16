@@ -75,7 +75,7 @@ return [
     'landing-setting' => [
         'label' => 'Landing Settings',
         'navigation_label' => 'Landing Settings',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Website',
         'navigation_icon' => 'adjustments-horizontal',
         'model' => LandingSetting::class,
         'page_title' => 'Landing Settings',
@@ -110,7 +110,7 @@ return [
     'countdown-setting' => [
         'label' => 'Countdown',
         'navigation_label' => 'Countdown',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Event Content',
         'navigation_icon' => 'clock',
         'model' => CountdownSetting::class,
         'page_title' => 'Countdown',
@@ -137,7 +137,7 @@ return [
     'hero-image' => [
         'label' => 'Hero Images',
         'navigation_label' => 'Hero Images',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Media Library',
         'navigation_icon' => 'photo',
         'model' => LandingHeroImage::class,
         'page_title' => 'Hero Images',
@@ -165,7 +165,7 @@ return [
     'history' => [
         'label' => 'Histories',
         'navigation_label' => 'Histories',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Event Content',
         'navigation_icon' => 'calendar-days',
         'model' => History::class,
         'page_title' => 'Histories',
@@ -204,7 +204,7 @@ return [
     'lineup-artist' => [
         'label' => 'Lineup Artists',
         'navigation_label' => 'Lineup Artists',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Event Content',
         'navigation_icon' => 'microphone',
         'model' => LineupArtist::class,
         'page_title' => 'Lineup Artists',
@@ -237,7 +237,7 @@ return [
     'ticket' => [
         'label' => 'Tickets',
         'navigation_label' => 'Tickets',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Event Content',
         'navigation_icon' => 'ticket',
         'model' => Ticket::class,
         'page_title' => 'Tickets',
@@ -292,7 +292,7 @@ return [
     'ticket-card-element' => [
         'label' => 'Ticket Card Elements',
         'navigation_label' => 'Ticket Elements',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Visual Elements',
         'navigation_icon' => 'photo',
         'model' => TicketCardElement::class,
         'page_title' => 'Ticket Card Elements',
@@ -322,7 +322,7 @@ return [
     'landing-body-element' => [
         'label' => 'Body Elements',
         'navigation_label' => 'Body Elements',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Visual Elements',
         'navigation_icon' => 'photo',
         'model' => LandingBodyElement::class,
         'page_title' => 'Body Elements',
@@ -369,7 +369,7 @@ return [
     'not-found-image' => [
         'label' => 'Not Found Images',
         'navigation_label' => 'Not Found Images',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Visual Elements',
         'navigation_icon' => 'photo',
         'model' => NotFoundImage::class,
         'page_title' => 'Not Found Images',
@@ -419,7 +419,7 @@ return [
     'spotify-playlist' => [
         'label' => 'Spotify Playlists',
         'navigation_label' => 'Spotify Playlists',
-        'navigation_group' => 'Media & Partnership',
+        'navigation_group' => 'Media Library',
         'navigation_icon' => 'music-note',
         'model' => SpotifyPlaylist::class,
         'page_title' => 'Spotify Playlists',
@@ -570,7 +570,7 @@ return [
     'gallery-moment' => [
         'label' => 'Gallery Moments',
         'navigation_label' => 'Gallery Moments',
-        'navigation_group' => 'Media & Partnership',
+        'navigation_group' => 'Media Library',
         'navigation_icon' => 'camera',
         'model' => GalleryMoment::class,
         'page_title' => 'Gallery Moments',
@@ -602,7 +602,7 @@ return [
     'sponsor-partner' => [
         'label' => 'Sponsor Partners',
         'navigation_label' => 'Sponsor Partners',
-        'navigation_group' => 'Media & Partnership',
+        'navigation_group' => 'Partnership',
         'navigation_icon' => 'building-storefront',
         'model' => SponsorPartner::class,
         'page_title' => 'Sponsor Partners',
@@ -635,7 +635,7 @@ return [
     'contact-channel' => [
         'label' => 'Contact Channels',
         'navigation_label' => 'Contact Channels',
-        'navigation_group' => 'Media & Partnership',
+        'navigation_group' => 'Website',
         'navigation_icon' => 'chat-bubble-left-right',
         'model' => ContactChannel::class,
         'page_title' => 'Contact Channels',
@@ -682,7 +682,7 @@ return [
     'frequently-asked-question' => [
         'label' => 'FAQ',
         'navigation_label' => 'FAQ',
-        'navigation_group' => 'Landing Content',
+        'navigation_group' => 'Event Content',
         'navigation_icon' => 'question-mark-circle',
         'model' => FrequentlyAskedQuestion::class,
         'page_title' => 'FAQ',

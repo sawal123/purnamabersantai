@@ -23,55 +23,77 @@
     <body class="min-h-screen bg-slate-100 text-slate-800 antialiased transition-colors dark:bg-slate-950 dark:text-slate-100">
         @php
             $resourceGroups = \App\Support\DashboardResourceRegistry::navigation();
+            $manualNavigationItems = [
+                'Website' => [
+                    [
+                        'key' => 'landing-section-heading',
+                        'label' => 'Section Headings',
+                        'icon' => 'document-text',
+                        'route' => route('dashboard.landing-section-heading'),
+                    ],
+                    [
+                        'key' => 'landing-marquee',
+                        'label' => 'Landing Marquees',
+                        'icon' => 'list-bullet',
+                        'route' => route('dashboard.landing-marquee'),
+                    ],
+                ],
+                'Event Content' => [
+                    [
+                        'key' => 'rundown-map',
+                        'label' => 'Rundown & Map',
+                        'icon' => 'map',
+                        'route' => route('dashboard.rundown-map'),
+                    ],
+                ],
+                'Media Library' => [
+                    [
+                        'key' => 'song',
+                        'label' => 'Songs',
+                        'icon' => 'music-note',
+                        'route' => route('dashboard.song'),
+                    ],
+                    [
+                        'key' => 'youtube',
+                        'label' => 'YouTube Videos',
+                        'icon' => 'play',
+                        'route' => route('dashboard.youtube'),
+                    ],
+                ],
+                'System' => [
+                    [
+                        'key' => 'user',
+                        'label' => 'Users',
+                        'icon' => 'user',
+                        'route' => route('dashboard.user'),
+                    ],
+                ],
+            ];
             $resourceGroups = collect($resourceGroups)
                 ->map(function (array $group) {
-                    if (($group['heading'] ?? null) === 'Website') {
-                        $group['items'][] = [
-                            'key' => 'user',
-                            'label' => 'Users',
-                            'icon' => 'user',
-                            'route' => route('dashboard.user'),
-                        ];
-                    }
-
-                    if (($group['heading'] ?? null) === 'Media & Partnership') {
-                        $group['items'][] = [
-                            'key' => 'landing-marquee',
-                            'label' => 'Landing Marquees',
-                            'icon' => 'list-bullet',
-                            'route' => route('dashboard.landing-marquee'),
-                        ];
-                        $group['items'][] = [
-                            'key' => 'landing-section-heading',
-                            'label' => 'Section Headings',
-                            'icon' => 'document-text',
-                            'route' => route('dashboard.landing-section-heading'),
-                        ];
-                        $group['items'][] = [
-                            'key' => 'song',
-                            'label' => 'Songs',
-                            'icon' => 'music-note',
-                            'route' => route('dashboard.song'),
-                        ];
-                        $group['items'][] = [
-                            'key' => 'youtube',
-                            'label' => 'YouTube Videos',
-                            'icon' => 'play',
-                            'route' => route('dashboard.youtube'),
-                        ];
-                    }
-
-                    if (($group['heading'] ?? null) === 'Landing Content') {
-                        $group['items'][] = [
-                            'key' => 'rundown-map',
-                            'label' => 'Rundown & Map',
-                            'icon' => 'map',
-                            'route' => route('dashboard.rundown-map'),
-                        ];
+                    return $group;
+                })
+                ->keyBy('heading')
+                ->map(function (array $group, string $heading) use ($manualNavigationItems) {
+                    foreach ($manualNavigationItems[$heading] ?? [] as $item) {
+                        $group['items'][] = $item;
                     }
 
                     return $group;
-                })
+                });
+
+            foreach ($manualNavigationItems as $heading => $items) {
+                if (! $resourceGroups->has($heading)) {
+                    $resourceGroups->put($heading, [
+                        'heading' => $heading,
+                        'items' => $items,
+                    ]);
+                }
+            }
+
+            $groupOrder = ['Website', 'Event Content', 'Merchandise', 'Media Library', 'Partnership', 'Visual Elements', 'System'];
+            $resourceGroups = $resourceGroups
+                ->sortBy(fn (array $group) => array_search($group['heading'], $groupOrder, true) === false ? 99 : array_search($group['heading'], $groupOrder, true))
                 ->values()
                 ->all();
             $currentResource = request()->route('resource');
