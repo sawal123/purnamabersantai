@@ -310,17 +310,11 @@
                             @enderror
                         </label>
 
-                        <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
                             <label class="login-checkbox">
                                 <input name="remember" type="checkbox" value="1" @checked(old('remember'))>
                                 <span>Remember me</span>
                             </label>
-
-                            @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}" wire:navigate class="text-sm font-bold text-[#fff700] transition hover:text-white">
-                                    Lupa password?
-                                </a>
-                            @endif
                         </div>
 
                         <button type="submit" class="login-button" data-login-submit>
