@@ -27,7 +27,8 @@ class Tickets extends Component
 
         $query = Ticket::query()
             ->where('is_active', true)
-            ->ordered();
+            ->latest('updated_at')
+            ->latest('id');
 
         $totalTickets = (clone $query)->count();
 

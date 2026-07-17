@@ -93,7 +93,8 @@ trait LoadsLandingContent
                 ->get(),
             'tickets' => Ticket::query()
                 ->where('is_active', true)
-                ->ordered()
+                ->latest('updated_at')
+                ->latest('id')
                 ->get(),
             'ticketCardElements' => $ticketCardElements,
             'landingBodyElements' => $landingBodyElements,
