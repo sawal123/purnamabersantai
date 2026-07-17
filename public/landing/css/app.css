@@ -109,6 +109,35 @@ button:not(:disabled) {
     min-height: clamp(38rem, 74vh, 50rem);
 }
 
+.landing-section-elements--page .landing-section-element {
+    width: auto;
+    max-width: clamp(8rem, 20vw, 17rem);
+    height: clamp(9rem, 18vw, 16rem);
+    object-fit: contain;
+}
+
+.landing-section-elements--page .landing-section-element-1 {
+    left: max(-3.5rem, -5vw);
+    top: clamp(7rem, 14vh, 10rem);
+}
+
+.landing-section-elements--page .landing-section-element-2 {
+    right: max(-3.5rem, -5vw);
+    top: clamp(7rem, 14vh, 10rem);
+}
+
+.landing-section-elements--page .landing-section-element-3 {
+    left: max(-4rem, -6vw);
+    bottom: clamp(1rem, 2.6vw, 2.8rem);
+    height: clamp(10rem, 19vw, 17rem);
+}
+
+.landing-section-elements--page .landing-section-element-4 {
+    right: max(-4rem, -6vw);
+    bottom: clamp(1rem, 2.6vw, 2.8rem);
+    height: clamp(10rem, 19vw, 17rem);
+}
+
 .landing-section-elements--lineup .landing-section-element-1,
 .landing-section-elements--lineup .landing-section-element-2 {
     top: clamp(1.8rem, 4vw, 3.8rem);
@@ -123,6 +152,16 @@ button:not(:disabled) {
     .landing-section-element-2,
     .landing-section-element-4 {
         right: -2.4rem;
+    }
+
+    .landing-section-elements--page .landing-section-element-1,
+    .landing-section-elements--page .landing-section-element-3 {
+        left: -3rem;
+    }
+
+    .landing-section-elements--page .landing-section-element-2,
+    .landing-section-elements--page .landing-section-element-4 {
+        right: -3rem;
     }
 }
 
