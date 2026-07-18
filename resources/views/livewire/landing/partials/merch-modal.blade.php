@@ -22,7 +22,28 @@
         $whatsappOrderUrl = $phoneNumber ? 'https://wa.me/'.$phoneNumber : null;
     }
 
-    $modalProducts = $merchandiseProducts->mapWithKeys(function ($product) use ($imageUrl, $formatPrice, $safeDescription, $whatsappOrderUrl) {
+    $normalizeOrderContact = function (?string $contact) {
+        $contact = trim((string) $contact);
+
+        if ($contact === '') {
+            return null;
+        }
+
+        if (preg_match('/^https?:\/\//i', $contact)) {
+            return $contact;
+        }
+
+        $phoneNumber = preg_replace('/\D+/', '', $contact);
+        $phoneNumber = str_starts_with((string) $phoneNumber, '0') ? '62'.substr((string) $phoneNumber, 1) : $phoneNumber;
+
+        return $phoneNumber ? 'https://wa.me/'.$phoneNumber : null;
+    };
+
+    $merchandiseOrderUrl = $normalizeOrderContact($landingSetting?->merchandise_order_contact ?? null)
+        ?: $whatsappOrderUrl
+        ?: route('landing.contact');
+
+    $modalProducts = $merchandiseProducts->mapWithKeys(function ($product) use ($imageUrl, $formatPrice, $safeDescription, $merchandiseOrderUrl) {
         $gallery = $product->images->map(fn ($image) => [
             'src' => $imageUrl($image->image_path, asset('landing/assets/Rectangle 17.png')),
             'alt' => $image->alt_text ?: $product->name,
@@ -52,7 +73,7 @@
                 'stockQuantity' => (int) ($product->stock_quantity ?? 0),
                 'sizes' => collect($product->size_options ?? [])->filter()->values(),
                 'colors' => collect($product->color_options ?? [])->filter()->values(),
-                'orderUrl' => $whatsappOrderUrl ?: route('landing.contact'),
+                'orderUrl' => $merchandiseOrderUrl,
                 'gallery' => $gallery,
             ],
         ];

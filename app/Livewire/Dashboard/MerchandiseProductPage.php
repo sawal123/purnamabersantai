@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Models\LandingSetting;
 use App\Models\MerchandiseProductCategory;
 use App\Support\DashboardResourceRegistry;
 use Flux\Flux;
@@ -13,12 +14,15 @@ use Throwable;
 #[Layout('layouts::app')]
 class MerchandiseProductPage extends ResourcePage
 {
+    public ?string $merchandiseOrderContact = null;
+
     public function mount(string $resource = 'merchandise-product'): void
     {
         $this->resource = 'merchandise-product';
         $this->resourceConfig = DashboardResourceRegistry::get($this->resource);
         $this->loadFieldOptions();
         $this->resetForm();
+        $this->loadMerchandiseOrderContact();
     }
 
     public function render()
@@ -39,6 +43,24 @@ class MerchandiseProductPage extends ResourcePage
     {
         $this->form['slug'] = Str::slug((string) $value);
         $this->syncThumbnailAltFromSlug();
+    }
+
+    public function saveMerchandiseOrderContact(): void
+    {
+        $this->validate([
+            'merchandiseOrderContact' => ['nullable', 'string', 'max:255'],
+        ], [], [
+            'merchandiseOrderContact' => 'order contact WhatsApp',
+        ]);
+
+        $setting = $this->activeLandingSetting();
+        $setting->forceFill([
+            'merchandise_order_contact' => trim((string) $this->merchandiseOrderContact) ?: null,
+        ])->save();
+
+        $this->merchandiseOrderContact = $setting->merchandise_order_contact;
+
+        Flux::toast(variant: 'success', text: __('Contact order merchandise berhasil disimpan.'));
     }
 
     public function generateMerchandiseDescriptionWithAi(): void
@@ -153,6 +175,24 @@ class MerchandiseProductPage extends ResourcePage
         $this->form['thumbnail_alt'] = $name !== ''
             ? $name
             : Str::title(str_replace('-', ' ', (string) ($this->form['slug'] ?? '')));
+    }
+
+    protected function loadMerchandiseOrderContact(): void
+    {
+        $this->merchandiseOrderContact = $this->activeLandingSetting()->merchandise_order_contact;
+    }
+
+    protected function activeLandingSetting(): LandingSetting
+    {
+        return LandingSetting::query()
+            ->where('is_active', true)
+            ->latest('id')
+            ->first()
+            ?? LandingSetting::query()->latest('id')->first()
+            ?? LandingSetting::query()->create([
+                'site_name' => 'Purnama Bersantai',
+                'is_active' => true,
+            ]);
     }
 
     protected function rules(): array
