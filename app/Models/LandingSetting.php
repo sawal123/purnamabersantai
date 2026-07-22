@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'footer_description',
     'sponsor_text',
     'event_info',
+    'merchandise_order_contact',
     'is_active',
 ])]
 class LandingSetting extends Model

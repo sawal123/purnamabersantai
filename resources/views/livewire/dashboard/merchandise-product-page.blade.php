@@ -29,6 +29,25 @@
         </div>
     </div>
 
+    <form wire:submit="saveMerchandiseOrderContact"
+        class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div class="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+                <x-ui-dashboard.text-input label="Global Merchandise Order Contact" name="merchandise_order_contact"
+                    placeholder="6281234567890 atau https://wa.me/6281234567890"
+                    error="merchandiseOrderContact" wire:model="merchandiseOrderContact" />
+                <p class="mt-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                    Contact ini dipakai untuk semua tombol Order di halaman merchandise. Kosongkan untuk memakai
+                    WhatsApp default dari Contact Channels.
+                </p>
+            </div>
+
+            <x-ui-dashboard.button type="submit" wire:target="saveMerchandiseOrderContact">
+                Simpan Contact
+            </x-ui-dashboard.button>
+        </div>
+    </form>
+
     <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div class="grid gap-4 md:grid-cols-2 xl:w-[30rem]">
             <x-ui-dashboard.text-input label="Search" name="search" placeholder="Cari produk..." error="search"
