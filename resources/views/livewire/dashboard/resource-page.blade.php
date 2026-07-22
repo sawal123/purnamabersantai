@@ -62,7 +62,11 @@
             <tr wire:key="{{ $this->resource }}-{{ $record->getKey() }}" class="align-top">
                 @foreach ($this->resourceConfig['table_columns'] as $column)
                     <td class="px-4 py-4 text-sm text-zinc-700 dark:text-zinc-200">
-                        @if ($this->isImageColumn($column))
+                        @if (($column['type'] ?? null) === 'row_number')
+                            <span class="font-semibold text-slate-500 dark:text-slate-400">
+                                {{ ($records->firstItem() ?? 1) + $loop->parent->index }}
+                            </span>
+                        @elseif ($this->isImageColumn($column))
                             @if ($this->imageUrl($record, $column))
                                 <img src="{{ $this->imageUrl($record, $column) }}"
                                     alt="{{ $this->formatCellValue($record, ['key' => $column['key']]) }}"

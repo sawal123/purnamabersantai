@@ -12,10 +12,9 @@
             (() => {
                 const saved = localStorage.getItem('dashboard-theme');
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = saved || (prefersDark ? 'dark' : 'light');
 
-                if (saved === 'dark' || (! saved && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                }
+                document.documentElement.classList.toggle('dark', theme === 'dark');
             })();
         </script>
     </head>
@@ -104,7 +103,7 @@
                 : null;
             $pageTitle = filled($title ?? null)
                 ? $title
-                : ($currentResourceLabel ?? 'Dashboard');
+                : (request()->routeIs('dashboard.documentation') ? 'Documentation' : ($currentResourceLabel ?? 'Dashboard'));
         @endphp
 
         <div id="dashboardSidebarOverlay" class="fixed inset-0 z-40 hidden bg-slate-950/55 backdrop-blur-sm lg:hidden" data-dashboard-sidebar-overlay></div>
@@ -135,6 +134,14 @@
                 >
                     <x-ui-dashboard.icon name="home" class="h-5 w-5" />
                     Dashboard
+                </a>
+                <a
+                    href="{{ route('dashboard.documentation') }}"
+                    wire:navigate
+                    class="{{ request()->routeIs('dashboard.documentation') ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white' }} flex items-center gap-3 rounded-2xl px-4 py-3 font-semibold transition"
+                >
+                    <x-ui-dashboard.icon name="document-text" class="h-5 w-5" />
+                    Documentation
                 </a>
 
                 @foreach ($resourceGroups as $group)
@@ -243,6 +250,20 @@
 
                 const sidebarNav = () => document.querySelector('[data-dashboard-sidebar-nav]');
 
+                const dashboardTheme = () => {
+                    const saved = localStorage.getItem('dashboard-theme');
+
+                    if (saved === 'dark' || saved === 'light') {
+                        return saved;
+                    }
+
+                    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                };
+
+                const applyDashboardTheme = () => {
+                    document.documentElement.classList.toggle('dark', dashboardTheme() === 'dark');
+                };
+
                 const saveSidebarScroll = () => {
                     const nav = sidebarNav();
 
@@ -300,11 +321,14 @@
 
                         button.dataset.dashboardBound = 'true';
                         button.addEventListener('click', () => {
-                            document.documentElement.classList.toggle('dark');
-                            localStorage.setItem('dashboard-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+                            const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+
+                            localStorage.setItem('dashboard-theme', nextTheme);
+                            applyDashboardTheme();
                         });
                     });
 
+                    applyDashboardTheme();
                     restoreSidebarScroll();
                 };
 

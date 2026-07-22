@@ -43,10 +43,12 @@ class DashboardDummySeeder extends Seeder
             ],
         );
 
-        foreach ([
-            ['image_path' => '/storage/dashboard/brand/hero-stage.png', 'alt_text' => 'Moonlit festival stage', 'sort_order' => 1],
-            ['image_path' => '/storage/dashboard/brand/hero-crowd.png', 'alt_text' => 'Festival crowd under warm lights', 'sort_order' => 2],
-        ] as $heroImage) {
+        foreach (
+            [
+                ['image_path' => '/storage/dashboard/brand/hero-stage.png', 'alt_text' => 'Moonlit festival stage', 'sort_order' => 1],
+                ['image_path' => '/storage/dashboard/brand/hero-crowd.png', 'alt_text' => 'Festival crowd under warm lights', 'sort_order' => 2],
+            ] as $heroImage
+        ) {
             LandingHeroImage::query()->updateOrCreate(
                 ['image_path' => $heroImage['image_path']],
                 ['landing_setting_id' => $setting->id, 'is_active' => true, ...$heroImage],
@@ -71,22 +73,24 @@ class DashboardDummySeeder extends Seeder
             ['name' => 'Map', 'sort_order' => 20, 'is_active' => true],
         );
 
-        foreach ([
+        foreach (
             [
-                'title' => 'Rundown Stage',
-                'category_id' => $rundownCategory->id,
-                'image_path' => '/storage/dashboard/brand/hero-stage.png',
-                'date' => '2026-08-24',
-                'description' => 'Susunan acara utama Purnama Bersantai 2026.',
-            ],
-            [
-                'title' => 'Festival Area Map',
-                'category_id' => $mapCategory->id,
-                'image_path' => '/storage/dashboard/brand/sponsor-board.png',
-                'date' => '2026-08-24',
-                'description' => 'Denah area festival Purnama Bersantai 2026.',
-            ],
-        ] as $item) {
+                [
+                    'title' => 'Rundown Stage',
+                    'category_id' => $rundownCategory->id,
+                    'image_path' => '/storage/dashboard/brand/hero-stage.png',
+                    'date' => '2026-08-24',
+                    'description' => 'Susunan acara utama Purnama Bersantai 2026.',
+                ],
+                [
+                    'title' => 'Festival Area Map',
+                    'category_id' => $mapCategory->id,
+                    'image_path' => '/storage/dashboard/brand/sponsor-board.png',
+                    'date' => '2026-08-24',
+                    'description' => 'Denah area festival Purnama Bersantai 2026.',
+                ],
+            ] as $item
+        ) {
             RundownMap::query()->updateOrCreate(
                 ['title' => $item['title'], 'date' => $item['date']],
                 [
@@ -98,19 +102,21 @@ class DashboardDummySeeder extends Seeder
             );
         }
 
-        foreach ([
-            ['tahun' => 2026, 'title' => 'Purnama Bersantai: Full Moon Weekender', 'lokasi' => 'Taman Senja, Bandung', 'capacity' => 8500, 'tanggal_acara' => '2026-08-08'],
-            ['tahun' => 2025, 'title' => 'Purnama Bersantai: Moonlit Weekend', 'lokasi' => 'Lapangan Banteng, Jakarta', 'capacity' => 7200, 'tanggal_acara' => '2025-08-09'],
-            ['tahun' => 2024, 'title' => 'Purnama Bersantai: City Lights Session', 'lokasi' => 'M Bloc Space, Jakarta', 'capacity' => 5200, 'tanggal_acara' => '2024-08-10'],
-            ['tahun' => 2023, 'title' => 'Purnama Bersantai: First Gathering', 'lokasi' => 'Hutan Kota GBK, Jakarta', 'capacity' => 4200, 'tanggal_acara' => '2023-08-12'],
-            ['tahun' => 2022, 'title' => 'Purnama Bersantai: Reconnect Stage', 'lokasi' => 'Kiara Artha Park, Bandung', 'capacity' => 3600, 'tanggal_acara' => '2022-08-13'],
-            ['tahun' => 2021, 'title' => 'Purnama Bersantai: Backyard Broadcast', 'lokasi' => 'Hybrid Studio, Jakarta', 'capacity' => 1800, 'tanggal_acara' => '2021-08-14'],
-            ['tahun' => 2020, 'title' => 'Purnama Bersantai: Home Session', 'lokasi' => 'Online Stream', 'capacity' => 1200, 'tanggal_acara' => '2020-08-08'],
-            ['tahun' => 2019, 'title' => 'Purnama Bersantai: Kampung Kreatif', 'lokasi' => 'Kampung Kemang, Jakarta', 'capacity' => 2800, 'tanggal_acara' => '2019-08-10'],
-            ['tahun' => 2018, 'title' => 'Purnama Bersantai: Picnic Jam', 'lokasi' => 'Taman Menteng, Jakarta', 'capacity' => 2100, 'tanggal_acara' => '2018-08-11'],
-            ['tahun' => 2017, 'title' => 'Purnama Bersantai: Rooftop Chorus', 'lokasi' => 'Rooftop Pasar Santa, Jakarta', 'capacity' => 1400, 'tanggal_acara' => '2017-08-12'],
-            ['tahun' => 2016, 'title' => 'Purnama Bersantai: Awal Bulan', 'lokasi' => 'Kedai Halaman, Jakarta', 'capacity' => 650, 'tanggal_acara' => '2016-08-13'],
-        ] as $index => $history) {
+        foreach (
+            [
+                ['tahun' => 2026, 'title' => 'Purnama Bersantai: Full Moon Weekender', 'lokasi' => 'Taman Senja, Bandung', 'capacity' => 8500, 'tanggal_acara' => '2026-08-08'],
+                ['tahun' => 2025, 'title' => 'Purnama Bersantai: Moonlit Weekend', 'lokasi' => 'Lapangan Banteng, Jakarta', 'capacity' => 7200, 'tanggal_acara' => '2025-08-09'],
+                ['tahun' => 2024, 'title' => 'Purnama Bersantai: City Lights Session', 'lokasi' => 'M Bloc Space, Jakarta', 'capacity' => 5200, 'tanggal_acara' => '2024-08-10'],
+                ['tahun' => 2023, 'title' => 'Purnama Bersantai: First Gathering', 'lokasi' => 'Hutan Kota GBK, Jakarta', 'capacity' => 4200, 'tanggal_acara' => '2023-08-12'],
+                ['tahun' => 2022, 'title' => 'Purnama Bersantai: Reconnect Stage', 'lokasi' => 'Kiara Artha Park, Bandung', 'capacity' => 3600, 'tanggal_acara' => '2022-08-13'],
+                ['tahun' => 2021, 'title' => 'Purnama Bersantai: Backyard Broadcast', 'lokasi' => 'Hybrid Studio, Jakarta', 'capacity' => 1800, 'tanggal_acara' => '2021-08-14'],
+                ['tahun' => 2020, 'title' => 'Purnama Bersantai: Home Session', 'lokasi' => 'Online Stream', 'capacity' => 1200, 'tanggal_acara' => '2020-08-08'],
+                ['tahun' => 2019, 'title' => 'Purnama Bersantai: Kampung Kreatif', 'lokasi' => 'Kampung Kemang, Jakarta', 'capacity' => 2800, 'tanggal_acara' => '2019-08-10'],
+                ['tahun' => 2018, 'title' => 'Purnama Bersantai: Picnic Jam', 'lokasi' => 'Taman Menteng, Jakarta', 'capacity' => 2100, 'tanggal_acara' => '2018-08-11'],
+                ['tahun' => 2017, 'title' => 'Purnama Bersantai: Rooftop Chorus', 'lokasi' => 'Rooftop Pasar Santa, Jakarta', 'capacity' => 1400, 'tanggal_acara' => '2017-08-12'],
+                ['tahun' => 2016, 'title' => 'Purnama Bersantai: Awal Bulan', 'lokasi' => 'Kedai Halaman, Jakarta', 'capacity' => 650, 'tanggal_acara' => '2016-08-13'],
+            ] as $index => $history
+        ) {
             $year = $history['tahun'];
             $historyBasePath = "/storage/dashboard/history/{$year}";
 
@@ -135,22 +141,24 @@ class DashboardDummySeeder extends Seeder
             );
         }
 
-        foreach ([
-            ['name' => 'Senja Lestari', 'image_path' => '/storage/dashboard/lineup/artist-senja.png', 'is_featured' => true],
-            ['name' => 'Raka Pradana', 'image_path' => '/storage/dashboard/lineup/artist-raka.png', 'is_featured' => true],
-            ['name' => 'Nara Swara', 'image_path' => '/storage/dashboard/lineup/artist-nara.png', 'is_featured' => false],
-            ['name' => 'Kirana & The Moons', 'image_path' => '/storage/dashboard/lineup/artist-kirana.png', 'is_featured' => false],
-            ['name' => 'Arunika Senja', 'image_path' => '/storage/dashboard/lineup/artist-senja.png', 'is_featured' => false],
-            ['name' => 'Langit Selatan', 'image_path' => '/storage/dashboard/lineup/artist-raka.png', 'is_featured' => false],
-            ['name' => 'Tala Rimba', 'image_path' => '/storage/dashboard/lineup/artist-nara.png', 'is_featured' => false],
-            ['name' => 'Malam Minggu Club', 'image_path' => '/storage/dashboard/lineup/artist-kirana.png', 'is_featured' => false],
-            ['name' => 'Ruang Nada', 'image_path' => '/storage/dashboard/lineup/artist-senja.png', 'is_featured' => false],
-            ['name' => 'Bulan Kota', 'image_path' => '/storage/dashboard/lineup/artist-raka.png', 'is_featured' => false],
-        ] as $index => $artist) {
+        foreach (
+            [
+                ['name' => 'Senja Lestari', 'image_path' => '/storage/dashboard/lineup/artist-senja.png', 'is_featured' => true],
+                ['name' => 'Raka Pradana', 'image_path' => '/storage/dashboard/lineup/artist-raka.png', 'is_featured' => true],
+                ['name' => 'Nara Swara', 'image_path' => '/storage/dashboard/lineup/artist-nara.png', 'is_featured' => false],
+                ['name' => 'Kirana & The Moons', 'image_path' => '/storage/dashboard/lineup/artist-kirana.png', 'is_featured' => false],
+                ['name' => 'Arunika Senja', 'image_path' => '/storage/dashboard/lineup/artist-senja.png', 'is_featured' => false],
+                ['name' => 'Langit Selatan', 'image_path' => '/storage/dashboard/lineup/artist-raka.png', 'is_featured' => false],
+                ['name' => 'Tala Rimba', 'image_path' => '/storage/dashboard/lineup/artist-nara.png', 'is_featured' => false],
+                ['name' => 'Malam Minggu Club', 'image_path' => '/storage/dashboard/lineup/artist-kirana.png', 'is_featured' => false],
+                ['name' => 'Ruang Nada', 'image_path' => '/storage/dashboard/lineup/artist-senja.png', 'is_featured' => false],
+                ['name' => 'Bulan Kota', 'image_path' => '/storage/dashboard/lineup/artist-raka.png', 'is_featured' => false],
+            ] as $index => $artist
+        ) {
             LineupArtist::query()->updateOrCreate(
                 ['name' => $artist['name']],
                 [
-                    'alt_text' => $artist['name'].' performing on stage',
+                    'alt_text' => $artist['name'] . ' performing on stage',
                     'image_class' => 'object-cover',
                     'sort_order' => $index + 1,
                     'is_active' => true,
@@ -159,12 +167,14 @@ class DashboardDummySeeder extends Seeder
             );
         }
 
-        foreach ([
-            ['name' => 'Presale Moonlight', 'batch_label' => 'Batch 1', 'price' => 125000, 'availability_label' => 'Available', 'status' => 'available'],
-            ['name' => 'Regular Sunset', 'batch_label' => 'Batch 2', 'price' => 175000, 'availability_label' => 'Limited Seat', 'status' => 'limited'],
-            ['name' => 'Duo Santai', 'batch_label' => 'Couple Pack', 'price' => 320000, 'availability_label' => 'Available', 'status' => 'available'],
-            ['name' => 'On The Spot', 'batch_label' => 'Gate Ticket', 'price' => 225000, 'availability_label' => 'Coming Soon', 'status' => 'coming_soon'],
-        ] as $index => $ticket) {
+        foreach (
+            [
+                ['name' => 'Presale Moonlight', 'batch_label' => 'Batch 1', 'price' => 125000, 'availability_label' => 'Available', 'status' => 'available'],
+                ['name' => 'Regular Sunset', 'batch_label' => 'Batch 2', 'price' => 175000, 'availability_label' => 'Limited Seat', 'status' => 'limited'],
+                ['name' => 'Duo Santai', 'batch_label' => 'Couple Pack', 'price' => 320000, 'availability_label' => 'Available', 'status' => 'available'],
+                ['name' => 'On The Spot', 'batch_label' => 'Gate Ticket', 'price' => 225000, 'availability_label' => 'Coming Soon', 'status' => 'coming_soon'],
+            ] as $index => $ticket
+        ) {
             Ticket::query()->updateOrCreate(
                 ['name' => $ticket['name']],
                 [
@@ -246,20 +256,22 @@ class DashboardDummySeeder extends Seeder
             );
         }
 
-        foreach ([
-            ['title' => 'Moonlight Crowd', 'username' => '@bulanberisik', 'image_path' => '/storage/dashboard/gallery/moonlight-crowd.png', 'description' => 'Penonton bernyanyi bersama di bawah lampu panggung dan langit malam festival.'],
-            ['title' => 'Food Booth Friends', 'username' => '@senjajan', 'image_path' => '/storage/dashboard/gallery/food-booth-friends.png', 'description' => 'Area tenant ramai dengan tawa, camilan lokal, dan obrolan santai sebelum penampilan utama.'],
-            ['title' => 'Acoustic Sunset', 'username' => '@petiksenja', 'image_path' => '/storage/dashboard/gallery/acoustic-sunset.png', 'description' => 'Sesi akustik sore membuka malam dengan suasana hangat dan intim.'],
-            ['title' => 'Ticket Hands', 'username' => '@tiketpurnama', 'image_path' => '/storage/dashboard/gallery/ticket-hands.png', 'description' => 'Tiket festival siap dipindai sebelum pengunjung masuk ke area Purnama Bersantai.'],
-            ['title' => 'Lantern Walk', 'username' => '@jalansenja', 'image_path' => '/storage/dashboard/gallery/lantern-walk.png', 'description' => 'Lorong lampion menjadi spot favorit untuk berjalan pelan dan mengambil foto.'],
-            ['title' => 'Merch Booth Line', 'username' => '@dropbulan', 'image_path' => '/storage/dashboard/gallery/merch-booth-line.png', 'description' => 'Antrian merchandise bergerak ramai saat koleksi festival mulai dibuka.'],
-            ['title' => 'Front Row Glow', 'username' => '@barisdepan', 'image_path' => '/storage/dashboard/gallery/front-row-glow.png', 'description' => 'Barisan depan menyala oleh pantulan lampu panggung dan energi penonton.'],
-            ['title' => 'Picnic Corner', 'username' => '@tikarbulan', 'image_path' => '/storage/dashboard/gallery/picnic-corner.png', 'description' => 'Sudut piknik memberi ruang istirahat untuk menikmati makanan dan musik dari kejauhan.'],
-            ['title' => 'Backstage Notes', 'username' => '@catatanstage', 'image_path' => '/storage/dashboard/gallery/backstage-notes.png', 'description' => 'Catatan kecil dari belakang panggung sebelum performer naik ke stage.'],
-            ['title' => 'Moon Arch Entry', 'username' => '@gerbangpurnama', 'image_path' => '/storage/dashboard/gallery/moon-arch-entry.png', 'description' => 'Gerbang bulan menyambut pengunjung sebelum memasuki area utama festival.'],
-            ['title' => 'Community Jam', 'username' => '@jamsantai', 'image_path' => '/storage/dashboard/gallery/community-jam.png', 'description' => 'Musisi komunitas mengisi jeda acara dengan sesi jam yang akrab.'],
-            ['title' => 'Final Singalong', 'username' => '@chorusmalam', 'image_path' => '/storage/dashboard/gallery/final-singalong.png', 'description' => 'Lagu terakhir dinyanyikan bersama sebelum malam Purnama Bersantai ditutup.'],
-        ] as $index => $moment) {
+        foreach (
+            [
+                ['title' => 'Moonlight Crowd', 'username' => '@bulanberisik', 'image_path' => '/storage/dashboard/gallery/moonlight-crowd.png', 'description' => 'Penonton bernyanyi bersama di bawah lampu panggung dan langit malam festival.'],
+                ['title' => 'Food Booth Friends', 'username' => '@senjajan', 'image_path' => '/storage/dashboard/gallery/food-booth-friends.png', 'description' => 'Area tenant ramai dengan tawa, camilan lokal, dan obrolan santai sebelum penampilan utama.'],
+                ['title' => 'Acoustic Sunset', 'username' => '@petiksenja', 'image_path' => '/storage/dashboard/gallery/acoustic-sunset.png', 'description' => 'Sesi akustik sore membuka malam dengan suasana hangat dan intim.'],
+                ['title' => 'Ticket Hands', 'username' => '@tiketpurnama', 'image_path' => '/storage/dashboard/gallery/ticket-hands.png', 'description' => 'Tiket festival siap dipindai sebelum pengunjung masuk ke area Purnama Bersantai.'],
+                ['title' => 'Lantern Walk', 'username' => '@jalansenja', 'image_path' => '/storage/dashboard/gallery/lantern-walk.png', 'description' => 'Lorong lampion menjadi spot favorit untuk berjalan pelan dan mengambil foto.'],
+                ['title' => 'Merch Booth Line', 'username' => '@dropbulan', 'image_path' => '/storage/dashboard/gallery/merch-booth-line.png', 'description' => 'Antrian merchandise bergerak ramai saat koleksi festival mulai dibuka.'],
+                ['title' => 'Front Row Glow', 'username' => '@barisdepan', 'image_path' => '/storage/dashboard/gallery/front-row-glow.png', 'description' => 'Barisan depan menyala oleh pantulan lampu panggung dan energi penonton.'],
+                ['title' => 'Picnic Corner', 'username' => '@tikarbulan', 'image_path' => '/storage/dashboard/gallery/picnic-corner.png', 'description' => 'Sudut piknik memberi ruang istirahat untuk menikmati makanan dan musik dari kejauhan.'],
+                ['title' => 'Backstage Notes', 'username' => '@catatanstage', 'image_path' => '/storage/dashboard/gallery/backstage-notes.png', 'description' => 'Catatan kecil dari belakang panggung sebelum performer naik ke stage.'],
+                ['title' => 'Moon Arch Entry', 'username' => '@gerbangpurnama', 'image_path' => '/storage/dashboard/gallery/moon-arch-entry.png', 'description' => 'Gerbang bulan menyambut pengunjung sebelum memasuki area utama festival.'],
+                ['title' => 'Community Jam', 'username' => '@jamsantai', 'image_path' => '/storage/dashboard/gallery/community-jam.png', 'description' => 'Musisi komunitas mengisi jeda acara dengan sesi jam yang akrab.'],
+                ['title' => 'Final Singalong', 'username' => '@chorusmalam', 'image_path' => '/storage/dashboard/gallery/final-singalong.png', 'description' => 'Lagu terakhir dinyanyikan bersama sebelum malam Purnama Bersantai ditutup.'],
+            ] as $index => $moment
+        ) {
             GalleryMoment::query()->updateOrCreate(
                 ['title' => $moment['title']],
                 [
@@ -271,12 +283,14 @@ class DashboardDummySeeder extends Seeder
             );
         }
 
-        foreach ([
-            ['name' => 'Kopi Halaman', 'tier' => 'Food Partner', 'url' => 'https://example.com/kopi-halaman'],
-            ['name' => 'Loka Creative', 'tier' => 'Creative Partner', 'url' => 'https://example.com/loka-creative'],
-            ['name' => 'Ruang Audio', 'tier' => 'Sound Partner', 'url' => 'https://example.com/ruang-audio'],
-            ['name' => 'Senja Transit', 'tier' => 'Mobility Partner', 'url' => 'https://example.com/senja-transit'],
-        ] as $index => $partner) {
+        foreach (
+            [
+                ['name' => 'Kopi Halaman', 'tier' => 'Food Partner', 'url' => 'https://example.com/kopi-halaman'],
+                ['name' => 'Loka Creative', 'tier' => 'Creative Partner', 'url' => 'https://example.com/loka-creative'],
+                ['name' => 'Ruang Audio', 'tier' => 'Sound Partner', 'url' => 'https://example.com/ruang-audio'],
+                ['name' => 'Senja Transit', 'tier' => 'Mobility Partner', 'url' => 'https://example.com/senja-transit'],
+            ] as $index => $partner
+        ) {
             SponsorPartner::query()->updateOrCreate(
                 ['name' => $partner['name']],
                 [
@@ -289,12 +303,14 @@ class DashboardDummySeeder extends Seeder
             );
         }
 
-        foreach ([
-            ['label' => 'Ticketing WhatsApp', 'icon' => 'whatsapp', 'type' => 'whatsapp', 'value' => '+62 812-2026-0824', 'url' => 'https://wa.me/6281220260824'],
-            ['label' => 'Email Partnership', 'icon' => 'email', 'type' => 'email', 'value' => 'partner@purnamabersantai.test', 'url' => 'mailto:partner@purnamabersantai.test'],
-            ['label' => 'Instagram', 'icon' => 'instagram', 'type' => 'instagram', 'value' => '@purnamabersantai', 'url' => 'https://instagram.com/purnamabersantai'],
-            ['label' => 'Website', 'icon' => 'website', 'type' => 'website', 'value' => 'purnamabersantai.test', 'url' => 'https://purnamabersantai.test'],
-        ] as $index => $channel) {
+        foreach (
+            [
+                ['label' => 'Ticketing WhatsApp', 'icon' => 'whatsapp', 'type' => 'whatsapp', 'value' => '+62 812-2026-0824', 'url' => 'https://wa.me/6281220260824'],
+                ['label' => 'Email Partnership', 'icon' => 'email', 'type' => 'email', 'value' => 'partner@purnamabersantai.test', 'url' => 'mailto:partner@purnamabersantai.test'],
+                ['label' => 'Instagram', 'icon' => 'instagram', 'type' => 'instagram', 'value' => '@purnamabersantai', 'url' => 'https://instagram.com/purnamabersantai'],
+                ['label' => 'Website', 'icon' => 'website', 'type' => 'website', 'value' => 'purnamabersantai.test', 'url' => 'https://purnamabersantai.test'],
+            ] as $index => $channel
+        ) {
             ContactChannel::query()->updateOrCreate(
                 ['label' => $channel['label'], 'type' => $channel['type']],
                 [
@@ -306,32 +322,34 @@ class DashboardDummySeeder extends Seeder
             );
         }
 
-        foreach ([
+        foreach (
             [
-                'question' => 'Apakah saya bisa membeli tiket langsung di lokasi?',
-                'answer' => 'Tiket on the spot akan tersedia jika kuota masih ada. Kami menyarankan pembelian online lebih awal agar kamu mendapat harga terbaik dan proses masuk area festival lebih cepat.',
-            ],
-            [
-                'question' => 'Kapan gate Purnama Bersantai dibuka?',
-                'answer' => 'Gate festival dibuka mulai pukul 15.00 WIB. Datang lebih awal supaya kamu punya waktu untuk menukar tiket, melihat area tenant, dan memilih spot menonton yang nyaman.',
-            ],
-            [
-                'question' => 'Apakah tersedia merchandise resmi saat acara?',
-                'answer' => 'Ya, merchandise resmi tersedia di booth festival selama stok masih ada. Beberapa item juga dapat dipesan melalui halaman merchandise sebelum hari acara.',
-            ],
-            [
-                'question' => 'Bolehkah membawa makanan dan minuman dari luar?',
-                'answer' => 'Pengunjung tidak diperkenankan membawa makanan dan minuman dari luar area festival. Di dalam venue tersedia tenant makanan dan minuman pilihan untuk menemani acara.',
-            ],
-            [
-                'question' => 'Apakah anak-anak boleh datang ke festival?',
-                'answer' => 'Anak-anak boleh hadir dengan pendamping orang tua atau wali. Pastikan tetap memperhatikan area keramaian, volume suara panggung, dan kenyamanan selama acara berlangsung.',
-            ],
-            [
-                'question' => 'Bagaimana jika hujan saat acara berlangsung?',
-                'answer' => 'Festival tetap berjalan selama kondisi aman. Siapkan jas hujan pribadi, ikuti arahan petugas di lokasi, dan pantau kanal resmi untuk informasi terbaru.',
-            ],
-        ] as $index => $faq) {
+                [
+                    'question' => 'Apakah saya bisa membeli tiket langsung di lokasi?',
+                    'answer' => 'Tiket on the spot akan tersedia jika kuota masih ada. Kami menyarankan pembelian online lebih awal agar kamu mendapat harga terbaik dan proses masuk area festival lebih cepat.',
+                ],
+                [
+                    'question' => 'Kapan gate Purnama Bersantai dibuka?',
+                    'answer' => 'Gate festival dibuka mulai pukul 15.00 WIB. Datang lebih awal supaya kamu punya waktu untuk menukar tiket, melihat area tenant, dan memilih spot menonton yang nyaman.',
+                ],
+                [
+                    'question' => 'Apakah tersedia merchandise resmi saat acara?',
+                    'answer' => 'Ya, merchandise resmi tersedia di booth festival selama stok masih ada. Beberapa item juga dapat dipesan melalui halaman merchandise sebelum hari acara.',
+                ],
+                [
+                    'question' => 'Bolehkah membawa makanan dan minuman dari luar?',
+                    'answer' => 'Pengunjung tidak diperkenankan membawa makanan dan minuman dari luar area festival. Di dalam venue tersedia tenant makanan dan minuman pilihan untuk menemani acara.',
+                ],
+                [
+                    'question' => 'Apakah anak-anak boleh datang ke festival?',
+                    'answer' => 'Anak-anak boleh hadir dengan pendamping orang tua atau wali. Pastikan tetap memperhatikan area keramaian, volume suara panggung, dan kenyamanan selama acara berlangsung.',
+                ],
+                [
+                    'question' => 'Bagaimana jika hujan saat acara berlangsung?',
+                    'answer' => 'Festival tetap berjalan selama kondisi aman. Siapkan jas hujan pribadi, ikuti arahan petugas di lokasi, dan pantau kanal resmi untuk informasi terbaru.',
+                ],
+            ] as $index => $faq
+        ) {
             FrequentlyAskedQuestion::query()->updateOrCreate(
                 ['question' => $faq['question']],
                 [

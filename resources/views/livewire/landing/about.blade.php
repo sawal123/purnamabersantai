@@ -1,5 +1,9 @@
 @php
     $heading = ($landingSectionHeadings ?? collect())->get('about');
+    $notFoundImage = ($notFoundImages ?? collect())->get('history');
+    $imageUrl = fn (?string $path, string $fallback) => $path
+        ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
+        : $fallback;
 @endphp
 
     <div class="relative overflow-x-hidden">
@@ -65,7 +69,7 @@
 
                         <div class="relative mt-10">
                             <div class="space-y-6">
-                                @foreach ($festivalHistory as $item)
+                                @forelse ($festivalHistory as $item)
                                     <article class="relative grid gap-4 md:grid-cols-[7rem_minmax(0,1fr)] md:gap-6">
                                         <div class="relative flex items-start justify-center md:justify-center">
                                             @if (!$loop->last)
@@ -109,17 +113,36 @@
                                             </p>
                                         </a>
                                     </article>
-                                @endforeach
+                                @empty
+                                    @if ($notFoundImage)
+                                        <img
+                                            src="{{ $imageUrl($notFoundImage->image_path, asset('landing/assets/Rectangle 17.png')) }}"
+                                            alt="{{ $notFoundImage->title }}"
+                                            class="mx-auto block h-auto w-full max-w-4xl"
+                                        >
+                                    @else
+                                        <div class="rounded-[1.6rem] border border-white/10 bg-[#2f2e2e] px-6 py-12 text-center">
+                                            <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
+                                                Belum Ada History
+                                            </p>
+                                            <h3 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white">
+                                                Arsip akan segera hadir
+                                            </h3>
+                                        </div>
+                                    @endif
+                                @endforelse
                             </div>
                         </div>
 
-                        <div class="mt-10 flex justify-center">
-                            <a href="{{ route('landing.history') }}"
-                                class="inline-flex rounded-2xl bg-ember px-6 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e]"
-                                wire:navigate>
-                                See All Histories
-                            </a>
-                        </div>
+                        @if (count($festivalHistory) > 0)
+                            <div class="mt-10 flex justify-center">
+                                <a href="{{ route('landing.history') }}"
+                                    class="inline-flex rounded-2xl bg-ember px-6 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e]"
+                                    wire:navigate>
+                                    See All Histories
+                                </a>
+                            </div>
+                        @endif
                     </section>
                 </div>
 

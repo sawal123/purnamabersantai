@@ -334,7 +334,7 @@ return [
             ['column' => 'id', 'direction' => 'asc'],
         ],
         'table_columns' => [
-            ['key' => 'id', 'label' => 'ID'],
+            ['key' => 'row_number', 'label' => 'No', 'type' => 'row_number'],
             ['key' => 'image_path', 'label' => 'Image', 'type' => 'image'],
             ['key' => 'title', 'label' => 'Title'],
             ['key' => 'page_section', 'label' => 'Page Section', 'type' => 'badge'],
@@ -381,7 +381,7 @@ return [
             ['column' => 'id', 'direction' => 'desc'],
         ],
         'table_columns' => [
-            ['key' => 'id', 'label' => 'ID'],
+            ['key' => 'row_number', 'label' => 'No', 'type' => 'row_number'],
             ['key' => 'image_path', 'label' => 'Image', 'type' => 'image'],
             ['key' => 'title', 'label' => 'Title'],
             ['key' => 'page_section', 'label' => 'Page Section', 'type' => 'badge'],

@@ -3,6 +3,7 @@
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
     $heading = ($landingSectionHeadings ?? collect())->get('history');
+    $notFoundImage = ($notFoundImages ?? collect())->get('history');
 @endphp
 
 <div class="relative overflow-x-hidden">
@@ -93,14 +94,22 @@
                                     </a>
                                 </article>
                             @empty
-                                <div class="rounded-[1.6rem] border border-white/10 bg-[#2f2e2e] px-6 py-12 text-center">
-                                    <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
-                                        Belum Ada History
-                                    </p>
-                                    <h3 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white">
-                                        Arsip akan segera hadir
-                                    </h3>
-                                </div>
+                                @if ($notFoundImage)
+                                    <img
+                                        src="{{ $imageUrl($notFoundImage->image_path, asset('landing/assets/Rectangle 17.png')) }}"
+                                        alt="{{ $notFoundImage->title }}"
+                                        class="mx-auto block h-auto w-full max-w-4xl"
+                                    >
+                                @else
+                                    <div class="rounded-[1.6rem] border border-white/10 bg-[#2f2e2e] px-6 py-12 text-center">
+                                        <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
+                                            Belum Ada History
+                                        </p>
+                                        <h3 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white">
+                                            Arsip akan segera hadir
+                                        </h3>
+                                    </div>
+                                @endif
                             @endforelse
                         </div>
                     </div>

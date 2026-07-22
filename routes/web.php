@@ -4,6 +4,7 @@ use App\Http\Controllers\SitemapController;
 use App\Livewire\Dashboard\LandingMarqueePage as DashboardLandingMarqueePage;
 use App\Livewire\Dashboard\LandingSectionHeadingPage as DashboardLandingSectionHeadingPage;
 use App\Livewire\Dashboard\MerchandiseProductPage as DashboardMerchandiseProductPage;
+use App\Livewire\Dashboard\Documentation as DashboardDocumentation;
 use App\Livewire\Dashboard\Overview as DashboardOverview;
 use App\Livewire\Dashboard\ResourcePage as DashboardResourcePage;
 use App\Livewire\Dashboard\RundownMapPage as DashboardRundownMapPage;
@@ -46,6 +47,7 @@ Route::livewire('/faq', Faq::class)->name('landing.faq');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('dashboard', DashboardOverview::class)->name('dashboard');
+    Route::livewire('dashboard/documentation', DashboardDocumentation::class)->name('dashboard.documentation');
     Route::livewire('dashboard/merchandise-product', DashboardMerchandiseProductPage::class)
         ->defaults('resource', 'merchandise-product')
         ->name('dashboard.merchandise-product');

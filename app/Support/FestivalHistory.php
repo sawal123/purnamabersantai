@@ -16,78 +16,12 @@ class FestivalHistory
                 ->ordered()
                 ->get();
 
-            if ($histories->isNotEmpty()) {
-                return $histories
-                    ->map(fn (HistoryModel $history) => static::fromModel($history))
-                    ->all();
-            }
+            return $histories
+                ->map(fn (HistoryModel $history) => static::fromModel($history))
+                ->all();
         }
 
-        return [
-            [
-                'year' => '2025',
-                'title' => 'Purnama Bersantai: Moonlit Weekend',
-                'slug' => 'purnama-bersantai-moonlit-weekend',
-                'location' => 'Jakarta, Indonesia',
-                'capacity' => 7200,
-                'capacity_label' => '7,200',
-                'date' => '2025-08-09',
-                'date_label' => '09 Aug 2025',
-                'summary' => 'Memperluas pengalaman festival dengan panggung yang lebih intim, aktivasi komunitas, dan area merchandise yang lebih hidup.',
-                'content' => 'Memperluas pengalaman festival dengan panggung yang lebih intim, aktivasi komunitas, dan area merchandise yang lebih hidup. Edisi ini mempertemukan penonton, musisi lokal, dan tenant pilihan dalam suasana malam yang lebih dekat.',
-                'thumbnail' => 'landing/assets/hero/image 1.png',
-                'media' => [
-                    'landing/assets/hero/image 1.png',
-                ],
-                'gallery' => [
-                    'landing/assets/Rectangle 17.png',
-                    'landing/assets/Rectangle 15.png',
-                    'landing/assets/image 8.png',
-                ],
-            ],
-            [
-                'year' => '2024',
-                'title' => 'Purnama Bersantai: City Lights Session',
-                'slug' => 'purnama-bersantai-city-lights-session',
-                'location' => 'Jakarta, Indonesia',
-                'capacity' => 5200,
-                'capacity_label' => '5,200',
-                'date' => '2024-08-10',
-                'date_label' => '10 Aug 2024',
-                'summary' => 'Mulai membangun identitas festival malam yang santai dengan lineup lokal, tenant pilihan, dan atmosfer tropis urban.',
-                'content' => 'Mulai membangun identitas festival malam yang santai dengan lineup lokal, tenant pilihan, dan atmosfer tropis urban. City Lights Session menjadi ruang temu yang lebih rapi untuk komunitas musik dan kreator muda.',
-                'thumbnail' => 'landing/assets/hero/2022_03_29_124082_1648520536._large.jpg',
-                'media' => [
-                    'landing/assets/hero/2022_03_29_124082_1648520536._large.jpg',
-                ],
-                'gallery' => [
-                    'landing/assets/Rectangle 17.png',
-                    'landing/assets/Group 30.png',
-                    'landing/assets/3.png',
-                ],
-            ],
-            [
-                'year' => '2023',
-                'title' => 'Purnama Bersantai: First Gathering',
-                'slug' => 'purnama-bersantai-first-gathering',
-                'location' => 'Jakarta, Indonesia',
-                'capacity' => 4200,
-                'capacity_label' => '4,200',
-                'date' => '2023-08-12',
-                'date_label' => '12 Aug 2023',
-                'summary' => 'Menjadi titik awal pertemuan komunitas musik, kreator lokal, dan penonton yang mencari pengalaman event yang lebih personal.',
-                'content' => 'Menjadi titik awal pertemuan komunitas musik, kreator lokal, dan penonton yang mencari pengalaman event yang lebih personal. Dari format ini, Purnama Bersantai mulai menemukan karakter hangat dan komunalnya.',
-                'thumbnail' => 'landing/assets/Rectangle 17.png',
-                'media' => [
-                    'landing/assets/Rectangle 17.png',
-                ],
-                'gallery' => [
-                    'landing/assets/Rectangle 15.png',
-                    'landing/assets/image 8.png',
-                    'landing/assets/3-cropped.png',
-                ],
-            ],
-        ];
+        return [];
     }
 
     public static function latest(int $limit = 3): array
