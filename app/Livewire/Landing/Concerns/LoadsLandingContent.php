@@ -2,14 +2,15 @@
 
 namespace App\Livewire\Landing\Concerns;
 
+use App\Models\AboutUs;
 use App\Models\ContactChannel;
 use App\Models\CountdownSetting;
 use App\Models\GalleryMoment;
 use App\Models\LandingBodyElement;
 use App\Models\LandingHeroImage;
 use App\Models\LandingMarquee;
-use App\Models\LandingSetting;
 use App\Models\LandingSectionHeading;
+use App\Models\LandingSetting;
 use App\Models\LineupArtist;
 use App\Models\MerchandiseProduct;
 use App\Models\NotFoundImage;
@@ -77,8 +78,16 @@ trait LoadsLandingContent
                 ->groupBy('page_section')
             : null;
 
+        $aboutUs = Schema::hasTable('about_us')
+            ? AboutUs::query()
+                ->active()
+                ->latest('id')
+                ->first()
+            : null;
+
         return [
             'landingSetting' => $setting,
+            'aboutUs' => $aboutUs,
             'countdownSetting' => CountdownSetting::query()
                 ->active()
                 ->whereNotNull('target_at')

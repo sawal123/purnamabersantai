@@ -27,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LandingMarqueeSeeder::class);
         $this->call(YoutubeVideoSeeder::class);
         $this->call(LandingSectionHeadingSeeder::class);
+        $this->call(AboutUsSeeder::class);
     }
 }

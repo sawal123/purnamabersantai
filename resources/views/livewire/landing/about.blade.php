@@ -4,6 +4,10 @@
     $imageUrl = fn (?string $path, string $fallback) => $path
         ? (str_starts_with($path, 'http') || str_starts_with($path, '/') ? $path : asset($path))
         : $fallback;
+    $organizationBody = $aboutUs?->organization_body ?: '<p>Purnama Bersantai adalah organisasi kreatif yang berfokus pada pengembangan festival, kolaborasi komunitas, dan pengalaman hiburan yang terasa hangat, dekat, dan relevan dengan audiens muda perkotaan.</p><p>Kami membangun ruang temu antara musisi, pelaku UMKM, komunitas, sponsor, dan penonton dalam satu ekosistem acara yang tidak hanya menghadirkan hiburan, tetapi juga membuka peluang pertumbuhan bersama.</p>';
+    $historyBody = $aboutUs?->history_body ?: '<p>Perjalanan Purnama Bersantai dibangun sedikit demi sedikit, dari gathering yang hangat hingga menjadi festival yang punya identitas kuat dan ruang kolaborasi yang lebih luas.</p>';
+    $historyCtaUrl = $aboutUs?->history_cta_url ?: route('landing.history');
+    $historyCtaIsExternal = str_starts_with($historyCtaUrl, 'http');
 @endphp
 
     <div class="relative overflow-x-hidden">
@@ -33,21 +37,14 @@
                 <div class="mx-auto max-w-6xl px-5 lg:px-8">
                     <article class="reveal rounded-[1.75rem] border border-white/10 bg-[#2f2e2e] p-6">
                         <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
-                            Who We Are
+                            {{ $aboutUs?->organization_kicker ?: 'Who We Are' }}
                         </p>
                         <h2 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white">
-                            Organisasi di Balik Purnama Bersantai
+                            {{ $aboutUs?->organization_title ?: 'Organisasi di Balik Purnama Bersantai' }}
                         </h2>
-                        <p class="mt-4 text-base leading-relaxed text-white/72">
-                            Purnama Bersantai adalah organisasi kreatif yang berfokus pada pengembangan festival,
-                            kolaborasi komunitas, dan pengalaman hiburan yang terasa hangat, dekat, dan relevan dengan
-                            audiens muda perkotaan.
-                        </p>
-                        <p class="mt-4 text-base leading-relaxed text-white/72">
-                            Kami membangun ruang temu antara musisi, pelaku UMKM, komunitas, sponsor, dan penonton dalam
-                            satu ekosistem acara yang tidak hanya menghadirkan hiburan, tetapi juga membuka peluang
-                            pertumbuhan bersama.
-                        </p>
+                        <div class="history-story-content mt-4 space-y-4 text-base leading-relaxed text-white/72">
+                            {!! $organizationBody !!}
+                        </div>
                     </article>
                 </div>
 
@@ -56,15 +53,14 @@
                         class="reveal overflow-hidden rounded-[1.9rem] border border-white/10 bg-[#2f2e2e] p-6 sm:p-8">
                         <div class="max-w-3xl">
                             <p class="text-sm font-semibold uppercase tracking-[0.24em] text-[#fff700]/80">
-                                Our History
+                                {{ $aboutUs?->history_kicker ?: 'Our History' }}
                             </p>
                             <h2 class="mt-4 font-display text-4xl uppercase tracking-[0.08em] text-white sm:text-5xl">
-                                Tumbuh Bersama Komunitas
+                                {{ $aboutUs?->history_title ?: 'Tumbuh Bersama Komunitas' }}
                             </h2>
-                            <p class="mt-4 text-base leading-relaxed text-white/72">
-                                Perjalanan Purnama Bersantai dibangun sedikit demi sedikit, dari gathering yang hangat
-                                hingga menjadi festival yang punya identitas kuat dan ruang kolaborasi yang lebih luas.
-                            </p>
+                            <div class="history-story-content mt-4 space-y-4 text-base leading-relaxed text-white/72">
+                                {!! $historyBody !!}
+                            </div>
                         </div>
 
                         <div class="relative mt-10">
@@ -136,10 +132,10 @@
 
                         @if (count($festivalHistory) > 0)
                             <div class="mt-10 flex justify-center">
-                                <a href="{{ route('landing.history') }}"
+                                <a href="{{ $historyCtaUrl }}"
                                     class="inline-flex rounded-2xl bg-ember px-6 py-3 font-display text-3xl uppercase tracking-[0.08em] text-white transition hover:-translate-y-1 hover:bg-[#fff700] hover:text-[#2f2e2e]"
-                                    wire:navigate>
-                                    See All Histories
+                                    @if (!$historyCtaIsExternal) wire:navigate @endif>
+                                    {{ $aboutUs?->history_cta_label ?: 'See All Histories' }}
                                 </a>
                             </div>
                         @endif

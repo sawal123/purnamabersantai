@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AboutUs;
 use App\Models\ContactChannel;
 use App\Models\CountdownSetting;
 use App\Models\FrequentlyAskedQuestion;
@@ -14,8 +15,8 @@ use App\Models\MerchandiseProductCategory;
 use App\Models\MerchandiseProductImage;
 use App\Models\NotFoundImage;
 use App\Models\SeoSetting;
-use App\Models\SpotifyPlaylist;
 use App\Models\SponsorPartner;
+use App\Models\SpotifyPlaylist;
 use App\Models\Ticket;
 use App\Models\TicketCardElement;
 
@@ -104,6 +105,40 @@ return [
             ['name' => 'footer_description', 'label' => 'Footer Description', 'type' => 'textarea', 'full_width' => true],
             ['name' => 'sponsor_text', 'label' => 'Sponsor Text', 'type' => 'textarea', 'full_width' => true],
             ['name' => 'event_info', 'label' => 'Event Info JSON', 'type' => 'json', 'full_width' => true],
+            ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
+        ],
+    ],
+    'about-us' => [
+        'label' => 'About Us',
+        'navigation_label' => 'About Us',
+        'navigation_group' => 'Website',
+        'navigation_icon' => 'document-text',
+        'model' => AboutUs::class,
+        'page_title' => 'About Us',
+        'description' => 'Kelola konten utama halaman About Us, termasuk profil organisasi dan intro history yang tampil di /about.',
+        'single_record' => true,
+        'searchable' => ['label', 'organization_title', 'organization_body', 'history_title', 'history_body'],
+        'with' => [],
+        'default_sort' => [
+            ['column' => 'id', 'direction' => 'desc'],
+        ],
+        'table_columns' => [
+            ['key' => 'label', 'label' => 'Label'],
+            ['key' => 'organization_title', 'label' => 'Organization Title', 'truncate' => 45],
+            ['key' => 'history_title', 'label' => 'History Title', 'truncate' => 45],
+            ['key' => 'history_cta_label', 'label' => 'CTA Label'],
+            ['key' => 'is_active', 'label' => 'Active', 'type' => 'boolean'],
+        ],
+        'form_fields' => [
+            ['name' => 'label', 'label' => 'Label', 'type' => 'text', 'required' => true, 'default' => 'About Us'],
+            ['name' => 'organization_kicker', 'label' => 'Organization Kicker', 'type' => 'text', 'default' => 'Who We Are'],
+            ['name' => 'organization_title', 'label' => 'Organization Title', 'type' => 'text', 'required' => true, 'default' => 'Organisasi di Balik Purnama Bersantai'],
+            ['name' => 'organization_body', 'label' => 'Organization Body', 'type' => 'rich_text', 'required' => true, 'full_width' => true, 'default' => '<p>Purnama Bersantai adalah organisasi kreatif yang berfokus pada pengembangan festival, kolaborasi komunitas, dan pengalaman hiburan yang terasa hangat, dekat, dan relevan dengan audiens muda perkotaan.</p><p>Kami membangun ruang temu antara musisi, pelaku UMKM, komunitas, sponsor, dan penonton dalam satu ekosistem acara yang tidak hanya menghadirkan hiburan, tetapi juga membuka peluang pertumbuhan bersama.</p>'],
+            ['name' => 'history_kicker', 'label' => 'History Kicker', 'type' => 'text', 'default' => 'Our History'],
+            ['name' => 'history_title', 'label' => 'History Title', 'type' => 'text', 'required' => true, 'default' => 'Tumbuh Bersama Komunitas'],
+            ['name' => 'history_body', 'label' => 'History Body', 'type' => 'rich_text', 'required' => true, 'full_width' => true, 'default' => '<p>Perjalanan Purnama Bersantai dibangun sedikit demi sedikit, dari gathering yang hangat hingga menjadi festival yang punya identitas kuat dan ruang kolaborasi yang lebih luas.</p>'],
+            ['name' => 'history_cta_label', 'label' => 'History CTA Label', 'type' => 'text', 'default' => 'See All Histories'],
+            ['name' => 'history_cta_url', 'label' => 'History CTA URL', 'type' => 'text', 'default' => '/history'],
             ['name' => 'is_active', 'label' => 'Active', 'type' => 'checkbox', 'default' => true, 'full_width' => true],
         ],
     ],
