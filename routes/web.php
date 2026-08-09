@@ -45,7 +45,7 @@ Route::livewire('/sponsor-partners', SponsorPartners::class)->name('landing.spon
 Route::livewire('/contact', Contact::class)->name('landing.contact');
 Route::livewire('/faq', Faq::class)->name('landing.faq');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::livewire('dashboard', DashboardOverview::class)->name('dashboard');
     Route::livewire('dashboard/documentation', DashboardDocumentation::class)->name('dashboard.documentation');
     Route::livewire('dashboard/merchandise-product', DashboardMerchandiseProductPage::class)
@@ -75,4 +75,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('dashboard.resource');
 });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

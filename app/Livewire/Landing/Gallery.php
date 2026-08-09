@@ -18,7 +18,8 @@ class Gallery extends Component
 
     public function loadMore(): void
     {
-        $this->visibleCount = PHP_INT_MAX;
+        $total = GalleryMoment::query()->where('is_active', true)->count();
+        $this->visibleCount = min($total, $this->visibleCount + 36);
     }
 
     public function render()
